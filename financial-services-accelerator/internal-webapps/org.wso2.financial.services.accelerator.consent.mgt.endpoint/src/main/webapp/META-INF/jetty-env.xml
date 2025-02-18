@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE Configure PUBLIC "-//Jetty//Configure//EN" "http://www.eclipse.org/jetty/configure_9_3.dtd">
+<Configure id="webapp" class="org.eclipse.jetty.webapp.WebAppContext">
+
+    <New id="WSO2FS_DB" class="org.eclipse.jetty.plus.jndi.Resource">
+        <Arg><Ref refid="webapp"/></Arg>
+        <Arg>jdbc/WSO2FS_DB</Arg>
+        <Arg>
+            <New class="org.apache.commons.dbcp.BasicDataSource">
+                <Set name="url">jdbc:mysql://localhost:3306/fs_consentdb?useSSL=false</Set>
+                <Set name="username">root</Set>
+                <Set name="password">password</Set>
+                <Set name="driverClassName">com.mysql.cj.jdbc.Driver</Set>
+                <Set name="maxTotal">50</Set>
+                <Set name="maxIdle">30</Set>
+                <Set name="maxWaitMillis">10000</Set>
+            </New>
+        </Arg>
+    </New>
+
+</Configure>
