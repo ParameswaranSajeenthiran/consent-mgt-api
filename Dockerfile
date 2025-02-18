@@ -1,5 +1,5 @@
 # Use an official Maven image to build the WAR
-FROM maven:3.9.5-eclipse-temurin-17 AS builder
+FROM maven:3.9.9-eclipse-temurin-17 AS builder
 
 # Set working directory
 WORKDIR /app
