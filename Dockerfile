@@ -21,7 +21,11 @@ RUN apk update && apk upgrade zlib
 RUN addgroup -g 10014 choreo && \
     adduser  --disabled-password  --no-create-home --uid 10014 --ingroup choreo choreouser
 
+USER 10014
 FROM tomcat:9.0-jdk11
+ENV CONTEXT_URL="https://your-storage-bucket/context.xml"
+COPY context.xml /usr/local/tomcat/conf/Catalina/localhost/context.xml
+
 RUN cp -r $CATALINA_HOME/webapps.dist/* $CATALINA_HOME/webapps
 COPY --from=builder /app/financial-services-accelerator/internal-webapps/org.wso2.financial.services.accelerator.consent.mgt.endpoint/target/*.war /usr/local/tomcat/webapps/consent.war
 EXPOSE 8080
