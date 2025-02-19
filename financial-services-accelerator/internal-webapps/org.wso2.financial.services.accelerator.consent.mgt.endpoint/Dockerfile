@@ -1,3 +1,7 @@
+RUN addgroup -g 10014 choreo && \
+    adduser  --disabled-password  --no-create-home --uid 10014 --ingroup choreo choreouser
+
+
 USER 10014
 FROM tomcat:9.0-jdk11
 ENV test_two='test_value'
