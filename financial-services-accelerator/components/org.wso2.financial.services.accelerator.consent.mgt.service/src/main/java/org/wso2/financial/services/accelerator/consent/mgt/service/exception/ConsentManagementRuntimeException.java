@@ -19,15 +19,17 @@
 package org.wso2.financial.services.accelerator.consent.mgt.service.exception;
 
 /**
- * Used for handling exceptions in consent management component.
+ * Used for runtime exceptions in consent management component.
  */
-public class ConsentManagementException extends FinancialServicesException {
+public class ConsentManagementRuntimeException extends FinancialServicesRuntimeException {
 
-    public ConsentManagementException(String message) {
-        super(message);
+    public ConsentManagementRuntimeException(String errorCode, Throwable cause) {
+
+        super(errorCode, cause);
     }
 
-    public ConsentManagementException(String message, Throwable e) {
-        super(message, e);
+    public ConsentManagementRuntimeException(String errorCode) {
+
+        super(errorCode);
     }
 }

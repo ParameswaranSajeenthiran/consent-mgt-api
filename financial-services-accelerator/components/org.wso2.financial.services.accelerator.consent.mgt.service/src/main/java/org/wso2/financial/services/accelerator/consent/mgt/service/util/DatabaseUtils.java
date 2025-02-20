@@ -16,7 +16,7 @@
  * under the License.
  */
 
-package org.wso2.financial.services.accelerator.common.util;
+package org.wso2.financial.services.accelerator.consent.mgt.service.util;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
