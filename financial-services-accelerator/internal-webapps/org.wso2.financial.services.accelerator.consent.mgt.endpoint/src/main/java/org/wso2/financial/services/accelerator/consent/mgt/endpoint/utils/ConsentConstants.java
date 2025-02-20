@@ -18,7 +18,6 @@
 
 package org.wso2.financial.services.accelerator.consent.mgt.endpoint.utils;
 
-import org.wso2.financial.services.accelerator.common.config.FinancialServicesConfigParser;
 
 /**
  * Constants class for consent management endpoint.
@@ -38,6 +37,8 @@ public class ConsentConstants {
                 " to the key provided";
         public static final String ERROR_INVALID_VALUE_FOR_AUTHORIZE_PARAM = "\"authorize\" parameter is not defined " +
                         "properly or invalid";
-        public static final String PRESERVE_CONSENT = FinancialServicesConfigParser.getInstance().getPreserveConsent();
-        public static final boolean STORE_CONSENT = Boolean.parseBoolean(PRESERVE_CONSENT);
+//        public static final String PRESERVE_CONSENT =
+//        FinancialServicesConfigParser.getInstance().getPreserveConsent();
+//        public static final boolean STORE_CONSENT =
+//        Boolean.parseBoolean(PRESERVE_CONSENT);
 }
