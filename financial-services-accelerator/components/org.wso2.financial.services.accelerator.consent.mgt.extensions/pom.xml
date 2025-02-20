@@ -29,7 +29,7 @@
     <name>WSO2 Financial Services - Consent Extensions</name>
     <description>WSO2 Financial Services - Consent Extensions Module</description>
     <url>https://wso2.com</url>
-    <packaging>bundle</packaging>
+    <packaging>jar</packaging>
 
     <dependencies>
         <dependency>

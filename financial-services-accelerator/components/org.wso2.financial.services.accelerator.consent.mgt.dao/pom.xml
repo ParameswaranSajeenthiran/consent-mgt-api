@@ -31,7 +31,7 @@
     <name>WSO2 Financial Services - Consent DAO</name>
     <description>WSO2 Financial Services - Consent DAO Module</description>
     <url>http://maven.apache.org</url>
-    <packaging>bundle</packaging>
+    <packaging>jar</packaging>
 
     <dependencies>
         <dependency>

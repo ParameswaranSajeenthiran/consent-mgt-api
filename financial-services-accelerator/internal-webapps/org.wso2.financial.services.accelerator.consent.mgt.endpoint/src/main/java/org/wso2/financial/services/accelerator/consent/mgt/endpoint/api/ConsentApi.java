@@ -1,6 +1,5 @@
 package org.wso2.financial.services.accelerator.consent.mgt.endpoint.api;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 
 import javax.servlet.http.HttpServletRequest;
@@ -18,7 +17,7 @@ import javax.ws.rs.core.UriInfo;
  * This specifies a REST API for consent search to be used at consent user and
  * customer service portals.
  **/
-@SuppressFBWarnings("JAXRS_ENDPOINT")
+//@SuppressFBWarnings("JAXRS_ENDPOINT")
 // Suppressed content - Endpoints
 // Suppression reason - False Positive : These endpoints are secured with access
 // control

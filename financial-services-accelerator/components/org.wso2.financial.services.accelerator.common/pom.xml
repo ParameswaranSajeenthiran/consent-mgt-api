@@ -28,7 +28,7 @@
     </parent>
 
     <artifactId>org.wso2.financial.services.accelerator.common</artifactId>
-    <packaging>bundle</packaging>
+    <packaging>jar</packaging>
     <name>WSO2 Financial Services - Common component</name>
     <dependencies>
         <dependency>
