@@ -32,12 +32,15 @@
     <name>WSO2 Financial Services - Common component</name>
     <dependencies>
         <dependency>
-            <groupId>commons-logging</groupId>
-            <artifactId>commons-logging</artifactId>
-        </dependency>
+                        <groupId>commons-logging</groupId>
+                        <artifactId>commons-logging</artifactId>
+                        <version>${commons.logging.version}</version>
+                    </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
+                            <version>${commons-lang3.version}</version>
+
         </dependency>
 <!--        <dependency>-->
 <!--            <groupId>org.wso2.securevault</groupId>-->

@@ -428,36 +428,24 @@
                 <artifactId>javax.servlet</artifactId>
                 <version>${equinox.javax.servlet.version}</version>
             </dependency>
-            <dependency>
-                <groupId>commons-io.wso2</groupId>
-                <artifactId>commons-io</artifactId>
-                <version>${commons.io.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>javax.validation</groupId>
-                <artifactId>validation-api</artifactId>
-                <version>${javax.validation.api.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.wso2.orbit.org.apache.oltu.oauth2</groupId>
-                <artifactId>oltu</artifactId>
-                <version>${oltu.version}</version>
-            </dependency>
+<!--            <dependency>-->
+<!--                <groupId>commons-io.wso2</groupId>-->
+<!--                <artifactId>commons-io</artifactId>-->
+<!--                <version>${commons.io.version}</version>-->
+<!--            </dependency>-->
+<!--            <dependency>-->
+<!--                <groupId>javax.validation</groupId>-->
+<!--                <artifactId>validation-api</artifactId>-->
+<!--                <version>${javax.validation.api.version}</version>-->
+<!--            </dependency>-->
+
             <dependency>
                 <groupId>org.wso2.orbit.io.swagger.v3</groupId>
                 <artifactId>swagger-parser</artifactId>
                 <version>${swagger.parser.v3.version}</version>
             </dependency>
-            <dependency>
-                <groupId>io.jsonwebtoken</groupId>
-                <artifactId>jjwt</artifactId>
-                <version>${jjwt.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.quartz-scheduler</groupId>
-                <artifactId>quartz</artifactId>
-                <version>${quartz.version}</version>
-            </dependency>
+
+
             <!--Base Products related dependencies-->
 <!--            <dependency>-->
 <!--                <groupId>org.wso2.carbon</groupId>-->
