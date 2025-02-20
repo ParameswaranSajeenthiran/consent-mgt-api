@@ -10,10 +10,10 @@ import org.wso2.financial.services.accelerator.common.exception.ConsentManagemen
 import org.wso2.financial.services.accelerator.consent.mgt.dao.models.ConsentResource;
 import org.wso2.financial.services.accelerator.consent.mgt.dao.models.DetailedConsentResource;
 import org.wso2.financial.services.accelerator.consent.mgt.endpoint.dto.ConsentMgtDTO;
+import org.wso2.financial.services.accelerator.consent.mgt.endpoint.utils.ConsentAdminUtils;
 import org.wso2.financial.services.accelerator.consent.mgt.endpoint.utils.ConsentException;
 import org.wso2.financial.services.accelerator.consent.mgt.endpoint.utils.ConsentExtensionUtils;
 import org.wso2.financial.services.accelerator.consent.mgt.endpoint.utils.ResponseStatus;
-import org.wso2.financial.services.accelerator.consent.mgt.extensions.admin.utils.ConsentAdminUtils;
 import org.wso2.financial.services.accelerator.consent.mgt.service.impl.ConsentCoreServiceImpl;
 
 import java.util.ArrayList;
