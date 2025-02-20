@@ -10,3 +10,6 @@
 0:0:0:0:0:0:0:1 - - [20/Feb/2025:11:54:11 +0530] "GET /consent/admin/get HTTP/1.1" 404 682
 0:0:0:0:0:0:0:1 - - [20/Feb/2025:11:54:38 +0530] "GET /endpoint//admin/test HTTP/1.1" 200 4
 0:0:0:0:0:0:0:1 - - [20/Feb/2025:12:21:53 +0530] "GET /endpoint//admin/test HTTP/1.1" 200 4
+0:0:0:0:0:0:0:1 - - [20/Feb/2025:13:25:33 +0530] "GET /endpoint//admin/test HTTP/1.1" 200 4
+0:0:0:0:0:0:0:1 - - [20/Feb/2025:13:46:58 +0530] "GET /endpoint/admin/test HTTP/1.1" 200 4
+0:0:0:0:0:0:0:1 - - [20/Feb/2025:19:44:16 +0530] "GET /endpoint/admin/search?consentIds=f9b8d67e-8cac-45cd-b4f3-d5aab2bbd64f HTTP/1.1" 404 -
