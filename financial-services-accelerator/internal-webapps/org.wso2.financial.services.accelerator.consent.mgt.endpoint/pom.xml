@@ -46,12 +46,12 @@
             <version>2.9.0</version>  <!-- Make sure this is the latest stable version -->
         </dependency>
 
-        <dependency>
-            <groupId>javax.ws.rs</groupId>
-            <artifactId>jsr311-api</artifactId>
-                            <version>${javax.ws.rs.version}</version>
+<!--        <dependency>-->
+<!--            <groupId>javax.ws.rs</groupId>-->
+<!--            <artifactId>jsr311-api</artifactId>-->
+<!--                            <version>${javax.ws.rs.version}</version>-->
 
-        </dependency>
+<!--        </dependency>-->
 
         <!-- https://mvnrepository.com/artifact/javax.servlet/servlet-api -->
         <dependency>

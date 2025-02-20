@@ -8,7 +8,7 @@ WORKDIR /app
 COPY . .
 
 # Build the WAR file
-RUN mvn clean package -DskipTests
+RUN mvn install -DskipTests
 
 # # https://security.alpinelinux.org/vuln/CVE-2021-46848
 # RUN apk add --upgrade libtasn1-progs
