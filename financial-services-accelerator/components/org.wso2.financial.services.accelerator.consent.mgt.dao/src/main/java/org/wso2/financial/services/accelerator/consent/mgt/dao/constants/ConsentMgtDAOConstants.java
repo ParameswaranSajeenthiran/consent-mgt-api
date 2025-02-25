@@ -87,22 +87,23 @@ public class ConsentMgtDAOConstants {
     public static final String TABLE_FS_CONSENT_FILE = "FS_CONSENT_FILE";
 
     //Numbers are assigned to each consent DB table & used as the reference for each table when storing CA history
-    public static final Map<String, String> TABLES_MAP = Map.of(
-            TABLE_FS_CONSENT, "01",
-            TABLE_FS_CONSENT_AUTH_RESOURCE, "02",
-            TABLE_FS_CONSENT_MAPPING, "03",
-            TABLE_FS_CONSENT_ATTRIBUTE, "04",
-            TABLE_FS_CONSENT_FILE, "05"
-    );
+public static final Map<String, String> TABLES_MAP = new HashMap<>();
+static {
+    TABLES_MAP.put(TABLE_FS_CONSENT, "01");
+    TABLES_MAP.put(TABLE_FS_CONSENT_AUTH_RESOURCE, "02");
+    TABLES_MAP.put(TABLE_FS_CONSENT_MAPPING, "03");
+    TABLES_MAP.put(TABLE_FS_CONSENT_ATTRIBUTE, "04");
+    TABLES_MAP.put(TABLE_FS_CONSENT_FILE, "05");
+}
 
-    public static final Map<String, String> COLUMNS_MAP = Map.of(
-            CONSENT_IDS, "CONSENT_ID",
-            CLIENT_IDS, "CLIENT_ID",
-            CONSENT_TYPES, "CONSENT_TYPE",
-            CONSENT_STATUSES, "CURRENT_STATUS",
-            USER_IDS, "OCAR.USER_ID"
-    );
-
+public static final Map<String, String> COLUMNS_MAP = new HashMap<>();
+static {
+    COLUMNS_MAP.put(CONSENT_IDS, "CONSENT_ID");
+    COLUMNS_MAP.put(CLIENT_IDS, "CLIENT_ID");
+    COLUMNS_MAP.put(CONSENT_TYPES, "CONSENT_TYPE");
+    COLUMNS_MAP.put(CONSENT_STATUSES, "CURRENT_STATUS");
+    COLUMNS_MAP.put(USER_IDS, "OCAR.USER_ID");
+}
     //Error Messages
     public static final String CONSENT_RESOURCE_STORE_ERROR_MSG = "Error occurred while storing consent resource in " +
             "the database";

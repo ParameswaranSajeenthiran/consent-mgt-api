@@ -142,30 +142,53 @@
 <!--        </dependency>-->
 
 
-        <dependency>
-            <groupId>org.wso2.financial.services.accelerator</groupId>
-            <artifactId>org.wso2.financial.services.accelerator.common</artifactId>
-            <version>4.0.0-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>com.github.spotbugs</groupId>
-            <artifactId>spotbugs-maven-plugin</artifactId>
-            <version>${maven.spotbugsplugin.version}</version>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>org.wso2.financial.services.accelerator</groupId>-->
+<!--            <artifactId>org.wso2.financial.services.accelerator.common</artifactId>-->
+<!--            <version>4.0.0-SNAPSHOT</version>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>com.github.spotbugs</groupId>-->
+<!--            <artifactId>spotbugs-maven-plugin</artifactId>-->
+<!--            <version>${maven.spotbugsplugin.version}</version>-->
+<!--        </dependency>-->
+
+<!--&lt;!&ndash;        <dependency>&ndash;&gt;-->
+<!--&lt;!&ndash;            <groupId>org.wso2.financial.services.accelerator</groupId>&ndash;&gt;-->
+<!--&lt;!&ndash;            <artifactId>org.wso2.financial.services.accelerator.consent.mgt.extensions</artifactId>&ndash;&gt;-->
+<!--&lt;!&ndash;        </dependency>&ndash;&gt;-->
+
 
 <!--        <dependency>-->
 <!--            <groupId>org.wso2.financial.services.accelerator</groupId>-->
-<!--            <artifactId>org.wso2.financial.services.accelerator.consent.mgt.extensions</artifactId>-->
+<!--            <artifactId>org.wso2.financial.services.accelerator.consent.mgt.service</artifactId>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>org.wso2.financial.services.accelerator</groupId>-->
+<!--            <artifactId>org.wso2.financial.services.accelerator.consent.mgt.dao</artifactId>-->
 <!--        </dependency>-->
 
 
         <dependency>
             <groupId>org.wso2.financial.services.accelerator</groupId>
             <artifactId>org.wso2.financial.services.accelerator.consent.mgt.service</artifactId>
+            <version>4.0.0-SNAPSHOT</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/org.wso2.financial.services.accelerator.consent.mgt.service-4.0.0-SNAPSHOT.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>org.wso2.financial.services.accelerator</groupId>
             <artifactId>org.wso2.financial.services.accelerator.consent.mgt.dao</artifactId>
+            <version>4.0.0-SNAPSHOT</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/org.wso2.financial.services.accelerator.consent.mgt.dao-4.0.0-SNAPSHOT.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>org.wso2.financial.services.accelerator</groupId>
+            <artifactId>org.wso2.financial.services.accelerator.common</artifactId>
+            <version>4.0.0-SNAPSHOT</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/org.wso2.financial.services.accelerator.common-4.0.0-SNAPSHOT.jar</systemPath>
         </dependency>
     </dependencies>
 
