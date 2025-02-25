@@ -13,3 +13,10 @@
 0:0:0:0:0:0:0:1 - - [20/Feb/2025:13:25:33 +0530] "GET /endpoint//admin/test HTTP/1.1" 200 4
 0:0:0:0:0:0:0:1 - - [20/Feb/2025:13:46:58 +0530] "GET /endpoint/admin/test HTTP/1.1" 200 4
 0:0:0:0:0:0:0:1 - - [20/Feb/2025:19:44:16 +0530] "GET /endpoint/admin/search?consentIds=f9b8d67e-8cac-45cd-b4f3-d5aab2bbd64f HTTP/1.1" 404 -
+0:0:0:0:0:0:0:1 - - [20/Feb/2025:21:25:04 +0530] "GET /consent-docker/admin/create HTTP/1.1" 404 682
+0:0:0:0:0:0:0:1 - - [20/Feb/2025:21:25:23 +0530] "GET /endpoint/admin/create HTTP/1.1" 200 175
+0:0:0:0:0:0:0:1 - - [20/Feb/2025:21:29:54 +0530] "GET /endpoint/admin/create HTTP/1.1" 200 150
+0:0:0:0:0:0:0:1 - - [20/Feb/2025:21:30:08 +0530] "GET /endpoint/admin/create HTTP/1.1" 200 150
+0:0:0:0:0:0:0:1 - - [20/Feb/2025:21:33:19 +0530] "GET /endpoint/admin/create HTTP/1.1" 200 150
+0:0:0:0:0:0:0:1 - - [20/Feb/2025:21:33:26 +0530] "GET /endpoint/admin/create HTTP/1.1" 200 150
+0:0:0:0:0:0:0:1 - - [20/Feb/2025:21:36:31 +0530] "GET /endpoint/admin/create HTTP/1.1" 200 150

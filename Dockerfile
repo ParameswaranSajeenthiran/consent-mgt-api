@@ -1,5 +1,5 @@
 # Use an official Maven image to build the WAR
-FROM maven:3.6.3-jdk-8 AS builder
+FROM maven:3.9.9-eclipse-temurin-17 AS builder
 
 # Set working directory
 WORKDIR /app
@@ -8,7 +8,7 @@ WORKDIR /app
 COPY . .
 
 # Build the WAR file
-RUN mvn install -DskipTests
+RUN mvn clean package -DskipTests
 
 # # https://security.alpinelinux.org/vuln/CVE-2021-46848
 # RUN apk add --upgrade libtasn1-progs
@@ -18,14 +18,30 @@ RUN mvn install -DskipTests
 
 
 # Create a new user with UID 10014
-RUN addgroup -g 10014 choreo && \
-    adduser  --disabled-password  --no-create-home --uid 10014 --ingroup choreo choreouser
+# RUN addgroup -g 10014 choreo && \
+#     adduser  --disabled-password  --no-create-home --uid 10014 --ingroup choreo choreouser
 
 USER 10014
 FROM tomcat:9.0-jdk11
-ENV CONTEXT_URL="https://your-storage-bucket/context.xml"
 
-RUN cp -r $CATALINA_HOME/webapps.dist/* $CATALINA_HOME/webapps
-COPY --from=builder /app/financial-services-accelerator/internal-webapps/org.wso2.financial.services.accelerator.consent.mgt.endpoint/target/*.war /usr/local/tomcat/webapps/consent.war
+# RUN cp -r $CATALINA_HOME/webapps.dist/* $CATALINA_HOME/webapps
+COPY --from=builder /app/target/*.war /usr/local/tomcat/consent.war
+# Copy the startup script
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
+
+
+
 EXPOSE 8080
-CMD ["/usr/local/tomcat/bin/catalina.sh", "run"]
+# RUN adduser \
+#   --disabled-password \
+#   --gecos "" \
+#   --home "/nonexistent" \
+#   --shell "/sbin/nologin" \
+#   --no-create-home \
+#   --uid 10014 \
+#   "choreo"
+# Use the above created unprivileged user
+USER 10014
+ENTRYPOINT ["/entrypoint.sh"]
