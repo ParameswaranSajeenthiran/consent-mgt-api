@@ -23,6 +23,7 @@ package org.wso2.financial.services.accelerator.consent.mgt.service.constants;
  */
 public class ConsentCoreServiceConstants {
 
+    public static final String TEST = "test123v2";
     public static final String CONSENT_RESOURCE = "ConsentResource";
     public static final String DETAILED_CONSENT_RESOURCE = "DetailedConsentResource";
     public static final String CONSENT_AMENDMENT_HISTORY_RESOURCE = "ConsentAmendmentHistory";

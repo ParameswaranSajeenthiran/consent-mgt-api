@@ -80,39 +80,39 @@ public class ConsentMgtServiceTestData {
         }
     };
 
-    public static final ArrayList<String> SAMPLE_ACCOUNT_ID_LIST = new ArrayList<String> (List.of(SAMPLE_ACCOUNT_ID));
-
-    public static final Map<String, ArrayList<String>> SAMPLE_ACCOUNT_IDS_AND_PERMISSIONS_MAP = Map.of(
-            "accountID1", new ArrayList<>(List.of("permission1", "permission2")),
-            "accountID2", new ArrayList<>(List.of("permission3", "permission4"))
-    );
-
-    public static final ArrayList<String> SAMPLE_CONSENT_ATTRIBUTES_KEYS = new ArrayList<String>
-            (List.of("x-request-id", "idempotency-key"));
-
-    public static final ArrayList<String> SAMPLE_USER_IDS_LIST = new ArrayList<String>
-            (List.of("userID1", "userID2", "userID3"));
-
-    public static final ArrayList<String> SAMPLE_CONSENT_IS_ARRAY = new ArrayList<String> (List.of(CONSENT_ID));
-
-    public static final Map<String, ArrayList<String>> SAMPLE_ACCOUNT_IDS_AND_PERMISSIONS_MAP2 = Map.of(
-            SAMPLE_ACCOUNT_ID, new ArrayList<> (List.of("permission5", "permission6")));
-
-    public static final ArrayList<String> SAMPLE_CONSENT_TYPES_LIST = new ArrayList<>
-            (List.of("accounts", "payments", "cof"));
-
-    public static final ArrayList<String> SAMPLE_CONSENT_STATUSES_LIST = new ArrayList<>
-            (List.of("created", "authorised", "awaitingAuthorization"));
-
-    public static final Map<String, ArrayList<String>> SAMPLE_ACCOUNT_IDS_AND_PERMISSIONS_MAP3 = Map.of(
-            "mismatching account ID", new ArrayList<> (List.of("permission5", "permission6")));
-
-    public static final ArrayList<String> SAMPLE_CLIENT_IDS_LIST = new ArrayList<>(Arrays
-            .asList("clientID1", "clientID2", "clientID3"));
-    public static final ArrayList<String> MAPPING_IDS_LIST = new ArrayList<> (List.of(SAMPLE_MAPPING_ID,
-            SAMPLE_MAPPING_ID_2));
-    public static final ArrayList<String> UNMATCHED_MAPPING_IDS = new ArrayList<> (List.of("4444", "5555"));
-
+//    public static final ArrayList<String> SAMPLE_ACCOUNT_ID_LIST = new ArrayList<String> (List.of(SAMPLE_ACCOUNT_ID));
+//
+//    public static final Map<String, ArrayList<String>> SAMPLE_ACCOUNT_IDS_AND_PERMISSIONS_MAP = Map.of(
+//            "accountID1", new ArrayList<>(List.of("permission1", "permission2")),
+//            "accountID2", new ArrayList<>(List.of("permission3", "permission4"))
+//    );
+//
+//    public static final ArrayList<String> SAMPLE_CONSENT_ATTRIBUTES_KEYS = new ArrayList<String>
+//            (List.of("x-request-id", "idempotency-key"));
+//
+//    public static final ArrayList<String> SAMPLE_USER_IDS_LIST = new ArrayList<String>
+//            (List.of("userID1", "userID2", "userID3"));
+//
+//    public static final ArrayList<String> SAMPLE_CONSENT_IS_ARRAY = new ArrayList<String> (List.of(CONSENT_ID));
+//
+//    public static final Map<String, ArrayList<String>> SAMPLE_ACCOUNT_IDS_AND_PERMISSIONS_MAP2 = Map.of(
+//            SAMPLE_ACCOUNT_ID, new ArrayList<> (List.of("permission5", "permission6")));
+//
+//    public static final ArrayList<String> SAMPLE_CONSENT_TYPES_LIST = new ArrayList<>
+//            (List.of("accounts", "payments", "cof"));
+//
+//    public static final ArrayList<String> SAMPLE_CONSENT_STATUSES_LIST = new ArrayList<>
+//            (List.of("created", "authorised", "awaitingAuthorization"));
+//
+//    public static final Map<String, ArrayList<String>> SAMPLE_ACCOUNT_IDS_AND_PERMISSIONS_MAP3 = Map.of(
+//            "mismatching account ID", new ArrayList<> (List.of("permission5", "permission6")));
+//
+//    public static final ArrayList<String> SAMPLE_CLIENT_IDS_LIST = new ArrayList<>(Arrays
+//            .asList("clientID1", "clientID2", "clientID3"));
+//    public static final ArrayList<String> MAPPING_IDS_LIST = new ArrayList<> (List.of(SAMPLE_MAPPING_ID,
+//            SAMPLE_MAPPING_ID_2));
+//    public static final ArrayList<String> UNMATCHED_MAPPING_IDS = new ArrayList<> (List.of("4444", "5555"));
+//
     public static ConsentResource getSampleTestConsentResource() {
 
         return getSampleTestConsentResource(ConsentMgtServiceTestData.SAMPLE_CURRENT_STATUS);
