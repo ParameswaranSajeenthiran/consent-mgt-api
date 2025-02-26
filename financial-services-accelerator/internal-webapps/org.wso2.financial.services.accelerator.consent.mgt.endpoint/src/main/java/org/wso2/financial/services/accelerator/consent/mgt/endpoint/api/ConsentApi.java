@@ -5,7 +5,12 @@ package org.wso2.financial.services.accelerator.consent.mgt.endpoint.api;
 //import org.json.JSONObject;
 //import org.wso2.financial.services.accelerator.consent.mgt.dao.models.ConsentResource;
 //import org.wso2.financial.services.accelerator.consent.mgt.dao.models.DetailedConsentResource;
-import org.wso2.financial.services.accelerator.consent.mgt.endpoint.dto.ConsentMgtDTO;
+import com.fasterxml.jackson.databind.exc.MismatchedInputException;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
+import org.wso2.financial.services.accelerator.consent.mgt.endpoint.dto.*;
 import org.wso2.financial.services.accelerator.consent.mgt.endpoint.exception.ConsentException;
 //import org.wso2.financial.services.accelerator.consent.mgt.endpoint.handler.ConsentMgtApiHandler;
 //import org.wso2.financial.services.accelerator.consent.mgt.endpoint.utils.ConsentUtils;
@@ -20,11 +25,9 @@ import org.wso2.financial.services.accelerator.consent.mgt.service.impl.ConsentC
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
@@ -43,6 +46,8 @@ import javax.ws.rs.core.UriInfo;
 // Suppressed warning count - 5
 @Path("/")
 public class ConsentApi {
+
+
 
 
 //    private static final Log log = LogFactory.getLog(ConsentApi.class);
@@ -101,6 +106,94 @@ public class ConsentApi {
         }
 
 
+    }
+
+    @POST
+    @Path("/")
+    @Consumes({ "application/json" })
+    @Produces({ "application/json" })
+    @ApiOperation(value = "Consent initiation", notes = "", response = ConsentResponse.class, tags={ "consent" })
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Successful operation", response = ConsentResponse.class),
+            @ApiResponse(code = 400, message = "Invalid request body", response = Void.class)
+    })
+    public Response consentPost(@Valid @NotNull ConsentResourceDTO consentResource, @HeaderParam("OrgInfo")   @ApiParam("jwt header containing tenant related information") String orgInfo, @HeaderParam("IsImplicitAuth")   @ApiParam("Flag to determine whether authorization is implicit or not") Boolean isImplicitAuth, @HeaderParam("ExclusiveConsent")   @ApiParam("Flag to determine whether this is an exclusive consent") Boolean exclusiveConsent) {
+        try {
+            // Normal processing logic
+            ConsentMgtApiHandler consentMgtApiHandler = new ConsentMgtApiHandler();
+            consentMgtApiHandler.handleCreateConsent(consentResource, orgInfo, isImplicitAuth, exclusiveConsent);
+
+
+            return Response.ok().entity("magic!").build();
+        } catch (Exception e) {
+            // Handle other errors
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                    .entity("An unexpected error occurred: " + e.getMessage())
+                    .build();
+        }
+    }
+
+    @DELETE
+    @Path("/{consentId}")
+    @ApiOperation(value = "Consent purging", notes = "", response = Void.class, tags={ "consent" })
+    @ApiResponses(value = {
+            @ApiResponse(code = 204, message = "Successful operation", response = Void.class),
+            @ApiResponse(code = 404, message = "Invalid consent id", response = Void.class)
+    })
+    public Response consentConsentIdDelete(@PathParam("consentId") @ApiParam("consent id") String consentId,@HeaderParam("OrgInfo")   @ApiParam("jwt header containing tenant related information") String orgInfo,@QueryParam("userId")   String userId) {
+        return Response.ok().entity("magic!").build();
+    }
+
+    @PUT
+    @Path("/{consentId}")
+    @Consumes({ "application/json" })
+    @Produces({ "application/json" })
+    @ApiOperation(value = "Consent amendment", notes = "", response = AmendmentResponse.class, tags={ "consent" })
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Successful operation", response = AmendmentResponse.class),
+            @ApiResponse(code = 400, message = "Invalid request body", response = Void.class)
+    })
+    public Response consentConsentIdPut(@PathParam("consentId") @ApiParam("consent id") String consentId,@Valid @NotNull AmendmentResource amendmentResource,@HeaderParam("OrgInfo")   @ApiParam("jwt header containing tenant related information") String orgInfo) {
+        return Response.ok().entity("magic!").build();
+    }
+
+    @PUT
+    @Path("/{consentId}/status")
+    @Consumes({ "application/json" })
+    @Produces({ "application/json" })
+    @ApiOperation(value = "Consent status update", notes = "", response = String.class, tags={ "consent" })
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Successful operation", response = String.class),
+            @ApiResponse(code = 400, message = "Invalid consent id", response = Void.class)
+    })
+    public Response consentConsentIdStatusPut(@PathParam("consentId") @ApiParam("consent id") String consentId, @Valid @NotNull ConsentStatusUpdateResource consentStatusUpdateResource, @HeaderParam("OrgInfo")   @ApiParam("jwt header containing tenant related information") String orgInfo) {
+        return Response.ok().entity("magic!").build();
+    }
+
+
+
+    @PUT
+    @Path("/status")
+    @Consumes({ "application/json" })
+    @Produces({ "application/json" })
+    @ApiOperation(value = "Bulk consent status change", notes = "", response = String.class, tags={ "consent" })
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Successful operation", response = String.class),
+            @ApiResponse(code = 400, message = "Invalid consent id", response = Void.class)
+    })
+    public Response consentStatusPut(@Valid @NotNull BulkConsentStatusUpdateResource bulkConsentStatusUpdateResource,@HeaderParam("OrgInfo")   @ApiParam("jwt header containing tenant related information") String orgInfo) {
+        return Response.ok().entity("magic!").build();
+    }
+    @GET
+    @Path("/{consentId}/history")
+    @Produces({ "application/json" })
+    @ApiOperation(value = "get consent history", notes = "", response = ConsentHistory.class, responseContainer = "List", tags={ "consent" })
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Successful operation", response = ConsentHistory.class, responseContainer = "List"),
+            @ApiResponse(code = 400, message = "Invalid consent id", response = Void.class)
+    })
+    public Response consentConsentIdHistoryGet(@PathParam("consentId") @ApiParam("consent id") String consentId,@HeaderParam("OrgInfo")   @ApiParam("jwt header containing tenant related information") String orgInfo,@QueryParam("detailed")   Boolean detailed,@QueryParam("status")  @ApiParam("status")  String status,@QueryParam("actionBy")  @ApiParam("actionBy")  String actionBy,@QueryParam("fromTime")  @ApiParam("fromTime")  String fromTime,@QueryParam("toTime")  @ApiParam("toTime")  String toTime,@QueryParam("statusAuditId")  @ApiParam("statusAuditId")  String statusAuditId) {
+        return Response.ok().entity("magic!").build();
     }
 
 

@@ -37,16 +37,22 @@
     </init-param>
     <init-param>
       <param-name>jersey.config.server.provider.classnames</param-name>
-      <param-value>org.glassfish.jersey.media.multipart.MultiPartFeature</param-value>
+      <param-value>org.glassfish.jersey.media.multipart.MultiPartFeature,
+        org.wso2.financial.services.accelerator.consent.mgt.endpoint.exception.ConstraintViolationExceptionMapper</param-value>
     </init-param>
 
 
+    <init-param>
+      <param-name>jaxrs.providers</param-name>
+      <param-value>com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider,org.wso2.financial.services.accelerator.consent.mgt.endpoint.exception.ConstraintViolationExceptionMapper</param-value>
+    </init-param>
     <init-param>
       <param-name>jaxrs.serviceClasses</param-name>
       <param-value>
         org.wso2.financial.services.accelerator.consent.mgt.endpoint.api.ConsentApi
       </param-value>
     </init-param>
+
     <load-on-startup>1</load-on-startup>
 
   </servlet>

@@ -34,5 +34,10 @@
             <bean class="com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider"/>
             <bean class="org.wso2.financial.services.accelerator.consent.mgt.endpoint.error.ConsentThrowableMapper"/>
         </jaxrs:providers>
+        <jaxrs:properties>
+<!--            <entry key="org.apache.cxf.jaxrs.provider.interceptor.ExceptionMapper" value="org.apache.cxf.jaxrs.provider.interceptor.JAXRSDefaultFaultOutInterceptor"/>-->
+
+<!--            <entry key="default.wae.mapper.least.specific" value="true"/>-->
+        </jaxrs:properties>
     </jaxrs:server>
 </beans>

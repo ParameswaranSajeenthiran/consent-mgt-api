@@ -7,11 +7,15 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.wso2.financial.services.accelerator.common.exception.ConsentManagementException;
+import org.wso2.financial.services.accelerator.consent.mgt.dao.models.AuthorizationResource;
 import org.wso2.financial.services.accelerator.consent.mgt.dao.models.ConsentResource;
 import org.wso2.financial.services.accelerator.consent.mgt.dao.models.DetailedConsentResource;
 
 import org.wso2.financial.services.accelerator.consent.mgt.endpoint.constants.ConsentConstant;
+import org.wso2.financial.services.accelerator.consent.mgt.endpoint.dto.AuthResource;
 import org.wso2.financial.services.accelerator.consent.mgt.endpoint.dto.ConsentMgtDTO;
+import org.wso2.financial.services.accelerator.consent.mgt.endpoint.dto.ConsentResourceDTO;
+import org.wso2.financial.services.accelerator.consent.mgt.endpoint.dto.ReauthorizeResource;
 import org.wso2.financial.services.accelerator.consent.mgt.endpoint.exception.ConsentException;
 import org.wso2.financial.services.accelerator.consent.mgt.endpoint.utils.ConsentUtils;
 import org.wso2.financial.services.accelerator.consent.mgt.endpoint.utils.ResponseStatus;
@@ -26,6 +30,7 @@ import java.util.Objects;
  */
 public class ConsentMgtApiHandler {
     private static final Log log = LogFactory.getLog(ConsentMgtApiHandler.class);
+    private ConsentCoreServiceImpl consentCoreService = new ConsentCoreServiceImpl();
 
     public ConsentMgtApiHandler() {
     }
@@ -129,6 +134,43 @@ public class ConsentMgtApiHandler {
         consentAdminData.setResponseStatus(ResponseStatus.OK);
         consentAdminData.setResponsePayload(response);
     }
+
+    public void handleCreateConsent(ConsentResourceDTO consentResourceDTO, String orgInfo, Boolean isImplicitAuth, Boolean ExclusiveConsent) throws ConsentException {
+
+
+
+        //parse consentResource
+        ConsentResource consentResource = new ConsentResource();
+        consentResource.setClientID(consentResourceDTO.getClientId());
+        consentResource.setConsentType(consentResourceDTO.getConsentType());
+        consentResource.setCurrentStatus(consentResourceDTO.getConsentStatus());
+        consentResource.setReceipt(consentResourceDTO.getReceipt().toString());
+        consentResource.setConsentAttributes(consentResourceDTO.getConsentAttributes());
+
+        // parse Authorization objects
+        ArrayList<AuthorizationResource> authorizations = new ArrayList<>();
+        for (AuthResource authResource : consentResourceDTO.getAuthorizations()) {
+            AuthorizationResource auth = new AuthorizationResource();
+            auth.setAuthorizationType(authResource.getAuthType());
+            auth.setAuthorizationStatus(authResource.getAuthStatus());
+            auth.setUserID(authResource.getUserId());
+            authorizations.add(auth);
+        }
+
+
+
+
+
+
+
+//        if (ExclusiveConsent){
+//            consentCoreService.createExclusiveConsent(consentResource, authorizations, orgInfo, isImplicitAuth);
+//
+//        }
+
+    }
+
+
 //
 //
     public void handleGetConsent(ConsentMgtDTO consentMgtDTO) throws ConsentException {
