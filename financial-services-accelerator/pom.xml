@@ -28,6 +28,10 @@
     </parent>
 
     <name>WSO2 Financial Services Accelerator</name>
+    <properties>
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
+    </properties>
     <artifactId>financial-services-accelerator</artifactId>
     <packaging>pom</packaging>
 
