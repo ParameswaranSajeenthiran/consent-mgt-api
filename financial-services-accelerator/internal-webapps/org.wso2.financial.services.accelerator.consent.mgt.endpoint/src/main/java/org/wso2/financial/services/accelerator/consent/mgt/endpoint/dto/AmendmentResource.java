@@ -2,31 +2,31 @@ package org.wso2.financial.services.accelerator.consent.mgt.endpoint.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
-import io.swagger.annotations.*;
 import io.swagger.annotations.ApiModelProperty;
 
 import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 
 
 @JsonTypeName("AmendmentResource")
-@javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaJAXRSSpecServerCodegen", date = "2025-02-26T11:05:28.364708637+05:30[Asia/Colombo]", comments = "Generator version: 7.11.0")
+@javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaJAXRSSpecServerCodegen", date = "2025-02-27T12:52:14.361760449+05:30[Asia/Colombo]", comments = "Generator version: 7.11.0")
 public class AmendmentResource   {
-  private Object receipt;
-  private Integer validityTime;
-  private Object consentAttributes;
-  private @Valid List<@Valid ReauthorizeResource> authorizations = new ArrayList<>();
-  private String consentStatus;
+  private String receipt;
+  private Integer validityPeriod;
+  private Map<String,String> consentAttributes;
+  private @Valid List<@Valid ReauthorizeResource> authorizationResources = new ArrayList<>();
+  private String currentStatus;
 
   public AmendmentResource() {
   }
 
   /**
    **/
-  public AmendmentResource receipt(Object receipt) {
+  public AmendmentResource receipt(String receipt) {
     this.receipt = receipt;
     return this;
   }
@@ -34,37 +34,37 @@ public class AmendmentResource   {
   
   @ApiModelProperty(value = "")
   @JsonProperty("receipt")
-  public Object getReceipt() {
+  public String getReceipt() {
     return receipt;
   }
 
   @JsonProperty("receipt")
-  public void setReceipt(Object receipt) {
+  public void setReceipt(String receipt) {
     this.receipt = receipt;
   }
 
   /**
    **/
-  public AmendmentResource validityTime(Integer validityTime) {
-    this.validityTime = validityTime;
+  public AmendmentResource validityPeriod(Integer validityPeriod) {
+    this.validityPeriod = validityPeriod;
     return this;
   }
 
   
   @ApiModelProperty(example = "3600", value = "")
-  @JsonProperty("validityTime")
-  public Integer getValidityTime() {
-    return validityTime;
+  @JsonProperty("validityPeriod")
+  public Integer getValidityPeriod() {
+    return validityPeriod;
   }
 
-  @JsonProperty("validityTime")
-  public void setValidityTime(Integer validityTime) {
-    this.validityTime = validityTime;
+  @JsonProperty("validityPeriod")
+  public void setValidityPeriod(Integer validityPeriod) {
+    this.validityPeriod = validityPeriod;
   }
 
   /**
    **/
-  public AmendmentResource consentAttributes(Object consentAttributes) {
+  public AmendmentResource consentAttributes(Map<String,String> consentAttributes) {
     this.consentAttributes = consentAttributes;
     return this;
   }
@@ -72,67 +72,67 @@ public class AmendmentResource   {
   
   @ApiModelProperty(example = "{\"key1\":\"value1\"}", value = "")
   @JsonProperty("consentAttributes")
-  public Object getConsentAttributes() {
+  public Map<String, String> getConsentAttributes() {
     return consentAttributes;
   }
 
   @JsonProperty("consentAttributes")
-  public void setConsentAttributes(Object consentAttributes) {
+  public void setConsentAttributes(Map<String,String> consentAttributes) {
     this.consentAttributes = consentAttributes;
   }
 
   /**
    **/
-  public AmendmentResource authorizations(List<@Valid ReauthorizeResource> authorizations) {
-    this.authorizations = authorizations;
+  public AmendmentResource authorizationResources(List<@Valid ReauthorizeResource> authorizationResources) {
+    this.authorizationResources = authorizationResources;
     return this;
   }
 
   
   @ApiModelProperty(value = "")
-  @JsonProperty("authorizations")
-  @Valid public List<@Valid ReauthorizeResource> getAuthorizations() {
-    return authorizations;
+  @JsonProperty("authorizationResources")
+  @Valid public List<@Valid ReauthorizeResource> getAuthorizationResources() {
+    return authorizationResources;
   }
 
-  @JsonProperty("authorizations")
-  public void setAuthorizations(List<@Valid ReauthorizeResource> authorizations) {
-    this.authorizations = authorizations;
+  @JsonProperty("authorizationResources")
+  public void setAuthorizationResources(List<@Valid ReauthorizeResource> authorizationResources) {
+    this.authorizationResources = authorizationResources;
   }
 
-  public AmendmentResource addAuthorizationsItem(ReauthorizeResource authorizationsItem) {
-    if (this.authorizations == null) {
-      this.authorizations = new ArrayList<>();
+  public AmendmentResource addAuthorizationResourcesItem(ReauthorizeResource authorizationResourcesItem) {
+    if (this.authorizationResources == null) {
+      this.authorizationResources = new ArrayList<>();
     }
 
-    this.authorizations.add(authorizationsItem);
+    this.authorizationResources.add(authorizationResourcesItem);
     return this;
   }
 
-  public AmendmentResource removeAuthorizationsItem(ReauthorizeResource authorizationsItem) {
-    if (authorizationsItem != null && this.authorizations != null) {
-      this.authorizations.remove(authorizationsItem);
+  public AmendmentResource removeAuthorizationResourcesItem(ReauthorizeResource authorizationResourcesItem) {
+    if (authorizationResourcesItem != null && this.authorizationResources != null) {
+      this.authorizationResources.remove(authorizationResourcesItem);
     }
 
     return this;
   }
   /**
    **/
-  public AmendmentResource consentStatus(String consentStatus) {
-    this.consentStatus = consentStatus;
+  public AmendmentResource currentStatus(String currentStatus) {
+    this.currentStatus = currentStatus;
     return this;
   }
 
   
   @ApiModelProperty(example = "awaitingAuthorization", value = "")
-  @JsonProperty("consentStatus")
-  public String getConsentStatus() {
-    return consentStatus;
+  @JsonProperty("currentStatus")
+  public String getCurrentStatus() {
+    return currentStatus;
   }
 
-  @JsonProperty("consentStatus")
-  public void setConsentStatus(String consentStatus) {
-    this.consentStatus = consentStatus;
+  @JsonProperty("currentStatus")
+  public void setCurrentStatus(String currentStatus) {
+    this.currentStatus = currentStatus;
   }
 
 
@@ -146,15 +146,15 @@ public class AmendmentResource   {
     }
     AmendmentResource amendmentResource = (AmendmentResource) o;
     return Objects.equals(this.receipt, amendmentResource.receipt) &&
-        Objects.equals(this.validityTime, amendmentResource.validityTime) &&
+        Objects.equals(this.validityPeriod, amendmentResource.validityPeriod) &&
         Objects.equals(this.consentAttributes, amendmentResource.consentAttributes) &&
-        Objects.equals(this.authorizations, amendmentResource.authorizations) &&
-        Objects.equals(this.consentStatus, amendmentResource.consentStatus);
+        Objects.equals(this.authorizationResources, amendmentResource.authorizationResources) &&
+        Objects.equals(this.currentStatus, amendmentResource.currentStatus);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(receipt, validityTime, consentAttributes, authorizations, consentStatus);
+    return Objects.hash(receipt, validityPeriod, consentAttributes, authorizationResources, currentStatus);
   }
 
   @Override
@@ -163,10 +163,10 @@ public class AmendmentResource   {
     sb.append("class AmendmentResource {\n");
     
     sb.append("    receipt: ").append(toIndentedString(receipt)).append("\n");
-    sb.append("    validityTime: ").append(toIndentedString(validityTime)).append("\n");
+    sb.append("    validityPeriod: ").append(toIndentedString(validityPeriod)).append("\n");
     sb.append("    consentAttributes: ").append(toIndentedString(consentAttributes)).append("\n");
-    sb.append("    authorizations: ").append(toIndentedString(authorizations)).append("\n");
-    sb.append("    consentStatus: ").append(toIndentedString(consentStatus)).append("\n");
+    sb.append("    authorizationResources: ").append(toIndentedString(authorizationResources)).append("\n");
+    sb.append("    currentStatus: ").append(toIndentedString(currentStatus)).append("\n");
     sb.append("}");
     return sb.toString();
   }

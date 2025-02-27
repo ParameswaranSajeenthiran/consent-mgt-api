@@ -18,7 +18,7 @@
 
 package org.wso2.financial.services.accelerator.consent.mgt.service;
 
-import org.wso2.financial.services.accelerator.common.exception.ConsentManagementException;
+import org.wso2.financial.services.accelerator.consent.mgt.dao.exceptions.ConsentManagementException;
 import org.wso2.financial.services.accelerator.consent.mgt.dao.models.AuthorizationResource;
 import org.wso2.financial.services.accelerator.consent.mgt.dao.models.ConsentAttributes;
 import org.wso2.financial.services.accelerator.consent.mgt.dao.models.ConsentFile;
@@ -702,6 +702,14 @@ public interface ConsentCoreService {
                                                  String newConsentStatus, Map<String, String> consentAttributes,
                                                  String userID, Map<String, Object> additionalAmendmentData)
             throws ConsentManagementException;
+
+    //
+    DetailedConsentResource amendDetailedConsentWithBulkAuthResource(String consentID, String consentReceipt,
+                                                                     Long consentValidityTime, ArrayList<AuthorizationResource> authorizationResources,
+
+                                                                     String newConsentStatus, Map<String, String> consentAttributes,
+                                                                     String userID, Map<String, Object> additionalAmendmentData)
+                throws ConsentManagementException;
 
 //    /**
 //     * This method is used to amend the selected properties of the entire detailed consent. The consent ID is mandatory.

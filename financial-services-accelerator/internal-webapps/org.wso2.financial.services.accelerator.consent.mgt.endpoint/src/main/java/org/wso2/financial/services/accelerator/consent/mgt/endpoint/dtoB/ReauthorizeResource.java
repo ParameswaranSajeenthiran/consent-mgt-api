@@ -1,4 +1,4 @@
-package org.wso2.financial.services.accelerator.consent.mgt.endpoint.dto;
+package org.wso2.financial.services.accelerator.consent.mgt.endpoint.dtoB;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
@@ -12,12 +12,12 @@ import java.util.Objects;
 
 
 @JsonTypeName("ReauthorizeResource")
-@javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaJAXRSSpecServerCodegen", date = "2025-02-27T12:52:14.361760449+05:30[Asia/Colombo]", comments = "Generator version: 7.11.0")
+@javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaJAXRSSpecServerCodegen", date = "2025-02-26T11:05:28.364708637+05:30[Asia/Colombo]", comments = "Generator version: 7.11.0")
 public class ReauthorizeResource   {
   private String authId;
   private String userId;
-  private String authorizationStatus;
-  private String authorizationType;
+  private String authStatus;
+  private String authType;
   private @Valid List<@Valid Resource> resources = new ArrayList<>();
 
   public ReauthorizeResource() {
@@ -63,40 +63,40 @@ public class ReauthorizeResource   {
 
   /**
    **/
-  public ReauthorizeResource authorizationStatus(String authorizationStatus) {
-    this.authorizationStatus = authorizationStatus;
+  public ReauthorizeResource authStatus(String authStatus) {
+    this.authStatus = authStatus;
     return this;
   }
 
   
   @ApiModelProperty(example = "created", value = "")
-  @JsonProperty("authorizationStatus")
-  public String getAuthorizationStatus() {
-    return authorizationStatus;
+  @JsonProperty("authStatus")
+  public String getAuthStatus() {
+    return authStatus;
   }
 
-  @JsonProperty("authorizationStatus")
-  public void setAuthorizationStatus(String authorizationStatus) {
-    this.authorizationStatus = authorizationStatus;
+  @JsonProperty("authStatus")
+  public void setAuthStatus(String authStatus) {
+    this.authStatus = authStatus;
   }
 
   /**
    **/
-  public ReauthorizeResource authorizationType(String authorizationType) {
-    this.authorizationType = authorizationType;
+  public ReauthorizeResource authType(String authType) {
+    this.authType = authType;
     return this;
   }
 
   
   @ApiModelProperty(example = "authorization", value = "")
-  @JsonProperty("authorizationType")
-  public String getAuthorizationType() {
-    return authorizationType;
+  @JsonProperty("authType")
+  public String getAuthType() {
+    return authType;
   }
 
-  @JsonProperty("authorizationType")
-  public void setAuthorizationType(String authorizationType) {
-    this.authorizationType = authorizationType;
+  @JsonProperty("authType")
+  public void setAuthType(String authType) {
+    this.authType = authType;
   }
 
   /**
@@ -146,14 +146,14 @@ public class ReauthorizeResource   {
     ReauthorizeResource reauthorizeResource = (ReauthorizeResource) o;
     return Objects.equals(this.authId, reauthorizeResource.authId) &&
         Objects.equals(this.userId, reauthorizeResource.userId) &&
-        Objects.equals(this.authorizationStatus, reauthorizeResource.authorizationStatus) &&
-        Objects.equals(this.authorizationType, reauthorizeResource.authorizationType) &&
+        Objects.equals(this.authStatus, reauthorizeResource.authStatus) &&
+        Objects.equals(this.authType, reauthorizeResource.authType) &&
         Objects.equals(this.resources, reauthorizeResource.resources);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(authId, userId, authorizationStatus, authorizationType, resources);
+    return Objects.hash(authId, userId, authStatus, authType, resources);
   }
 
   @Override
@@ -163,8 +163,8 @@ public class ReauthorizeResource   {
     
     sb.append("    authId: ").append(toIndentedString(authId)).append("\n");
     sb.append("    userId: ").append(toIndentedString(userId)).append("\n");
-    sb.append("    authorizationStatus: ").append(toIndentedString(authorizationStatus)).append("\n");
-    sb.append("    authorizationType: ").append(toIndentedString(authorizationType)).append("\n");
+    sb.append("    authStatus: ").append(toIndentedString(authStatus)).append("\n");
+    sb.append("    authType: ").append(toIndentedString(authType)).append("\n");
     sb.append("    resources: ").append(toIndentedString(resources)).append("\n");
     sb.append("}");
     return sb.toString();

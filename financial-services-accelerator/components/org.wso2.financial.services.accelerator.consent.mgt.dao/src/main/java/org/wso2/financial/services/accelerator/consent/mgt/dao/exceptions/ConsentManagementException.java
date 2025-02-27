@@ -16,19 +16,18 @@
  * under the License.
  */
 
-package org.wso2.financial.services.accelerator.common.exception;
+package org.wso2.financial.services.accelerator.consent.mgt.dao.exceptions;
 
 /**
- * Used for exceptions in Financial Services components.
+ * Used for handling exceptions in consent management component.
  */
-public class FinancialServicesException extends Exception {
+public class ConsentManagementException extends Exception {
 
-    public FinancialServicesException(String message) {
+    public ConsentManagementException(String message) {
         super(message);
     }
 
-    public FinancialServicesException(String message, Throwable e) {
+    public ConsentManagementException(String message, Throwable e) {
         super(message, e);
     }
-
 }

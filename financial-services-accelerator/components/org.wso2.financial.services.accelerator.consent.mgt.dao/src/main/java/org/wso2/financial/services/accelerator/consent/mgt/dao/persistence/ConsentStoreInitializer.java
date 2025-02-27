@@ -18,9 +18,8 @@
 
 package  org.wso2.financial.services.accelerator.consent.mgt.dao.persistence;
 
-import org.wso2.financial.services.accelerator.common.exception.ConsentManagementException;
-import org.wso2.financial.services.accelerator.common.persistence.JDBCPersistenceManager;
 import org.wso2.financial.services.accelerator.consent.mgt.dao.ConsentCoreDAO;
+import org.wso2.financial.services.accelerator.consent.mgt.dao.exceptions.ConsentManagementException;
 import org.wso2.financial.services.accelerator.consent.mgt.dao.impl.ConsentCoreDAOImpl;
 import org.wso2.financial.services.accelerator.consent.mgt.dao.impl.MssqlConsentCoreDAOImpl;
 import org.wso2.financial.services.accelerator.consent.mgt.dao.impl.OracleConsentCoreDAOImpl;

@@ -20,8 +20,8 @@ package org.wso2.financial.services.accelerator.consent.mgt.service.util;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.wso2.financial.services.accelerator.common.exception.FinancialServicesRuntimeException;
-import org.wso2.financial.services.accelerator.common.persistence.JDBCPersistenceManager;
+import org.wso2.financial.services.accelerator.consent.mgt.service.exception.FinancialServicesRuntimeException;
+import org.wso2.financial.services.accelerator.consent.mgt.service.persistence.JDBCPersistenceManager;
 
 import java.sql.Connection;
 import java.sql.SQLException;

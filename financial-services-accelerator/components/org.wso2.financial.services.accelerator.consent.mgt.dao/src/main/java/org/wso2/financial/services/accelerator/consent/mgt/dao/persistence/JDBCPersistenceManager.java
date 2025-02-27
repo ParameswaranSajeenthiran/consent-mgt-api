@@ -16,13 +16,13 @@
  * under the License.
  */
 
-package org.wso2.financial.services.accelerator.common.persistence;
+package org.wso2.financial.services.accelerator.consent.mgt.dao.persistence;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.wso2.financial.services.accelerator.common.exception.ConsentManagementRuntimeException;
+import org.wso2.financial.services.accelerator.consent.mgt.dao.exceptions.ConsentManagementRuntimeException;
 
 import java.sql.Connection;
 import java.sql.SQLException;

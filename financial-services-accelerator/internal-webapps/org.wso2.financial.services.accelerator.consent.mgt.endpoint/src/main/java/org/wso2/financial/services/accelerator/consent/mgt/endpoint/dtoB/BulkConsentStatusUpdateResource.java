@@ -1,5 +1,6 @@
-package org.wso2.financial.services.accelerator.consent.mgt.endpoint.dto;
+package org.wso2.financial.services.accelerator.consent.mgt.endpoint.dtoB;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import io.swagger.annotations.ApiModelProperty;
@@ -12,35 +13,52 @@ import java.util.Objects;
 
 
 @JsonTypeName("BulkConsentStatusUpdateResource")
-@javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaJAXRSSpecServerCodegen", date = "2025-02-27T12:52:14.361760449+05:30[Asia/Colombo]", comments = "Generator version: 7.11.0")
+@javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaJAXRSSpecServerCodegen", date = "2025-02-26T11:05:28.364708637+05:30[Asia/Colombo]", comments = "Generator version: 7.11.0")
 public class BulkConsentStatusUpdateResource   {
-  private String clientID;
+  private String clientId;
   private String userId;
   private String consentType;
   private @Valid List<String> applicableStatusesForStateChange = new ArrayList<>();
   private String status;
   private String reason;
 
-  public BulkConsentStatusUpdateResource() {
+  @JsonCreator
+  public BulkConsentStatusUpdateResource(
+
+      @JsonProperty(required = true, value = "clientId")    String clientId,
+        @JsonProperty(required = true, value = "userId")    String userId,
+        @JsonProperty(required = false, value = "consentType")    String consentType,
+        @JsonProperty(required = false, value = "applicableStatusesForStateChange")    List<String> applicableStatusesForStateChange,
+        @JsonProperty(required = true, value = "status")    String status,
+        @JsonProperty(required = true, value = "reason")    String reason
+
+
+  ) {
+    this.clientId = clientId;
+    this.userId = userId;
+    this.consentType = consentType;
+    this.applicableStatusesForStateChange = applicableStatusesForStateChange;
+    this.status = status;
+    this.reason = reason;
   }
 
   /**
    **/
-  public BulkConsentStatusUpdateResource clientID(String clientID) {
-    this.clientID = clientID;
+  public BulkConsentStatusUpdateResource clientId(String clientId) {
+    this.clientId = clientId;
     return this;
   }
 
   
   @ApiModelProperty(example = "TUwYBlObBMmu7zvDnnhs96rZHxka", value = "")
-  @JsonProperty("clientID")
-  public String getClientID() {
-    return clientID;
+  @JsonProperty("clientId")
+  public String getClientId() {
+    return clientId;
   }
 
-  @JsonProperty("clientID")
-  public void setClientID(String clientID) {
-    this.clientID = clientID;
+  @JsonProperty("clientId")
+  public void setClientId(String clientId) {
+    this.clientId = clientId;
   }
 
   /**
@@ -164,7 +182,7 @@ public class BulkConsentStatusUpdateResource   {
       return false;
     }
     BulkConsentStatusUpdateResource bulkConsentStatusUpdateResource = (BulkConsentStatusUpdateResource) o;
-    return Objects.equals(this.clientID, bulkConsentStatusUpdateResource.clientID) &&
+    return Objects.equals(this.clientId, bulkConsentStatusUpdateResource.clientId) &&
         Objects.equals(this.userId, bulkConsentStatusUpdateResource.userId) &&
         Objects.equals(this.consentType, bulkConsentStatusUpdateResource.consentType) &&
         Objects.equals(this.applicableStatusesForStateChange, bulkConsentStatusUpdateResource.applicableStatusesForStateChange) &&
@@ -174,7 +192,7 @@ public class BulkConsentStatusUpdateResource   {
 
   @Override
   public int hashCode() {
-    return Objects.hash(clientID, userId, consentType, applicableStatusesForStateChange, status, reason);
+    return Objects.hash(clientId, userId, consentType, applicableStatusesForStateChange, status, reason);
   }
 
   @Override
@@ -182,7 +200,7 @@ public class BulkConsentStatusUpdateResource   {
     StringBuilder sb = new StringBuilder();
     sb.append("class BulkConsentStatusUpdateResource {\n");
     
-    sb.append("    clientID: ").append(toIndentedString(clientID)).append("\n");
+    sb.append("    clientId: ").append(toIndentedString(clientId)).append("\n");
     sb.append("    userId: ").append(toIndentedString(userId)).append("\n");
     sb.append("    consentType: ").append(toIndentedString(consentType)).append("\n");
     sb.append("    applicableStatusesForStateChange: ").append(toIndentedString(applicableStatusesForStateChange)).append("\n");

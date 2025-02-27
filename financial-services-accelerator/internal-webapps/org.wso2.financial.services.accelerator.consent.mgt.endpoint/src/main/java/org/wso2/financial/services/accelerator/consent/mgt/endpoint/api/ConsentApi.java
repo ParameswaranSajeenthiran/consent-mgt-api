@@ -5,14 +5,18 @@ package org.wso2.financial.services.accelerator.consent.mgt.endpoint.api;
 //import org.json.JSONObject;
 //import org.wso2.financial.services.accelerator.consent.mgt.dao.models.ConsentResource;
 //import org.wso2.financial.services.accelerator.consent.mgt.dao.models.DetailedConsentResource;
-import com.fasterxml.jackson.databind.exc.MismatchedInputException;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
-import org.wso2.financial.services.accelerator.common.exception.ConsentManagementException;
-import org.wso2.financial.services.accelerator.consent.mgt.dao.models.DetailedConsentResource;
+import org.wso2.financial.services.accelerator.consent.mgt.dao.exceptions.ConsentManagementException;
+import org.wso2.financial.services.accelerator.consent.mgt.dao.models.ConsentResource;
+import org.wso2.financial.services.accelerator.consent.mgt.endpoint.dto.AmendmentResource;
+import org.wso2.financial.services.accelerator.consent.mgt.endpoint.dto.AmendmentResponse;
+import org.wso2.financial.services.accelerator.consent.mgt.endpoint.dto.ConsentMgtDTO;
+import org.wso2.financial.services.accelerator.consent.mgt.endpoint.dto.ConsentResponse;
 import org.wso2.financial.services.accelerator.consent.mgt.endpoint.dto.*;
+
 import org.wso2.financial.services.accelerator.consent.mgt.endpoint.exception.ConsentException;
 //import org.wso2.financial.services.accelerator.consent.mgt.endpoint.handler.ConsentMgtApiHandler;
 //import org.wso2.financial.services.accelerator.consent.mgt.endpoint.utils.ConsentUtils;
@@ -144,7 +148,7 @@ public class ConsentApi {
             @ApiResponse(code = 404, message = "Invalid consent id", response = Void.class)
     })
     public Response consentConsentIdDelete(@PathParam("consentId") @ApiParam("consent id") String consentId,@HeaderParam("OrgInfo")   @ApiParam("jwt header containing tenant related information") String orgInfo,@QueryParam("userId")   String userId) {
-        return Response.ok().entity("magic!").build();
+        return Response.ok().entity(consentMgtApiHandler.handleRevokeConsent(consentId, userId)).build();
     }
 
     @PUT
@@ -156,8 +160,12 @@ public class ConsentApi {
             @ApiResponse(code = 200, message = "Successful operation", response = AmendmentResponse.class),
             @ApiResponse(code = 400, message = "Invalid request body", response = Void.class)
     })
-    public Response updateConsent(@PathParam("consentId") @ApiParam("consent id") String consentId,@Valid @NotNull AmendmentResource amendmentResource,@HeaderParam("OrgInfo")   @ApiParam("jwt header containing tenant related information") String orgInfo) {
-        return Response.ok().entity("magic!").build();
+    public Response updateConsent(@PathParam("consentId") @ApiParam("consent id") String consentId, @Valid @NotNull AmendmentResource amendmentResource, @HeaderParam("OrgInfo")   @ApiParam("jwt header containing tenant related information") String orgInfo) {
+        try {
+            return Response.ok().entity(consentMgtApiHandler.amendConsent(consentId, amendmentResource)).build();
+        } catch (ConsentManagementException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @PUT

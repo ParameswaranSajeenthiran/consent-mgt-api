@@ -1,4 +1,4 @@
-package org.wso2.financial.services.accelerator.consent.mgt.endpoint.dto;
+package org.wso2.financial.services.accelerator.consent.mgt.endpoint.dtoB;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -14,10 +14,10 @@ import java.util.Objects;
 
 
 @JsonTypeName("AuthResource")
-@javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaJAXRSSpecServerCodegen", date = "2025-02-27T12:52:14.361760449+05:30[Asia/Colombo]", comments = "Generator version: 7.11.0")
+@javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaJAXRSSpecServerCodegen", date = "2025-02-26T11:05:28.364708637+05:30[Asia/Colombo]", comments = "Generator version: 7.11.0")
 public class AuthResource   {
-  private String authorizationStatus;
-  private String authorizationType;
+  private String authStatus;
+  private String authType;
   private String userId;
   private @Valid List<@Valid ResourcePermission> resources = new ArrayList<>();
 
@@ -26,51 +26,51 @@ public class AuthResource   {
 
   @JsonCreator
   public AuthResource(
-    @JsonProperty(required = true, value = "authorizationStatus") String authorizationStatus,
-    @JsonProperty(required = true, value = "authorizationType") String authorizationType,
+    @JsonProperty(required = true, value = "authStatus") String authStatus,
+    @JsonProperty(required = true, value = "authType") String authType,
     @JsonProperty(required = true, value = "userId") String userId
   ) {
-    this.authorizationStatus = authorizationStatus;
-    this.authorizationType = authorizationType;
+    this.authStatus = authStatus;
+    this.authType = authType;
     this.userId = userId;
   }
 
   /**
    **/
-  public AuthResource authorizationStatus(String authorizationStatus) {
-    this.authorizationStatus = authorizationStatus;
+  public AuthResource authStatus(String authStatus) {
+    this.authStatus = authStatus;
     return this;
   }
 
   
   @ApiModelProperty(example = "created", required = true, value = "")
-  @JsonProperty(required = true, value = "authorizationStatus")
-  @NotNull public String getAuthorizationStatus() {
-    return authorizationStatus;
+  @JsonProperty(required = true, value = "authStatus")
+  @NotNull public String getAuthStatus() {
+    return authStatus;
   }
 
-  @JsonProperty(required = true, value = "authorizationStatus")
-  public void setAuthorizationStatus(String authorizationStatus) {
-    this.authorizationStatus = authorizationStatus;
+  @JsonProperty(required = true, value = "authStatus")
+  public void setAuthStatus(String authStatus) {
+    this.authStatus = authStatus;
   }
 
   /**
    **/
-  public AuthResource authorizationType(String authorizationType) {
-    this.authorizationType = authorizationType;
+  public AuthResource authType(String authType) {
+    this.authType = authType;
     return this;
   }
 
   
   @ApiModelProperty(example = "authorization", required = true, value = "")
-  @JsonProperty(required = true, value = "authorizationType")
-  @NotNull public String getAuthorizationType() {
-    return authorizationType;
+  @JsonProperty(required = true, value = "authType")
+  @NotNull public String getAuthType() {
+    return authType;
   }
 
-  @JsonProperty(required = true, value = "authorizationType")
-  public void setAuthorizationType(String authorizationType) {
-    this.authorizationType = authorizationType;
+  @JsonProperty(required = true, value = "authType")
+  public void setAuthType(String authType) {
+    this.authType = authType;
   }
 
   /**
@@ -137,15 +137,15 @@ public class AuthResource   {
       return false;
     }
     AuthResource authResource = (AuthResource) o;
-    return Objects.equals(this.authorizationStatus, authResource.authorizationStatus) &&
-        Objects.equals(this.authorizationType, authResource.authorizationType) &&
+    return Objects.equals(this.authStatus, authResource.authStatus) &&
+        Objects.equals(this.authType, authResource.authType) &&
         Objects.equals(this.userId, authResource.userId) &&
         Objects.equals(this.resources, authResource.resources);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(authorizationStatus, authorizationType, userId, resources);
+    return Objects.hash(authStatus, authType, userId, resources);
   }
 
   @Override
@@ -153,8 +153,8 @@ public class AuthResource   {
     StringBuilder sb = new StringBuilder();
     sb.append("class AuthResource {\n");
     
-    sb.append("    authorizationStatus: ").append(toIndentedString(authorizationStatus)).append("\n");
-    sb.append("    authorizationType: ").append(toIndentedString(authorizationType)).append("\n");
+    sb.append("    authStatus: ").append(toIndentedString(authStatus)).append("\n");
+    sb.append("    authType: ").append(toIndentedString(authType)).append("\n");
     sb.append("    userId: ").append(toIndentedString(userId)).append("\n");
     sb.append("    resources: ").append(toIndentedString(resources)).append("\n");
     sb.append("}");

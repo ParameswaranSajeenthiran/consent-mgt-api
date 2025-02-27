@@ -1,4 +1,4 @@
-package org.wso2.financial.services.accelerator.consent.mgt.endpoint.dto;
+package org.wso2.financial.services.accelerator.consent.mgt.endpoint.dtoB;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
@@ -9,9 +9,9 @@ import java.util.Objects;
 
 
 @JsonTypeName("ResourcePermission")
-@javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaJAXRSSpecServerCodegen", date = "2025-02-27T12:52:14.361760449+05:30[Asia/Colombo]", comments = "Generator version: 7.11.0")
+@javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaJAXRSSpecServerCodegen", date = "2025-02-26T11:05:28.364708637+05:30[Asia/Colombo]", comments = "Generator version: 7.11.0")
 public class ResourcePermission   {
-  private String accountID;
+  private String accountId;
   private String permission;
   private Object resourceAttributes;
 
@@ -20,21 +20,21 @@ public class ResourcePermission   {
 
   /**
    **/
-  public ResourcePermission accountID(String accountID) {
-    this.accountID = accountID;
+  public ResourcePermission accountId(String accountId) {
+    this.accountId = accountId;
     return this;
   }
 
   
   @ApiModelProperty(example = "account1234", value = "")
-  @JsonProperty("accountID")
-  public String getAccountID() {
-    return accountID;
+  @JsonProperty("accountId")
+  public String getAccountId() {
+    return accountId;
   }
 
-  @JsonProperty("accountID")
-  public void setAccountID(String accountID) {
-    this.accountID = accountID;
+  @JsonProperty("accountId")
+  public void setAccountId(String accountId) {
+    this.accountId = accountId;
   }
 
   /**
@@ -85,14 +85,14 @@ public class ResourcePermission   {
       return false;
     }
     ResourcePermission resourcePermission = (ResourcePermission) o;
-    return Objects.equals(this.accountID, resourcePermission.accountID) &&
+    return Objects.equals(this.accountId, resourcePermission.accountId) &&
         Objects.equals(this.permission, resourcePermission.permission) &&
         Objects.equals(this.resourceAttributes, resourcePermission.resourceAttributes);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(accountID, permission, resourceAttributes);
+    return Objects.hash(accountId, permission, resourceAttributes);
   }
 
   @Override
@@ -100,7 +100,7 @@ public class ResourcePermission   {
     StringBuilder sb = new StringBuilder();
     sb.append("class ResourcePermission {\n");
     
-    sb.append("    accountID: ").append(toIndentedString(accountID)).append("\n");
+    sb.append("    accountId: ").append(toIndentedString(accountId)).append("\n");
     sb.append("    permission: ").append(toIndentedString(permission)).append("\n");
     sb.append("    resourceAttributes: ").append(toIndentedString(resourceAttributes)).append("\n");
     sb.append("}");

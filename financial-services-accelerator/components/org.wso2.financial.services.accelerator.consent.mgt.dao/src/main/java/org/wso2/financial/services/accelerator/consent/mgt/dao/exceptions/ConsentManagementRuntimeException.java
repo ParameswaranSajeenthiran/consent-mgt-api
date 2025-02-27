@@ -16,35 +16,31 @@
  * under the License.
  */
 
-package org.wso2.financial.services.accelerator.common.exception;
+package org.wso2.financial.services.accelerator.consent.mgt.dao.exceptions;
+
 
 /**
- * Used for creating runtime exceptions for financial services modules.
+ * Used for runtime exceptions in consent management component.
  */
-public class FinancialServicesRuntimeException extends RuntimeException {
+public class ConsentManagementRuntimeException extends RuntimeException {
 
     private static final long serialVersionUID = -5686395831712095972L;
     private String errorCode;
 
-    public FinancialServicesRuntimeException(String errorCode, Throwable cause) {
-
+    public ConsentManagementRuntimeException(String errorCode, Throwable cause) {
         super(cause);
         this.errorCode = errorCode;
     }
 
-    public FinancialServicesRuntimeException(String errorCode) {
-        super();
+    public ConsentManagementRuntimeException(String errorCode) {
         this.errorCode = errorCode;
     }
 
     public String getErrorCode() {
-
-        return errorCode;
+        return this.errorCode;
     }
 
     public void setErrorCode(String errorCode) {
-
         this.errorCode = errorCode;
     }
-
 }

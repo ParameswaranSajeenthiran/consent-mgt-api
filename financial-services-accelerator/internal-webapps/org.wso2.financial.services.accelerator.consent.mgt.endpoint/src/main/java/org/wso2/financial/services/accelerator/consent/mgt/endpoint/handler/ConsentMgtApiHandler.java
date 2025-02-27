@@ -6,8 +6,9 @@ import org.apache.commons.logging.LogFactory;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.wso2.financial.services.accelerator.common.exception.ConsentManagementException;
+import org.wso2.financial.services.accelerator.consent.mgt.dao.exceptions.ConsentManagementException;
 import org.wso2.financial.services.accelerator.consent.mgt.dao.models.AuthorizationResource;
+import org.wso2.financial.services.accelerator.consent.mgt.dao.models.ConsentMappingResource;
 import org.wso2.financial.services.accelerator.consent.mgt.dao.models.ConsentResource;
 import org.wso2.financial.services.accelerator.consent.mgt.dao.models.DetailedConsentResource;
 
@@ -19,6 +20,7 @@ import org.wso2.financial.services.accelerator.consent.mgt.endpoint.utils.Respon
 import org.wso2.financial.services.accelerator.consent.mgt.service.impl.ConsentCoreServiceImpl;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
@@ -138,19 +140,19 @@ public class ConsentMgtApiHandler {
 
         //parse consentResource
         ConsentResource consentResource = new ConsentResource();
-        consentResource.setClientID(consentResourceDTO.getClientId());
+        consentResource.setClientID(consentResourceDTO.getClientID());
         consentResource.setConsentType(consentResourceDTO.getConsentType());
-        consentResource.setCurrentStatus(consentResourceDTO.getConsentStatus());
+        consentResource.setCurrentStatus(consentResourceDTO.getCurrentStatus());
         consentResource.setReceipt(consentResourceDTO.getReceipt().toString());
         consentResource.setConsentAttributes(consentResourceDTO.getConsentAttributes());
         consentResource.setRecurringIndicator(consentResourceDTO.getRecurringIndicator());
 
         // parse Authorization objects
         ArrayList<AuthorizationResource> authorizations = new ArrayList<>();
-        for (AuthResource authResource : consentResourceDTO.getAuthorizations()) {
+        for (AuthResource authResource : consentResourceDTO.getAuthorizationResources()) {
             AuthorizationResource auth = new AuthorizationResource();
-            auth.setAuthorizationType(authResource.getAuthType());
-            auth.setAuthorizationStatus(authResource.getAuthStatus());
+            auth.setAuthorizationType(authResource.getAuthorizationType());
+            auth.setAuthorizationStatus(authResource.getAuthorizationStatus());
             auth.setUserID(authResource.getUserId());
             authorizations.add(auth);
         }
@@ -165,26 +167,26 @@ public class ConsentMgtApiHandler {
         // map detailedConsent to consentResponse
         ConsentResponse consentResponse = new ConsentResponse();
         consentResponse.setConsentId(result.getConsentID());
-        consentResponse.setConsentStatus(result.getCurrentStatus());
+        consentResponse.setCurrentStatus(result.getCurrentStatus());
         consentResponse.setConsentType(result.getConsentType());
         consentResponse.setReceipt(result.getReceipt());
         consentResponse.setConsentAttributes(result.getConsentAttributes());
         consentResponse.setCreatedTime((int) result.getCreatedTime());
-        consentResponse.setValidityTime((int) result.getValidityPeriod());
-        consentResponse.setClientId(result.getClientID());
+        consentResponse.setValidityPeriod((int) result.getValidityPeriod());
+        consentResponse.setClientID(result.getClientID());
 //        consentResponse.setAuthorizations(result.getAuthorizationResources());
         // loop throuhg authorizations and map to authResource
         if (isImplicitAuth){
             ArrayList<AuthResponse> authResources = new ArrayList<>();
             for (AuthorizationResource auth : result.getAuthorizationResources()) {
                 AuthResponse authResource = new AuthResponse();
-                authResource.setAuthType(auth.getAuthorizationType());
-                authResource.setAuthStatus(auth.getAuthorizationStatus());
+                authResource.setAuthorizationType(auth.getAuthorizationType());
+                authResource.setAuthorizationStatus(auth.getAuthorizationStatus());
                 authResource.setUserId(auth.getUserID());
                 authResources.add(authResource);
                 authResource.setAuthId(auth.getAuthorizationID());
             }
-            consentResponse.setAuthorizations(authResources);
+            consentResponse.setAuthorizationResources(authResources);
         }
 
         return consentResponse;
@@ -207,23 +209,84 @@ public class ConsentMgtApiHandler {
 
     public String bulkUpdateConsentStatus(BulkConsentStatusUpdateResource bulkConsentStatusUpdateResource) throws ConsentManagementException {
         try{
-            consentCoreService.bulkUpdateConsentStatus(bulkConsentStatusUpdateResource.getClientId(), bulkConsentStatusUpdateResource.getStatus(), bulkConsentStatusUpdateResource.getReason(), bulkConsentStatusUpdateResource.getUserId(), bulkConsentStatusUpdateResource.getConsentType());
+            consentCoreService.bulkUpdateConsentStatus(bulkConsentStatusUpdateResource.getClientID(), bulkConsentStatusUpdateResource.getStatus(), bulkConsentStatusUpdateResource.getReason(), bulkConsentStatusUpdateResource.getUserId(), bulkConsentStatusUpdateResource.getConsentType());
             return "updated";
         }catch (ConsentManagementException e){
             return e.getMessage();
         }
     }
 
-    public AmendmentResponse amendConsent(String consentId, AmendmentResource amendmentResource) throws ConsentManagementException {
+    public DetailedConsentResource amendConsent(String consentId, AmendmentResource amendmentResource) throws ConsentManagementException {
         try{
 
-            DetailedConsentResource result = consentCoreService.amendConsent(consentId, amendmentResource.getAmendmentType(), amendmentResource.getAmendment(), amendmentResource.getAmendmentReason());
-//            AmendmentResponse amendmentResponse = new AmendmentResponse();
-//            amendmentResponse.setAmendmentId(result.getAmendmentID());
-//            amendmentResponse.setAmendmentType(result.getAmendmentType());
-//            amendmentResponse.setAmendment(result.getAmendment());
-//            amendmentResponse.setAmendmentReason(result.getAmendmentReason());
-//            amendmentResponse.setCreatedTime((int) result.getCreatedTime());
+            // get authorization resources without authId
+            Map<String,AuthorizationResource>newAuthorization = new HashMap<>();
+
+            // get authorization resources with authId
+            ArrayList<AuthorizationResource> reAuthorization = new ArrayList<>();
+
+            // get resources without authId
+            Map<String,ArrayList<Resource>> newResources = new HashMap<>();
+
+            // get resources with authId
+            ArrayList<ConsentMappingResource> reResources = new ArrayList<>();
+
+            for (ReauthorizeResource authResource : amendmentResource.getAuthorizationResources()) {
+                if (authResource.getAuthId() != null){
+                    AuthorizationResource auth = new AuthorizationResource();
+                    auth.setAuthorizationID(authResource.getAuthId());
+                    auth.setAuthorizationType(authResource.getAuthorizationType());
+                    auth.setAuthorizationStatus(authResource.getAuthorizationStatus());
+                    auth.setUserID(authResource.getUserId());
+                    reAuthorization.add(auth);
+
+                    for ( Resource resource : authResource.getResources()) {
+                        if (resource.getResourceMappingId() != null) {
+                            ConsentMappingResource res = new ConsentMappingResource();
+                            res.setAccountID(resource.getAccountID());
+                            res.setPermission(resource.getPermission());
+                            res.setMappingID(resource.getResourceMappingId());
+                            res.setMappingStatus(resource.getResourceMappingStatus());
+                            res.setAuthorizationID(authResource.getAuthId());
+                            reResources.add(res);
+
+                        }else{
+                            Resource newRes = new Resource();
+                            newRes.setAccountID(resource.getAccountID());
+                            newRes.setPermission(resource.getPermission());
+                            newRes.setResourceMappingStatus(resource.getResourceMappingStatus());
+                            ///  check if the user already exists
+                            if (!newResources.containsKey(authResource.getUserId())){
+                                newResources.put(authResource.getUserId(),new ArrayList<>());
+                            }else {
+                                newResources.get(authResource.getUserId()).add(newRes);
+                            }
+
+                        }
+                    }
+                }else{
+                    AuthorizationResource auth = new AuthorizationResource();
+                    auth.setAuthorizationType(authResource.getAuthorizationType());
+                    auth.setAuthorizationStatus(authResource.getAuthorizationStatus());
+                    auth.setUserID(authResource.getUserId());
+                    auth.setAuthorizationID(authResource.getAuthId());
+                    auth.setConsentID(consentId);
+                    reAuthorization.add(auth);
+                }
+
+
+            }
+
+            Map<String, Object> newEntities = new HashMap<>();
+            newEntities.put("AdditionalAuthorizationResources",newAuthorization);
+            newEntities.put("AdditionalMappingResources",newResources);
+
+            DetailedConsentResource amendmentResponse = consentCoreService.amendDetailedConsentWithBulkAuthResource(
+                    consentId, amendmentResource.getReceipt().toString(),
+                    Long.valueOf(amendmentResource.getValidityPeriod()),
+                                          reAuthorization,amendmentResource.getCurrentStatus(),
+                    amendmentResource.getConsentAttributes(),amendmentResource.getAuthorizationResources().get(0).getUserId() ,
+                    newEntities);
             return amendmentResponse;
         }catch (ConsentManagementException e){
             return null;
@@ -301,6 +364,8 @@ public class ConsentMgtApiHandler {
         }
 
 
+
+
 //    public void handleUpdateConsentStatus(ConsentMgtDTO consentMgtDTO) {
 //
 //        if (consentMgtDTO.getRequestPath() == null) {
@@ -348,6 +413,16 @@ public class ConsentMgtApiHandler {
 //
 //        }
 //    }
+    }
+
+    public String handleRevokeConsent (String consentId, String userID){
+        try {
+            ConsentResource consentResource = consentCoreService.getConsent(consentId, false);
+            consentCoreService.revokeConsent(consentId, consentResource.getCurrentStatus(), userID, false);
+            return "Revoked";
+        } catch (ConsentManagementException e) {
+            return e.getMessage();
+        }
     }
 
     public void handleUpdateConsentStatus(ConsentMgtDTO consentMgtDTO) {

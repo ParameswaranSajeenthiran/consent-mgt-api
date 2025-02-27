@@ -1,11 +1,12 @@
-package org.wso2.financial.services.accelerator.consent.mgt.endpoint.dto;
+package org.wso2.financial.services.accelerator.consent.mgt.endpoint.dtoB;
 
 
 import org.wso2.financial.services.accelerator.consent.mgt.endpoint.utils.ResponseStatus;
 
+import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.Map;
 
 /**
  * Data wrapper for consent management data.

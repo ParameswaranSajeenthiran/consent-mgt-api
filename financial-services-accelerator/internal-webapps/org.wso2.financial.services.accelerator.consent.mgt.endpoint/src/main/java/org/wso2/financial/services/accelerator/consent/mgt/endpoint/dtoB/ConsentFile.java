@@ -1,4 +1,4 @@
-package org.wso2.financial.services.accelerator.consent.mgt.endpoint.dto;
+package org.wso2.financial.services.accelerator.consent.mgt.endpoint.dtoB;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
@@ -9,11 +9,11 @@ import java.util.Objects;
 
 
 @JsonTypeName("ConsentFile")
-@javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaJAXRSSpecServerCodegen", date = "2025-02-27T12:52:14.361760449+05:30[Asia/Colombo]", comments = "Generator version: 7.11.0")
+@javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaJAXRSSpecServerCodegen", date = "2025-02-26T11:05:28.364708637+05:30[Asia/Colombo]", comments = "Generator version: 7.11.0")
 public class ConsentFile   {
   private String consentId;
   private String consentFile;
-  private String clientID;
+  private String clientId;
   private String userId;
   private String applicableStatus;
 
@@ -60,21 +60,21 @@ public class ConsentFile   {
 
   /**
    **/
-  public ConsentFile clientID(String clientID) {
-    this.clientID = clientID;
+  public ConsentFile clientId(String clientId) {
+    this.clientId = clientId;
     return this;
   }
 
   
   @ApiModelProperty(example = "TUwYBlObBMmu7zvDnnhs96rZHxka", value = "")
-  @JsonProperty("clientID")
-  public String getClientID() {
-    return clientID;
+  @JsonProperty("clientId")
+  public String getClientId() {
+    return clientId;
   }
 
-  @JsonProperty("clientID")
-  public void setClientID(String clientID) {
-    this.clientID = clientID;
+  @JsonProperty("clientId")
+  public void setClientId(String clientId) {
+    this.clientId = clientId;
   }
 
   /**
@@ -127,14 +127,14 @@ public class ConsentFile   {
     ConsentFile consentFile = (ConsentFile) o;
     return Objects.equals(this.consentId, consentFile.consentId) &&
         Objects.equals(this.consentFile, consentFile.consentFile) &&
-        Objects.equals(this.clientID, consentFile.clientID) &&
+        Objects.equals(this.clientId, consentFile.clientId) &&
         Objects.equals(this.userId, consentFile.userId) &&
         Objects.equals(this.applicableStatus, consentFile.applicableStatus);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(consentId, consentFile, clientID, userId, applicableStatus);
+    return Objects.hash(consentId, consentFile, clientId, userId, applicableStatus);
   }
 
   @Override
@@ -144,7 +144,7 @@ public class ConsentFile   {
     
     sb.append("    consentId: ").append(toIndentedString(consentId)).append("\n");
     sb.append("    consentFile: ").append(toIndentedString(consentFile)).append("\n");
-    sb.append("    clientID: ").append(toIndentedString(clientID)).append("\n");
+    sb.append("    clientId: ").append(toIndentedString(clientId)).append("\n");
     sb.append("    userId: ").append(toIndentedString(userId)).append("\n");
     sb.append("    applicableStatus: ").append(toIndentedString(applicableStatus)).append("\n");
     sb.append("}");
