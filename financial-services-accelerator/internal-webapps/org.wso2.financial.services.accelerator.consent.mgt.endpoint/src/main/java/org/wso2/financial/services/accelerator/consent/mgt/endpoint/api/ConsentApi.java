@@ -10,6 +10,8 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import org.wso2.financial.services.accelerator.common.exception.ConsentManagementException;
+import org.wso2.financial.services.accelerator.consent.mgt.dao.models.DetailedConsentResource;
 import org.wso2.financial.services.accelerator.consent.mgt.endpoint.dto.*;
 import org.wso2.financial.services.accelerator.consent.mgt.endpoint.exception.ConsentException;
 //import org.wso2.financial.services.accelerator.consent.mgt.endpoint.handler.ConsentMgtApiHandler;
@@ -46,6 +48,7 @@ import javax.ws.rs.core.UriInfo;
 // Suppressed warning count - 5
 @Path("/")
 public class ConsentApi {
+    ConsentMgtApiHandler consentMgtApiHandler = new ConsentMgtApiHandler();
 
 
 
@@ -53,6 +56,7 @@ public class ConsentApi {
 //    private static final Log log = LogFactory.getLog(ConsentApi.class);
 
     public ConsentApi() {
+
 //        ConsentCoreServiceImpl consentCoreService = new ConsentCoreServiceImpl();
 
     }
@@ -117,14 +121,13 @@ public class ConsentApi {
             @ApiResponse(code = 200, message = "Successful operation", response = ConsentResponse.class),
             @ApiResponse(code = 400, message = "Invalid request body", response = Void.class)
     })
-    public Response consentPost(@Valid @NotNull ConsentResourceDTO consentResource, @HeaderParam("OrgInfo")   @ApiParam("jwt header containing tenant related information") String orgInfo, @HeaderParam("IsImplicitAuth")   @ApiParam("Flag to determine whether authorization is implicit or not") Boolean isImplicitAuth, @HeaderParam("ExclusiveConsent")   @ApiParam("Flag to determine whether this is an exclusive consent") Boolean exclusiveConsent) {
+    public Response consentPost(@Valid @NotNull ConsentResourceDTO consentResource, @HeaderParam("OrgInfo")   @ApiParam("jwt header containing tenant related information") String orgInfo, @QueryParam("IsImplicitAuth")   @ApiParam("Flag to determine whether authorization is implicit or not") boolean isImplicitAuth, @QueryParam("ExclusiveConsent")   @ApiParam("Flag to determine whether this is an exclusive consent") boolean exclusiveConsent) {
         try {
             // Normal processing logic
             ConsentMgtApiHandler consentMgtApiHandler = new ConsentMgtApiHandler();
-            consentMgtApiHandler.handleCreateConsent(consentResource, orgInfo, isImplicitAuth, exclusiveConsent);
+            ConsentResponse consentResponse =consentMgtApiHandler.handleCreateConsent(consentResource, orgInfo, isImplicitAuth, exclusiveConsent);
+            return Response.ok().entity(consentResponse).build();
 
-
-            return Response.ok().entity("magic!").build();
         } catch (Exception e) {
             // Handle other errors
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
@@ -153,7 +156,7 @@ public class ConsentApi {
             @ApiResponse(code = 200, message = "Successful operation", response = AmendmentResponse.class),
             @ApiResponse(code = 400, message = "Invalid request body", response = Void.class)
     })
-    public Response consentConsentIdPut(@PathParam("consentId") @ApiParam("consent id") String consentId,@Valid @NotNull AmendmentResource amendmentResource,@HeaderParam("OrgInfo")   @ApiParam("jwt header containing tenant related information") String orgInfo) {
+    public Response updateConsent(@PathParam("consentId") @ApiParam("consent id") String consentId,@Valid @NotNull AmendmentResource amendmentResource,@HeaderParam("OrgInfo")   @ApiParam("jwt header containing tenant related information") String orgInfo) {
         return Response.ok().entity("magic!").build();
     }
 
@@ -166,8 +169,13 @@ public class ConsentApi {
             @ApiResponse(code = 200, message = "Successful operation", response = String.class),
             @ApiResponse(code = 400, message = "Invalid consent id", response = Void.class)
     })
-    public Response consentConsentIdStatusPut(@PathParam("consentId") @ApiParam("consent id") String consentId, @Valid @NotNull ConsentStatusUpdateResource consentStatusUpdateResource, @HeaderParam("OrgInfo")   @ApiParam("jwt header containing tenant related information") String orgInfo) {
-        return Response.ok().entity("magic!").build();
+    public Response updateConsentStatus(@PathParam("consentId") @ApiParam("consent id") String consentId, @Valid @NotNull ConsentStatusUpdateResource consentStatusUpdateResource, @HeaderParam("OrgInfo")   @ApiParam("jwt header containing tenant related information") String orgInfo) {
+
+        try {
+            return Response.ok().entity(consentMgtApiHandler.updateConsentStatus(consentId, consentStatusUpdateResource)).build();
+        } catch (ConsentManagementException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 
@@ -182,7 +190,11 @@ public class ConsentApi {
             @ApiResponse(code = 400, message = "Invalid consent id", response = Void.class)
     })
     public Response consentStatusPut(@Valid @NotNull BulkConsentStatusUpdateResource bulkConsentStatusUpdateResource,@HeaderParam("OrgInfo")   @ApiParam("jwt header containing tenant related information") String orgInfo) {
-        return Response.ok().entity("magic!").build();
+        try {
+            return Response.ok().entity(consentMgtApiHandler.bulkUpdateConsentStatus(bulkConsentStatusUpdateResource)).build();
+        } catch (ConsentManagementException e) {
+            throw new RuntimeException(e);
+        }
     }
     @GET
     @Path("/{consentId}/history")
@@ -195,6 +207,10 @@ public class ConsentApi {
     public Response consentConsentIdHistoryGet(@PathParam("consentId") @ApiParam("consent id") String consentId,@HeaderParam("OrgInfo")   @ApiParam("jwt header containing tenant related information") String orgInfo,@QueryParam("detailed")   Boolean detailed,@QueryParam("status")  @ApiParam("status")  String status,@QueryParam("actionBy")  @ApiParam("actionBy")  String actionBy,@QueryParam("fromTime")  @ApiParam("fromTime")  String fromTime,@QueryParam("toTime")  @ApiParam("toTime")  String toTime,@QueryParam("statusAuditId")  @ApiParam("statusAuditId")  String statusAuditId) {
         return Response.ok().entity("magic!").build();
     }
+
+
+
+
 
 
 

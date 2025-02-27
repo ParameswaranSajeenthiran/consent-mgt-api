@@ -12,10 +12,7 @@ import org.wso2.financial.services.accelerator.consent.mgt.dao.models.ConsentRes
 import org.wso2.financial.services.accelerator.consent.mgt.dao.models.DetailedConsentResource;
 
 import org.wso2.financial.services.accelerator.consent.mgt.endpoint.constants.ConsentConstant;
-import org.wso2.financial.services.accelerator.consent.mgt.endpoint.dto.AuthResource;
-import org.wso2.financial.services.accelerator.consent.mgt.endpoint.dto.ConsentMgtDTO;
-import org.wso2.financial.services.accelerator.consent.mgt.endpoint.dto.ConsentResourceDTO;
-import org.wso2.financial.services.accelerator.consent.mgt.endpoint.dto.ReauthorizeResource;
+import org.wso2.financial.services.accelerator.consent.mgt.endpoint.dto.*;
 import org.wso2.financial.services.accelerator.consent.mgt.endpoint.exception.ConsentException;
 import org.wso2.financial.services.accelerator.consent.mgt.endpoint.utils.ConsentUtils;
 import org.wso2.financial.services.accelerator.consent.mgt.endpoint.utils.ResponseStatus;
@@ -135,7 +132,7 @@ public class ConsentMgtApiHandler {
         consentAdminData.setResponsePayload(response);
     }
 
-    public void handleCreateConsent(ConsentResourceDTO consentResourceDTO, String orgInfo, Boolean isImplicitAuth, Boolean ExclusiveConsent) throws ConsentException {
+    public ConsentResponse handleCreateConsent(ConsentResourceDTO consentResourceDTO, String orgInfo, boolean isImplicitAuth, boolean ExclusiveConsent) throws ConsentException, ConsentManagementException {
 
 
 
@@ -146,6 +143,7 @@ public class ConsentMgtApiHandler {
         consentResource.setCurrentStatus(consentResourceDTO.getConsentStatus());
         consentResource.setReceipt(consentResourceDTO.getReceipt().toString());
         consentResource.setConsentAttributes(consentResourceDTO.getConsentAttributes());
+        consentResource.setRecurringIndicator(consentResourceDTO.getRecurringIndicator());
 
         // parse Authorization objects
         ArrayList<AuthorizationResource> authorizations = new ArrayList<>();
@@ -159,15 +157,77 @@ public class ConsentMgtApiHandler {
 
 
 
+        DetailedConsentResource result = null;
+        if (!ExclusiveConsent){
+            result=consentCoreService.createAuthorizableConsentWithBulkAuth(consentResource,authorizations,isImplicitAuth);
 
+        }
+        // map detailedConsent to consentResponse
+        ConsentResponse consentResponse = new ConsentResponse();
+        consentResponse.setConsentId(result.getConsentID());
+        consentResponse.setConsentStatus(result.getCurrentStatus());
+        consentResponse.setConsentType(result.getConsentType());
+        consentResponse.setReceipt(result.getReceipt());
+        consentResponse.setConsentAttributes(result.getConsentAttributes());
+        consentResponse.setCreatedTime((int) result.getCreatedTime());
+        consentResponse.setValidityTime((int) result.getValidityPeriod());
+        consentResponse.setClientId(result.getClientID());
+//        consentResponse.setAuthorizations(result.getAuthorizationResources());
+        // loop throuhg authorizations and map to authResource
+        if (isImplicitAuth){
+            ArrayList<AuthResponse> authResources = new ArrayList<>();
+            for (AuthorizationResource auth : result.getAuthorizationResources()) {
+                AuthResponse authResource = new AuthResponse();
+                authResource.setAuthType(auth.getAuthorizationType());
+                authResource.setAuthStatus(auth.getAuthorizationStatus());
+                authResource.setUserId(auth.getUserID());
+                authResources.add(authResource);
+                authResource.setAuthId(auth.getAuthorizationID());
+            }
+            consentResponse.setAuthorizations(authResources);
+        }
 
-
+        return consentResponse;
 
 //        if (ExclusiveConsent){
 //            consentCoreService.createExclusiveConsent(consentResource, authorizations, orgInfo, isImplicitAuth);
 //
 //        }
 
+    }
+
+    public String updateConsentStatus(String consentId, ConsentStatusUpdateResource consentStatusUpdateResource) throws ConsentManagementException {
+        try{
+            consentCoreService.updateConsentStatusWithImplicitReasonAndUserId(consentId, consentStatusUpdateResource.getStatus(), consentStatusUpdateResource.getReason(), consentStatusUpdateResource.getUserId());
+            return "updated";
+        }catch (ConsentManagementException e){
+            return e.getMessage();
+        }
+    }
+
+    public String bulkUpdateConsentStatus(BulkConsentStatusUpdateResource bulkConsentStatusUpdateResource) throws ConsentManagementException {
+        try{
+            consentCoreService.bulkUpdateConsentStatus(bulkConsentStatusUpdateResource.getClientId(), bulkConsentStatusUpdateResource.getStatus(), bulkConsentStatusUpdateResource.getReason(), bulkConsentStatusUpdateResource.getUserId(), bulkConsentStatusUpdateResource.getConsentType());
+            return "updated";
+        }catch (ConsentManagementException e){
+            return e.getMessage();
+        }
+    }
+
+    public AmendmentResponse amendConsent(String consentId, AmendmentResource amendmentResource) throws ConsentManagementException {
+        try{
+
+            DetailedConsentResource result = consentCoreService.amendConsent(consentId, amendmentResource.getAmendmentType(), amendmentResource.getAmendment(), amendmentResource.getAmendmentReason());
+//            AmendmentResponse amendmentResponse = new AmendmentResponse();
+//            amendmentResponse.setAmendmentId(result.getAmendmentID());
+//            amendmentResponse.setAmendmentType(result.getAmendmentType());
+//            amendmentResponse.setAmendment(result.getAmendment());
+//            amendmentResponse.setAmendmentReason(result.getAmendmentReason());
+//            amendmentResponse.setCreatedTime((int) result.getCreatedTime());
+            return amendmentResponse;
+        }catch (ConsentManagementException e){
+            return null;
+        }
     }
 
 

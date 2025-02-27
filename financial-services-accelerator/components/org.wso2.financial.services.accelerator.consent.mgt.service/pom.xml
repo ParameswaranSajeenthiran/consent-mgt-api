@@ -44,6 +44,11 @@
             <artifactId>gson</artifactId>
             <version>2.12.1</version>
         </dependency>
+        <dependency>
+            <groupId>net.minidev</groupId>
+            <artifactId>json-smart</artifactId>
+            <version>${json-smart.version}</version>
+        </dependency>
 
         <dependency>
             <groupId>org.apache.commons</groupId>
@@ -112,6 +117,7 @@
 
     <build>
         <plugins>
+
             <plugin>
                 <groupId>com.github.spotbugs</groupId>
                 <artifactId>spotbugs-maven-plugin</artifactId>

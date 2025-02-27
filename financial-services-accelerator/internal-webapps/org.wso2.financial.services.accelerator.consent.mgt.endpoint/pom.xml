@@ -156,6 +156,11 @@
             <artifactId>cxf-rt-rs-extension-providers</artifactId>
             <version>4.0.3</version>  <!-- Use the correct version for your CXF -->
         </dependency>
+        <dependency>
+            <groupId>net.minidev</groupId>
+            <artifactId>json-smart</artifactId>
+            <version>${json-smart.version}</version>
+        </dependency>
 <!--        <dependency>-->
 <!--            <groupId>org.wso2.carbon.identity.inbound.auth.oauth2</groupId>-->
 <!--            <artifactId>org.wso2.carbon.identity.oauth</artifactId>-->

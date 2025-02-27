@@ -45,11 +45,7 @@ import org.wso2.financial.services.accelerator.consent.mgt.service.constants.Con
 import org.wso2.financial.services.accelerator.consent.mgt.service.util.ConsentCoreServiceUtil;
 
 import java.sql.Connection;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Consent core service implementation.
@@ -58,6 +54,51 @@ public class ConsentCoreServiceImpl implements ConsentCoreService {
 
     private static final Log log = LogFactory.getLog(ConsentCoreServiceImpl.class);
 
+
+    @Override
+    public DetailedConsentResource createAuthorizableConsentWithBulkAuth(ConsentResource consentResource, ArrayList<AuthorizationResource> authorizationResources,
+                                                             boolean isImplicitAuth)
+            throws ConsentManagementException {
+
+        if (StringUtils.isBlank(consentResource.getClientID()) || StringUtils.isBlank(consentResource.getReceipt()) ||
+                StringUtils.isBlank(consentResource.getConsentType()) ||
+                StringUtils.isBlank(consentResource.getCurrentStatus())) {
+
+            log.error(ConsentCoreServiceConstants.CANNOT_PROCEED_WITH_CONSENT_CREATION);
+            throw new ConsentManagementException(ConsentCoreServiceConstants.CANNOT_PROCEED_WITH_CONSENT_CREATION);
+        }
+
+        if (isImplicitAuth) {
+
+            for (AuthorizationResource authorizationResource : authorizationResources){
+                if (StringUtils.isBlank(authorizationResource.getAuthorizationStatus()) || StringUtils.isBlank(authorizationResource.getAuthorizationType())) {
+                    log.error(ConsentCoreServiceConstants.CANNOT_PROCEED_WITH_IMPLICIT_AUTH);
+                    throw new ConsentManagementException(ConsentCoreServiceConstants.CANNOT_PROCEED_WITH_IMPLICIT_AUTH);
+                }
+            }
+
+        }
+
+        Connection connection = DatabaseUtils.getDBConnection();
+
+        try {
+            try {
+                ConsentCoreDAO consentCoreDAO = ConsentStoreInitializer.getInitializedConsentCoreDAOImpl();
+                DetailedConsentResource detailedConsentResource = ConsentCoreServiceUtil
+                        .createAuthorizableConsentWithAuditRecordWithBulkAuthResources(connection, consentCoreDAO, consentResource,
+                                authorizationResources, isImplicitAuth);
+                DatabaseUtils.commitTransaction(connection);
+                return detailedConsentResource;
+            } catch (ConsentDataInsertionException e) {
+                log.error(ConsentCoreServiceConstants.DATA_INSERTION_ROLLBACK_ERROR_MSG, e);
+                DatabaseUtils.rollbackTransaction(connection);
+                throw new ConsentManagementException(ConsentCoreServiceConstants.DATA_INSERTION_ROLLBACK_ERROR_MSG, e);
+            }
+        } finally {
+            log.debug(ConsentCoreServiceConstants.DATABASE_CONNECTION_CLOSE_LOG_MSG);
+            DatabaseUtils.closeConnection(connection);
+        }
+    }
     @Override
     public DetailedConsentResource createAuthorizableConsent(ConsentResource consentResource, String userID,
                                                              String authStatus, String authType,
@@ -723,6 +764,108 @@ public class ConsentCoreServiceImpl implements ConsentCoreService {
             DatabaseUtils.closeConnection(connection);
         }
     }
+
+    @Override
+    public DetailedConsentResource updateConsentStatusWithImplicitReasonAndUserId(String consentId, String newConsentStatus, String reason, String userID)
+            throws ConsentManagementException {
+
+        if (StringUtils.isBlank(consentId) || StringUtils.isBlank(newConsentStatus)) {
+
+            log.error(ConsentCoreServiceConstants.CONSENT_UPDATE_DETAILS_MISSING_ERROR);
+            throw new ConsentManagementException(ConsentCoreServiceConstants.CONSENT_UPDATE_DETAILS_MISSING_ERROR);
+        }
+
+        Connection connection = DatabaseUtils.getDBConnection();
+
+        try {
+            ConsentCoreDAO consentCoreDAO = ConsentStoreInitializer.getInitializedConsentCoreDAOImpl();
+            try {
+                // Get the existing consent to validate status
+                if (log.isDebugEnabled()) {
+                    log.debug(String.format("Retrieving the consent for ID: %s to validate status",
+                            consentId.replaceAll("[\r\n]", "")));
+                }
+
+                // Update consent status with new status
+                if (log.isDebugEnabled()) {
+                    log.debug(String.format("Updating the status of the consent for ID: %s",
+                            consentId.replaceAll("[\r\n]", "")));
+                }
+
+                consentCoreDAO.updateConsentStatus(connection, consentId, newConsentStatus);
+                DetailedConsentResource existingConsentResource = consentCoreDAO
+                        .getDetailedConsentResource(connection, consentId);
+                String existingConsentStatus = existingConsentResource.getCurrentStatus();
+                ArrayList<AuthorizationResource> authResources = existingConsentResource.getAuthorizationResources();
+
+                // Previous consent status is not added in reason because it can be null
+                String auditMessage = "Consent status updated to " + newConsentStatus;
+
+                //TODO: it correct?
+
+                    // Create an audit record execute state change listener
+                    HashMap<String, Object> consentDataMap = new HashMap<>();
+                        consentDataMap.put(ConsentCoreServiceConstants.DETAILED_CONSENT_RESOURCE, existingConsentResource);
+                        ConsentCoreServiceUtil.postStateChange(connection, consentCoreDAO, consentId,
+                                userID, newConsentStatus, existingConsentStatus, reason,
+                                existingConsentResource.getClientID(), consentDataMap);
+
+
+
+
+                // Commit transaction
+                DatabaseUtils.commitTransaction(connection);
+                log.debug(ConsentCoreServiceConstants.TRANSACTION_COMMITTED_LOG_MSG);
+
+                return existingConsentResource;
+            } catch (ConsentDataRetrievalException e) {
+                log.error(ConsentCoreServiceConstants.DATA_RETRIEVE_ERROR_MSG, e);
+                throw new ConsentManagementException(ConsentCoreServiceConstants.DATA_RETRIEVE_ERROR_MSG, e);
+            } catch (ConsentDataInsertionException e) {
+                log.error(ConsentCoreServiceConstants.DATA_INSERTION_ROLLBACK_ERROR_MSG, e);
+                DatabaseUtils.rollbackTransaction(connection);
+                throw new ConsentManagementException(ConsentCoreServiceConstants.DATA_INSERTION_ROLLBACK_ERROR_MSG, e);
+            } catch (ConsentDataUpdationException e) {
+                log.error(ConsentCoreServiceConstants.DATA_UPDATE_ROLLBACK_ERROR_MSG, e);
+                DatabaseUtils.rollbackTransaction(connection);
+                throw new ConsentManagementException(ConsentCoreServiceConstants.DATA_UPDATE_ROLLBACK_ERROR_MSG, e);
+            }
+        } finally {
+            log.debug(ConsentCoreServiceConstants.DATABASE_CONNECTION_CLOSE_LOG_MSG);
+            DatabaseUtils.closeConnection(connection);
+        }
+    }
+
+    @Override
+    public void bulkUpdateConsentStatus(String clientId, String status, String reason, String userId, String consentType) throws ConsentManagementException {
+
+
+        ArrayList<String> clientIds = new ArrayList<>();
+        clientIds.add(clientId);
+        ArrayList<String> userIds = new ArrayList<>();
+        userIds.add(userId);
+
+
+        ArrayList<String> consentTypes = new ArrayList<>();
+
+        if (consentType != null) {
+            consentTypes.add(consentType);
+        }
+
+
+        // get consents by client id and update status
+        searchDetailedConsents(null,  clientIds,consentTypes,null, userIds, null, null, null, null).forEach(consent -> {
+            try {
+                updateConsentStatusWithImplicitReasonAndUserId(consent.getConsentID(), status, reason, userId);
+            } catch (ConsentManagementException e) {
+                log.error("Error while updating consent status for consent id: " + consent.getConsentID(), e);
+            }
+        });
+
+
+    }
+
+
 
     @Override
     public ArrayList<ConsentMappingResource> createConsentAccountMappings(String authID, Map<String,
@@ -1798,7 +1941,7 @@ public class ConsentCoreServiceImpl implements ConsentCoreService {
     @Override
     public DetailedConsentResource amendDetailedConsent(String consentID, String consentReceipt,
                                                         Long consentValidityTime, String authID,
-                                                        Map<String, ArrayList<String>> accountIDsMapWithPermissions,
+                                                        Map<String,ArrayList<String>> accountIDsMapWithPermissions,
                                                         String newConsentStatus, Map<String, String> consentAttributes,
                                                         String userID, Map<String, Object> additionalAmendmentData)
             throws ConsentManagementException {
@@ -1890,4 +2033,102 @@ public class ConsentCoreServiceImpl implements ConsentCoreService {
             DatabaseUtils.closeConnection(connection);
         }
     }
+
+//
+//    @Override
+//    public DetailedConsentResource amendDetailedConsentWithBulkAuthResource(String consentID, String consentReceipt,
+//                                                        Long consentValidityTime, ArrayList<AuthorizationResource> authorizationResources,
+//                                                                            Map<String,Map<String, ArrayList<String>>>
+//                                                                                        accountIDsMapWithPermissionsForEachAuthResource,
+//                                                        String newConsentStatus, Map<String, String> consentAttributes,
+//                                                        String userID, Map<String, Object> additionalAmendmentData)
+//            throws ConsentManagementException {
+//
+//        if (StringUtils.isBlank(consentID) ||
+//                (StringUtils.isBlank(consentReceipt) && (consentValidityTime == null))) {
+//            log.error(ConsentCoreServiceConstants.CONSENT_DATA_MISSING_ERROR_MSG);
+//            throw new ConsentManagementException(ConsentCoreServiceConstants.CONSENT_DATA_MISSING_ERROR_MSG);
+//        }
+//
+//        if (StringUtils.isBlank(authID) || StringUtils.isBlank(userID)
+//                || MapUtils.isEmpty(accountIDsMapWithPermissions) || StringUtils.isBlank(newConsentStatus)
+//                || consentAttributes == null) {
+//            log.error(ConsentCoreServiceConstants.DETAILED_CONSENT_DATA_MISSING_ERROR_MSG);
+//            throw new ConsentManagementException(ConsentCoreServiceConstants.DETAILED_CONSENT_DATA_MISSING_ERROR_MSG);
+//        }
+//
+//        Connection connection = DatabaseUtils.getDBConnection();
+//        try {
+//            ConsentCoreDAO consentCoreDAO = ConsentStoreInitializer.getInitializedConsentCoreDAOImpl();
+//            // Retrieve the current detailed consent before the amendment for the consent amendment history persistence
+//            DetailedConsentResource detailedConsentResource =
+//                    consentCoreDAO.getDetailedConsentResource(connection, consentID);
+//
+//            // Update receipt and validity time
+//            if (StringUtils.isNotBlank(consentReceipt)) {
+//                consentCoreDAO.updateConsentReceipt(connection, consentID, consentReceipt);
+//            }
+//            if (consentValidityTime != null) {
+//                consentCoreDAO.updateConsentValidityTime(connection, consentID, consentValidityTime);
+//            }
+//
+//            // Update consent status and record the updated time
+//            consentCoreDAO.updateConsentStatus(connection, consentID, newConsentStatus);
+//
+//            // Update accounts if required
+//            ConsentCoreServiceUtil.updateAccounts(connection, consentCoreDAO, authID, accountIDsMapWithPermissions,
+//                    detailedConsentResource, false);
+//
+//            // Update consent attributes
+//            ConsentCoreServiceUtil.updateConsentAttributes(connection, consentCoreDAO, consentID, consentAttributes);
+//
+//            // Update consent accordingly if additional amendment data passed
+//            if (!additionalAmendmentData.isEmpty()) {
+//                ConsentCoreServiceUtil.processAdditionalConsentAmendmentData(connection, consentCoreDAO,
+//                        additionalAmendmentData);
+//            }
+//
+//            // Get detailed consent status after update
+//            DetailedConsentResource newDetailedConsentResource =
+//                    consentCoreDAO.getDetailedConsentResource(connection, consentID);
+//
+//            /* Even if the consent is amended, the status remains same as Authorized. For tracking purposes, an
+//                 audit record is created as the consent status of "amended". But still the real consent status will
+//                 remain as it is */
+//            HashMap<String, Object> consentDataMap = new HashMap<>();
+//            consentDataMap.put(ConsentCoreServiceConstants.DETAILED_CONSENT_RESOURCE, newDetailedConsentResource);
+//
+//            // Pass the previous consent to persist as consent amendment history
+//            consentDataMap.put(ConsentCoreServiceConstants.CONSENT_AMENDMENT_HISTORY_RESOURCE, detailedConsentResource);
+//            consentDataMap.put(ConsentCoreServiceConstants.CONSENT_AMENDMENT_TIME, System.currentTimeMillis());
+//
+//            ConsentCoreServiceUtil.postStateChange(connection, consentCoreDAO, consentID, userID,
+//                    ConsentCoreServiceConstants.CONSENT_AMENDED_STATUS, detailedConsentResource.getCurrentStatus(),
+//                    ConsentCoreServiceConstants.CONSENT_AMEND_REASON, detailedConsentResource.getClientID(),
+//                    consentDataMap);
+//
+//            // Commit transactions
+//            DatabaseUtils.commitTransaction(connection);
+//            log.debug(ConsentCoreServiceConstants.TRANSACTION_COMMITTED_LOG_MSG);
+//            return newDetailedConsentResource;
+//        } catch (ConsentDataRetrievalException e) {
+//            log.error(ConsentCoreServiceConstants.DATA_RETRIEVE_ERROR_MSG, e);
+//            throw new ConsentManagementException(ConsentCoreServiceConstants.DATA_RETRIEVE_ERROR_MSG, e);
+//        } catch (ConsentDataInsertionException e) {
+//            log.error(ConsentCoreServiceConstants.DATA_INSERTION_ROLLBACK_ERROR_MSG, e);
+//            DatabaseUtils.rollbackTransaction(connection);
+//            throw new ConsentManagementException(ConsentCoreServiceConstants.DATA_INSERTION_ROLLBACK_ERROR_MSG, e);
+//        } catch (ConsentDataUpdationException e) {
+//            log.error(ConsentCoreServiceConstants.DATA_UPDATE_ROLLBACK_ERROR_MSG, e);
+//            DatabaseUtils.rollbackTransaction(connection);
+//            throw new ConsentManagementException(ConsentCoreServiceConstants.DATA_UPDATE_ROLLBACK_ERROR_MSG, e);
+//        } catch (ConsentDataDeletionException e) {
+//            log.error(ConsentCoreServiceConstants.DATA_DELETE_ROLLBACK_ERROR_MSG, e);
+//            DatabaseUtils.rollbackTransaction(connection);
+//            throw new ConsentManagementException(ConsentCoreServiceConstants.CONSENT_ATTRIBUTES_DELETE_ERROR_MSG);
+//        } finally {
+//            log.debug(ConsentCoreServiceConstants.DATABASE_CONNECTION_CLOSE_LOG_MSG);
+//            DatabaseUtils.closeConnection(connection);
+//        }
+//    }
 }

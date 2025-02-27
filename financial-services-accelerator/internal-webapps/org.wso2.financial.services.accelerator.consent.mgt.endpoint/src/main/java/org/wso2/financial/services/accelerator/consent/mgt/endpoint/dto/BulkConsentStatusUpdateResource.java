@@ -1,5 +1,6 @@
 package org.wso2.financial.services.accelerator.consent.mgt.endpoint.dto;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import io.swagger.annotations.*;
@@ -22,7 +23,24 @@ public class BulkConsentStatusUpdateResource   {
   private String status;
   private String reason;
 
-  public BulkConsentStatusUpdateResource() {
+  @JsonCreator
+  public BulkConsentStatusUpdateResource(
+
+      @JsonProperty(required = true, value = "clientId")    String clientId,
+        @JsonProperty(required = true, value = "userId")    String userId,
+        @JsonProperty(required = false, value = "consentType")    String consentType,
+        @JsonProperty(required = false, value = "applicableStatusesForStateChange")    List<String> applicableStatusesForStateChange,
+        @JsonProperty(required = true, value = "status")    String status,
+        @JsonProperty(required = true, value = "reason")    String reason
+
+
+  ) {
+    this.clientId = clientId;
+    this.userId = userId;
+    this.consentType = consentType;
+    this.applicableStatusesForStateChange = applicableStatusesForStateChange;
+    this.status = status;
+    this.reason = reason;
   }
 
   /**

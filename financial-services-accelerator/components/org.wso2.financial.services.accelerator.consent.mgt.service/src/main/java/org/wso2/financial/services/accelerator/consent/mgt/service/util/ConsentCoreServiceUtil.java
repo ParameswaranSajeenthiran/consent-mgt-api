@@ -56,6 +56,96 @@ public class ConsentCoreServiceUtil {
 
     private static final Log log = LogFactory.getLog(ConsentCoreServiceUtil.class);
 
+
+    /**
+     * Create an authorizable consent with audit record.
+     *
+     * @param connection               Database connection
+     * @param consentCoreDAO           Consent core DAO
+     * @param consentResource          Consent resource
+     * @param authorizationResources  auth resources
+     * @param isImplicitAuthorization  Is implicit authorization
+     * @return DetailedConsentResource
+     * @throws ConsentDataInsertionException Consent data insertion exception
+     * @throws ConsentManagementException Consent management exception
+     */
+    public static DetailedConsentResource createAuthorizableConsentWithAuditRecordWithBulkAuthResources(Connection connection,
+                                                                                                        ConsentCoreDAO consentCoreDAO,
+                                                                                                        ConsentResource consentResource,
+                                                                                                        List<AuthorizationResource> authorizationResources,
+                                                                                                        boolean isImplicitAuthorization)
+            throws ConsentDataInsertionException, ConsentManagementException {
+
+        boolean isConsentAttributesStored = false;
+        AuthorizationResource storedAuthorizationResource = null;
+
+        // Create consent
+        if (log.isDebugEnabled()) {
+            log.debug(("Creating the consent for ID:" + consentResource.getConsentID())
+                    .replaceAll("[\r\n]", ""));
+        }
+        ConsentResource storedConsentResource = consentCoreDAO.storeConsentResource(connection, consentResource);
+        String consentID = storedConsentResource.getConsentID();
+
+        // Store consent attributes if available
+        if (MapUtils.isNotEmpty(consentResource.getConsentAttributes())) {
+            ConsentAttributes consentAttributes = new ConsentAttributes(consentID,
+                    consentResource.getConsentAttributes());
+
+            if (log.isDebugEnabled()) {
+                log.debug(String.format("Storing consent attributes for the consent of ID: %s", consentAttributes
+                        .getConsentID().replaceAll("[\r\n]", "")));
+            }
+            isConsentAttributesStored = consentCoreDAO.storeConsentAttributes(connection, consentAttributes);
+        }
+
+        /* Create audit record, setting previous consent status as null since this is the first time the
+           consent is created and execute state change listener */
+        HashMap<String, Object> consentDataMap = new HashMap<>();
+        consentDataMap.put(ConsentCoreServiceConstants.CONSENT_RESOURCE, consentResource);
+        //TODO: authorizationResources.get(0).getUserID()
+        postStateChange(connection, consentCoreDAO, consentID, authorizationResources.get(0).getUserID(), consentResource.getCurrentStatus(),
+                null, ConsentCoreServiceConstants.CREATE_CONSENT_REASON,
+                consentResource.getClientID(), consentDataMap);
+
+        ArrayList<AuthorizationResource> storedAuthorizationResources = new ArrayList<>();
+        // Create an authorization resource if isImplicitAuth parameter is true
+        if (isImplicitAuthorization) {
+            /* Setting userID as null since at this point, there is no userID in this flow. User ID can be
+                   updated in authorization flow */
+
+            // loop through authorizationResources
+            for (AuthorizationResource authorizationResource : authorizationResources){
+                authorizationResource.setUpdatedTime(System.currentTimeMillis());
+                authorizationResource.setConsentID(consentID);
+
+
+                if (log.isDebugEnabled()) {
+                    log.debug(("Storing authorization resource for consent of ID: " + authorizationResource
+                            .getConsentID()).replaceAll("[\r\n]", ""));
+                }
+
+                storedAuthorizationResource = consentCoreDAO.storeAuthorizationResource(connection, authorizationResource);
+                storedAuthorizationResources.add(storedAuthorizationResource);
+
+            }
+        }
+
+        DetailedConsentResource detailedConsentResource = new DetailedConsentResource(consentID,
+                storedConsentResource.getClientID(), storedConsentResource.getReceipt(),
+                storedConsentResource.getConsentType(), storedConsentResource.getCurrentStatus(),
+                storedConsentResource.getConsentFrequency(), storedConsentResource.getValidityPeriod(),
+                storedConsentResource.getCreatedTime(), storedConsentResource.getUpdatedTime(),
+                storedConsentResource.isRecurringIndicator(), null, null, null);
+
+        if (isConsentAttributesStored) {
+            detailedConsentResource.setConsentAttributes(consentResource.getConsentAttributes());
+        }
+        if (isImplicitAuthorization) {
+            detailedConsentResource.setAuthorizationResources(storedAuthorizationResources);
+        }
+        return detailedConsentResource;
+    }
     /**
      * Create an authorizable consent with audit record.
      *

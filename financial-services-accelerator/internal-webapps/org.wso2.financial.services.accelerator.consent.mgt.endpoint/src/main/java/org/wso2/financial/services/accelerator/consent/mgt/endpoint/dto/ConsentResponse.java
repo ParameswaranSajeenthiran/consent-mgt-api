@@ -25,7 +25,7 @@ public class ConsentResponse   {
   private Integer validityTime;
   private Boolean recurringIndicator;
   private Object consentAttributes;
-  private @Valid List<@Valid AuthResponse> authorizations = new ArrayList<>();
+  private  List< AuthResponse> authorizations = new ArrayList<>();
   private Integer createdTime;
   private Integer updatedTime;
 
