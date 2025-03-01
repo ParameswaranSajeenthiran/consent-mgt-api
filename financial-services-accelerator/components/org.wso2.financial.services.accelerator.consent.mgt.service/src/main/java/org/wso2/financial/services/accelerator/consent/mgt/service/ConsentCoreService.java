@@ -69,7 +69,10 @@ public interface ConsentCoreService {
      * @return returns DetailedConsentResource
      * @throws ConsentManagementException thrown if any error occur in the process
      */
-    DetailedConsentResource createAuthorizableConsentWithBulkAuth(ConsentResource consentResource, ArrayList<AuthorizationResource> authorizationResources, boolean isImplicitAuth)
+    DetailedConsentResource createAuthorizableConsentWithBulkAuth(ConsentResource consentResource,
+                                                                  ArrayList<AuthorizationResource>
+                                                                          authorizationResources,
+                                                                  boolean isImplicitAuth)
             throws ConsentManagementException;
 
     /**
@@ -280,7 +283,9 @@ public interface ConsentCoreService {
      * @return the updated consent resource
      * @throws ConsentManagementException thrown if any error occurs in the process
      */
-    DetailedConsentResource updateConsentStatusWithImplicitReasonAndUserId(String consentId, String newConsentStatus, String userId, String reason)
+    DetailedConsentResource updateConsentStatusWithImplicitReasonAndUserId(String consentId,
+                                                                           String newConsentStatus, String userId,
+                                                                           String reason)
             throws ConsentManagementException;
 
     /**
@@ -290,7 +295,8 @@ public interface ConsentCoreService {
      * @param reason
      * @param userId
      */
-    void bulkUpdateConsentStatus(String clientId, String status, String reason, String userId, String consentType) throws ConsentManagementException;
+    void bulkUpdateConsentStatus(String clientId, String status, String reason, String userId, String consentType)
+            throws ConsentManagementException;
 
 
     /**
@@ -705,38 +711,15 @@ public interface ConsentCoreService {
 
     //
     DetailedConsentResource amendDetailedConsentWithBulkAuthResource(String consentID, String consentReceipt,
-                                                                     Long consentValidityTime, ArrayList<AuthorizationResource> authorizationResources,
+                                                                     Long consentValidityTime,
+                                                                     ArrayList<AuthorizationResource>
+                                                                             authorizationResources,
 
-                                                                     String newConsentStatus, Map<String, String> consentAttributes,
-                                                                     String userID, Map<String, Object> additionalAmendmentData)
+                                                                     String newConsentStatus,
+                                                                     Map<String, String> consentAttributes,
+                                                                     String userID,
+                                                                     Map<String, Object> additionalAmendmentData)
                 throws ConsentManagementException;
 
-//    /**
-//     * This method is used to amend the selected properties of the entire detailed consent. The consent ID is mandatory.
-//     * One of consent receipt or validity period must be provided.
-//     * An audit record is created to indicate that the consent is
-//     * amended. But the consent status won't be changed (since when an authorized consent is amended, the status
-//     * remains the same)
-//     *
-//     * @param consentID                     consent ID
-//     * @param consentReceipt                new consent receipt
-//     * @param consentValidityTime           new consent validity time
-//     * @param authorizationResources        authorization resources
-//     * @param accountIDsMapWithPermissionsForEachAuthResource  accounts IDs with relative permissions
-//     * @param newConsentStatus              new consent status
-//     * @param consentAttributes             new consent attributes key and values map
-//     * @param userID                        user ID to create audit record
-//     * @param additionalAmendmentData       A Data Map to pass any additional data that needs to be amended in the
-//     *                                     consent
-//     * @return the updated detailed consent resource
-//     * @throws ConsentManagementException thrown if any error occurs in the process
-//     */
-//    public DetailedConsentResource amendDetailedConsentWithBulkAuthResource(String consentID, String consentReceipt,
-//                                                                            Long consentValidityTime, ArrayList<AuthorizationResource> authorizationResources,
-//                                                                            Map<String,Map<String, ArrayList<String>>>
-//                                                                                    accountIDsMapWithPermissionsForEachAuthResource,
-//                                                                            String newConsentStatus, Map<String, String> consentAttributes,
-//                                                                            String userID, Map<String, Object> additionalAmendmentData)
-//            throws ConsentManagementException;
 
 }

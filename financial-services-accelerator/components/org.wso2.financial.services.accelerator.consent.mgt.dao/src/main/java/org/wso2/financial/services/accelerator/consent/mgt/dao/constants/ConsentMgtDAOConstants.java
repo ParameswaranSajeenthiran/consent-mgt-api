@@ -18,8 +18,9 @@
 
 package org.wso2.financial.services.accelerator.consent.mgt.dao.constants;
 
-import java.util.Map;
 import java.util.HashMap;
+import java.util.Map;
+
 
 
 /**

@@ -24,8 +24,8 @@
          http://cxf.apache.org/jaxrs http://cxf.apache.org/schemas/jaxrs.xsd">
 
     <import resource="classpath:META-INF/cxf/cxf.xml"/>
-    <bean class="org.springframework.context.support.PropertySourcesPlaceholderConfigurer"/>
-    <bean class="org.springframework.beans.factory.config.PreferencesPlaceholderConfigurer"/>
+<!--    <bean class="org.springframework.context.support.PropertySourcesPlaceholderConfigurer"/>-->
+<!--    <bean class="org.springframework.beans.factory.config.PreferencesPlaceholderConfigurer"/>-->
 
     <jaxrs:server id="accountservice" address="/accounts">
         <jaxrs:serviceBeans>
