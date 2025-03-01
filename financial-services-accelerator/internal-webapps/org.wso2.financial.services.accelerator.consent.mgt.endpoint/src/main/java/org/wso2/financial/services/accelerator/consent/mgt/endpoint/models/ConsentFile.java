@@ -1,0 +1,174 @@
+package org.wso2.financial.services.accelerator.consent.mgt.endpoint.models;
+
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+import java.io.Serializable;
+import javax.validation.constraints.*;
+import javax.validation.Valid;
+
+import io.swagger.annotations.*;
+import java.util.Objects;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
+import com.fasterxml.jackson.annotation.JsonTypeName;
+
+
+
+@JsonTypeName("ConsentFile")
+@javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaJAXRSSpecServerCodegen", date = "2025-03-01T15:45:20.830641389+05:30[Asia/Colombo]", comments = "Generator version: 7.12.0")
+public class ConsentFile  implements Serializable {
+  private String consentId;
+  private String consentFile;
+  private String clientID;
+  private String userId;
+  private String applicableStatus;
+
+  public ConsentFile() {
+  }
+
+  /**
+   **/
+  public ConsentFile consentId(String consentId) {
+    this.consentId = consentId;
+    return this;
+  }
+
+  
+  @ApiModelProperty(example = "604d9278-4c3b-45d5-b3bb-1e428acdf1ec", value = "")
+  @JsonProperty("consentId")
+  public String getConsentId() {
+    return consentId;
+  }
+
+  @JsonProperty("consentId")
+  public void setConsentId(String consentId) {
+    this.consentId = consentId;
+  }
+
+  /**
+   **/
+  public ConsentFile consentFile(String consentFile) {
+    this.consentFile = consentFile;
+    return this;
+  }
+
+  
+  @ApiModelProperty(value = "")
+  @JsonProperty("consentFile")
+  public String getConsentFile() {
+    return consentFile;
+  }
+
+  @JsonProperty("consentFile")
+  public void setConsentFile(String consentFile) {
+    this.consentFile = consentFile;
+  }
+
+  /**
+   **/
+  public ConsentFile clientID(String clientID) {
+    this.clientID = clientID;
+    return this;
+  }
+
+  
+  @ApiModelProperty(example = "TUwYBlObBMmu7zvDnnhs96rZHxka", value = "")
+  @JsonProperty("clientID")
+  public String getClientID() {
+    return clientID;
+  }
+
+  @JsonProperty("clientID")
+  public void setClientID(String clientID) {
+    this.clientID = clientID;
+  }
+
+  /**
+   **/
+  public ConsentFile userId(String userId) {
+    this.userId = userId;
+    return this;
+  }
+
+  
+  @ApiModelProperty(example = "psu@wso2.com", value = "")
+  @JsonProperty("userId")
+  public String getUserId() {
+    return userId;
+  }
+
+  @JsonProperty("userId")
+  public void setUserId(String userId) {
+    this.userId = userId;
+  }
+
+  /**
+   **/
+  public ConsentFile applicableStatus(String applicableStatus) {
+    this.applicableStatus = applicableStatus;
+    return this;
+  }
+
+  
+  @ApiModelProperty(example = "awaitingAuthorization", value = "")
+  @JsonProperty("applicableStatus")
+  public String getApplicableStatus() {
+    return applicableStatus;
+  }
+
+  @JsonProperty("applicableStatus")
+  public void setApplicableStatus(String applicableStatus) {
+    this.applicableStatus = applicableStatus;
+  }
+
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    ConsentFile consentFile = (ConsentFile) o;
+    return Objects.equals(this.consentId, consentFile.consentId) &&
+        Objects.equals(this.consentFile, consentFile.consentFile) &&
+        Objects.equals(this.clientID, consentFile.clientID) &&
+        Objects.equals(this.userId, consentFile.userId) &&
+        Objects.equals(this.applicableStatus, consentFile.applicableStatus);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(consentId, consentFile, clientID, userId, applicableStatus);
+  }
+
+  @Override
+  public String toString() {
+    StringBuilder sb = new StringBuilder();
+    sb.append("class ConsentFile {\n");
+    
+    sb.append("    consentId: ").append(toIndentedString(consentId)).append("\n");
+    sb.append("    consentFile: ").append(toIndentedString(consentFile)).append("\n");
+    sb.append("    clientID: ").append(toIndentedString(clientID)).append("\n");
+    sb.append("    userId: ").append(toIndentedString(userId)).append("\n");
+    sb.append("    applicableStatus: ").append(toIndentedString(applicableStatus)).append("\n");
+    sb.append("}");
+    return sb.toString();
+  }
+
+  /**
+   * Convert the given object to string with each line indented by 4 spaces
+   * (except the first line).
+   */
+  private String toIndentedString(Object o) {
+    if (o == null) {
+      return "null";
+    }
+    return o.toString().replace("\n", "\n    ");
+  }
+
+
+}
+
