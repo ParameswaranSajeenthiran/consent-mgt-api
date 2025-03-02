@@ -1,6 +1,5 @@
 package org.wso2.financial.services.accelerator.consent.mgt.endpoint.handler;
 
-
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -12,9 +11,15 @@ import org.wso2.financial.services.accelerator.consent.mgt.dao.models.Authorizat
 import org.wso2.financial.services.accelerator.consent.mgt.dao.models.ConsentMappingResource;
 import org.wso2.financial.services.accelerator.consent.mgt.dao.models.ConsentResource;
 import org.wso2.financial.services.accelerator.consent.mgt.dao.models.DetailedConsentResource;
-
-import org.wso2.financial.services.accelerator.consent.mgt.endpoint.models.*;
 import org.wso2.financial.services.accelerator.consent.mgt.endpoint.exception.ConsentException;
+import org.wso2.financial.services.accelerator.consent.mgt.endpoint.model.AmendmentResource;
+import org.wso2.financial.services.accelerator.consent.mgt.endpoint.model.AuthResource;
+import org.wso2.financial.services.accelerator.consent.mgt.endpoint.model.AuthResponse;
+import org.wso2.financial.services.accelerator.consent.mgt.endpoint.model.BulkConsentStatusUpdateResource;
+import org.wso2.financial.services.accelerator.consent.mgt.endpoint.model.ConsentResponse;
+import org.wso2.financial.services.accelerator.consent.mgt.endpoint.model.ConsentStatusUpdateResource;
+import org.wso2.financial.services.accelerator.consent.mgt.endpoint.model.ReauthorizeResource;
+import org.wso2.financial.services.accelerator.consent.mgt.endpoint.model.Resource;
 import org.wso2.financial.services.accelerator.consent.mgt.endpoint.utils.ConsentUtils;
 import org.wso2.financial.services.accelerator.consent.mgt.endpoint.utils.ResponseStatus;
 import org.wso2.financial.services.accelerator.consent.mgt.service.impl.ConsentCoreServiceImpl;
@@ -30,16 +35,9 @@ import java.util.Objects;
  */
 public class ConsentMgtApiHandler {
     private static final Log log = LogFactory.getLog(ConsentMgtApiHandler.class);
-    private ConsentCoreServiceImpl consentCoreService = new ConsentCoreServiceImpl();
+    private final ConsentCoreServiceImpl consentCoreService = new ConsentCoreServiceImpl();
 
-    public ConsentMgtApiHandler()
-    {
-    }
-
-    public void handleCreateConsent(ConsentMgtDTO consentMgtDTO)
-    {
-
-
+    public ConsentMgtApiHandler() {
     }
 
 
@@ -47,8 +45,7 @@ public class ConsentMgtApiHandler {
             String orgInfo,
             String consentType, String consentStatuse
             , String userID, long fromTimeValue, long toTimeValue, int limitValue, int offsetValue) throws
-            ConsentException
-    {
+            ConsentException {
 
         // add as arraylist
 
@@ -124,8 +121,8 @@ public class ConsentMgtApiHandler {
                         userIDs,
                         fromTime,
                         toTime,
-                        (Integer) null,
-                        (Integer) null);
+                        null,
+                        null);
                 total = results.size();
             } catch (ConsentManagementException e) {
                 throw new ConsentException(ResponseStatus.INTERNAL_SERVER_ERROR,
@@ -152,14 +149,13 @@ public class ConsentMgtApiHandler {
     //
 
     public ConsentResponse consentPost(
-            org.wso2.financial.services.accelerator.consent.mgt.endpoint.models.ConsentResource consentResourceDTO,
-            String orgInfo, boolean isImplicitAuth, boolean ExclusiveConsent)
+            org.wso2.financial.services.accelerator.consent.mgt.endpoint.model.ConsentResource consentResourceDTO,
+            String orgInfo, boolean isImplicitAuth, boolean exclusiveConsent)
             throws
             ConsentException,
             ConsentManagementException,
             InvocationTargetException,
-            IllegalAccessException
-    {
+            IllegalAccessException {
 
 
         //parse consentResource
@@ -180,7 +176,7 @@ public class ConsentMgtApiHandler {
 
 
         DetailedConsentResource result = null;
-        if (!ExclusiveConsent) {
+        if (!exclusiveConsent) {
             result = consentCoreService.createAuthorizableConsentWithBulkAuth(consentResource,
                     authorizations,
                     isImplicitAuth);
@@ -218,8 +214,7 @@ public class ConsentMgtApiHandler {
     public String consentConsentIdStatusPut(
             String consentId, ConsentStatusUpdateResource consentStatusUpdateResource
             , String orgInfo) throws
-            ConsentManagementException
-    {
+            ConsentManagementException {
         try {
             consentCoreService.updateConsentStatusWithImplicitReasonAndUserId(consentId,
                     consentStatusUpdateResource.getStatus(),
@@ -233,8 +228,7 @@ public class ConsentMgtApiHandler {
 
     public String consentStatusPut(BulkConsentStatusUpdateResource bulkConsentStatusUpdateResource, String orgInfo)
             throws
-            ConsentManagementException
-    {
+            ConsentManagementException {
         try {
             consentCoreService.bulkUpdateConsentStatus(bulkConsentStatusUpdateResource.getClientID(),
                     bulkConsentStatusUpdateResource.getStatus(),
@@ -250,8 +244,7 @@ public class ConsentMgtApiHandler {
     public DetailedConsentResource consentConsentIdPut(
             String consentId, AmendmentResource amendmentResource,
             String orgInfo) throws
-            ConsentManagementException
-    {
+            ConsentManagementException {
         try {
 
             // get authorization resources without authId
@@ -321,11 +314,11 @@ public class ConsentMgtApiHandler {
 
             DetailedConsentResource amendmentResponse = consentCoreService.amendDetailedConsentWithBulkAuthResource(
                     consentId,
-                    amendmentResource.getReceipt().toString(),
+                    amendmentResource.getReceipt(),
                     Long.valueOf(amendmentResource.getValidityPeriod()),
                     reAuthorization,
                     amendmentResource.getCurrentStatus(),
-                    amendmentResource.getConsentAttributes(),
+                    ConsentUtils.convertToMap(amendmentResource.getConsentAttributes()),
                     amendmentResource.getAuthorizationResources().get(0).getUserId(),
                     newEntities);
             return amendmentResponse;
@@ -340,8 +333,7 @@ public class ConsentMgtApiHandler {
     public Object consentConsentIdGet(
             String consentId, String orgInfo, boolean isDetailedConsent, String userId,
             boolean isWithAttributes) throws
-            ConsentException
-    {
+            ConsentException {
 
 
         if (ConsentUtils.isConsentIdValid(consentId)) {
@@ -402,8 +394,7 @@ public class ConsentMgtApiHandler {
         }
     }
 
-    public String consentConsentIdDelete(String consentId, String OrgInfo, String userID)
-    {
+    public String consentConsentIdDelete(String consentId, String orgInfo, String userID) {
         try {
             ConsentResource consentResource = consentCoreService.getConsent(consentId,
                     false);
@@ -417,35 +408,10 @@ public class ConsentMgtApiHandler {
         }
     }
 
-    public void handleUpdateConsentStatus(ConsentMgtDTO consentMgtDTO)
-    {
-
-        if (consentMgtDTO.getPathParameters().get("consentId") == null) {
-            log.error("Consent Id  Not Found");
-            throw new ConsentException(ResponseStatus.NOT_FOUND,
-                    "Consent Id Not Found");
-
-        } else {
-            String consentId = ConsentUtils.validateAndGetPathParam(consentMgtDTO.getPathParameters(),
-                    "consentId");
-
-            if (ConsentUtils.isConsentIdValid(consentId)) {
-                ConsentCoreServiceImpl consentCoreService = new ConsentCoreServiceImpl();
-
-                // get payload
-                JSONObject payload = (JSONObject) consentMgtDTO.getPayload();
-
-//                consentCoreService.updateConsentStatus(consentId, payload.getString("status"));
-
-            }
-        }
-
-    }
 
     public Object consentConsentIdHistoryGet(
             String consentId, String orgInfo, Boolean detailed, String status, String actionBy, String fromTime,
-            String toTime, String statusAuditId)
-    {
+            String toTime, String statusAuditId) {
         return null;
     }
 }

@@ -1,45 +1,47 @@
-package org.wso2.financial.services.accelerator.consent.mgt.endpoint.models;
+package org.wso2.financial.services.accelerator.consent.mgt.endpoint.model;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import io.swagger.annotations.ApiModelProperty;
 
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 
-@JsonTypeName("ConsentResource")
+
+@JsonTypeName("DetailedConsentResource")
 @javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaJAXRSSpecServerCodegen",
-        date = "2025-02-27T12:52:14.361760449+05:30[Asia/Colombo]", comments = "Generator version: 7.11.0")
-public class ConsentResourceDTO {
+        date = "2025-03-02T11:02:13.567940238+05:30[Asia/Colombo]", comments = "Generator version: 7.12.0")
+public class DetailedConsentResource implements Serializable {
+    private String consentId;
     private String clientID;
     private String consentType;
     private String currentStatus;
     private Object receipt;
     private Integer validityPeriod;
     private Boolean recurringIndicator;
-    private Map<String, String> consentAttributes;
-    private @Valid List<@Valid AuthResource> authorizationResources = new ArrayList<>();
+    private Object consentAttributes;
+    private @Valid List<@Valid AuthResponse> authorizationResources = new ArrayList<>();
+    private Integer createdTime;
+    private Integer updatedTime;
 
-    public ConsentResourceDTO()
-    {
+    public DetailedConsentResource() {
     }
 
     @JsonCreator
-    public ConsentResourceDTO(
+    public DetailedConsentResource(
             @JsonProperty(required = true, value = "clientID") String clientID,
             @JsonProperty(required = true, value = "consentType") String consentType,
             @JsonProperty(required = true, value = "currentStatus") String currentStatus,
             @JsonProperty(required = true, value = "receipt") Object receipt,
             @JsonProperty(required = true, value = "validityPeriod") Integer validityPeriod,
             @JsonProperty(required = true, value = "recurringIndicator") Boolean recurringIndicator
-                             )
-    {
+                                  ) {
         this.clientID = clientID;
         this.consentType = consentType;
         this.currentStatus = currentStatus;
@@ -51,8 +53,27 @@ public class ConsentResourceDTO {
     /**
      *
      **/
-    public ConsentResourceDTO clientID(String clientID)
-    {
+    public DetailedConsentResource consentId(String consentId) {
+        this.consentId = consentId;
+        return this;
+    }
+
+
+    @ApiModelProperty(example = "604d9278-4c3b-45d5-b3bb-1e428acdf1ec", value = "")
+    @JsonProperty("consentId")
+    public String getConsentId() {
+        return consentId;
+    }
+
+    @JsonProperty("consentId")
+    public void setConsentId(String consentId) {
+        this.consentId = consentId;
+    }
+
+    /**
+     *
+     **/
+    public DetailedConsentResource clientID(String clientID) {
         this.clientID = clientID;
         return this;
     }
@@ -61,22 +82,19 @@ public class ConsentResourceDTO {
     @ApiModelProperty(example = "TUwYBlObBMmu7zvDnnhs96rZHxka", required = true, value = "")
     @JsonProperty(required = true, value = "clientID")
     @NotNull
-    public String getClientID()
-    {
+    public String getClientID() {
         return clientID;
     }
 
     @JsonProperty(required = true, value = "clientID")
-    public void setClientID(String clientID)
-    {
+    public void setClientID(String clientID) {
         this.clientID = clientID;
     }
 
     /**
      *
      **/
-    public ConsentResourceDTO consentType(String consentType)
-    {
+    public DetailedConsentResource consentType(String consentType) {
         this.consentType = consentType;
         return this;
     }
@@ -85,22 +103,19 @@ public class ConsentResourceDTO {
     @ApiModelProperty(example = "Accounts", required = true, value = "")
     @JsonProperty(required = true, value = "consentType")
     @NotNull
-    public String getConsentType()
-    {
+    public String getConsentType() {
         return consentType;
     }
 
     @JsonProperty(required = true, value = "consentType")
-    public void setConsentType(String consentType)
-    {
+    public void setConsentType(String consentType) {
         this.consentType = consentType;
     }
 
     /**
      *
      **/
-    public ConsentResourceDTO currentStatus(String currentStatus)
-    {
+    public DetailedConsentResource currentStatus(String currentStatus) {
         this.currentStatus = currentStatus;
         return this;
     }
@@ -109,22 +124,19 @@ public class ConsentResourceDTO {
     @ApiModelProperty(example = "awaitingAuthorisation", required = true, value = "")
     @JsonProperty(required = true, value = "currentStatus")
     @NotNull
-    public String getCurrentStatus()
-    {
+    public String getCurrentStatus() {
         return currentStatus;
     }
 
     @JsonProperty(required = true, value = "currentStatus")
-    public void setCurrentStatus(String currentStatus)
-    {
+    public void setCurrentStatus(String currentStatus) {
         this.currentStatus = currentStatus;
     }
 
     /**
      *
      **/
-    public ConsentResourceDTO receipt(Object receipt)
-    {
+    public DetailedConsentResource receipt(Object receipt) {
         this.receipt = receipt;
         return this;
     }
@@ -133,22 +145,19 @@ public class ConsentResourceDTO {
     @ApiModelProperty(required = true, value = "")
     @JsonProperty(required = true, value = "receipt")
     @NotNull
-    public Object getReceipt()
-    {
+    public Object getReceipt() {
         return receipt;
     }
 
     @JsonProperty(required = true, value = "receipt")
-    public void setReceipt(Object receipt)
-    {
+    public void setReceipt(Object receipt) {
         this.receipt = receipt;
     }
 
     /**
      *
      **/
-    public ConsentResourceDTO validityPeriod(Integer validityPeriod)
-    {
+    public DetailedConsentResource validityPeriod(Integer validityPeriod) {
         this.validityPeriod = validityPeriod;
         return this;
     }
@@ -157,22 +166,19 @@ public class ConsentResourceDTO {
     @ApiModelProperty(example = "3600", required = true, value = "")
     @JsonProperty(required = true, value = "validityPeriod")
     @NotNull
-    public Integer getValidityPeriod()
-    {
+    public Integer getValidityPeriod() {
         return validityPeriod;
     }
 
     @JsonProperty(required = true, value = "validityPeriod")
-    public void setValidityPeriod(Integer validityPeriod)
-    {
+    public void setValidityPeriod(Integer validityPeriod) {
         this.validityPeriod = validityPeriod;
     }
 
     /**
      *
      **/
-    public ConsentResourceDTO recurringIndicator(Boolean recurringIndicator)
-    {
+    public DetailedConsentResource recurringIndicator(Boolean recurringIndicator) {
         this.recurringIndicator = recurringIndicator;
         return this;
     }
@@ -181,22 +187,19 @@ public class ConsentResourceDTO {
     @ApiModelProperty(required = true, value = "")
     @JsonProperty(required = true, value = "recurringIndicator")
     @NotNull
-    public Boolean getRecurringIndicator()
-    {
+    public Boolean getRecurringIndicator() {
         return recurringIndicator;
     }
 
     @JsonProperty(required = true, value = "recurringIndicator")
-    public void setRecurringIndicator(Boolean recurringIndicator)
-    {
+    public void setRecurringIndicator(Boolean recurringIndicator) {
         this.recurringIndicator = recurringIndicator;
     }
 
     /**
      *
      **/
-    public ConsentResourceDTO consentAttributes(Map<String, String> consentAttributes)
-    {
+    public DetailedConsentResource consentAttributes(Object consentAttributes) {
         this.consentAttributes = consentAttributes;
         return this;
     }
@@ -204,22 +207,19 @@ public class ConsentResourceDTO {
 
     @ApiModelProperty(value = "")
     @JsonProperty("consentAttributes")
-    public Map<String, String> getConsentAttributes()
-    {
+    public Object getConsentAttributes() {
         return consentAttributes;
     }
 
     @JsonProperty("consentAttributes")
-    public void setConsentAttributes(Map<String, String> consentAttributes)
-    {
+    public void setConsentAttributes(Object consentAttributes) {
         this.consentAttributes = consentAttributes;
     }
 
     /**
      *
      **/
-    public ConsentResourceDTO authorizationResources(List<@Valid AuthResource> authorizationResources)
-    {
+    public DetailedConsentResource authorizationResources(List<@Valid AuthResponse> authorizationResources) {
         this.authorizationResources = authorizationResources;
         return this;
     }
@@ -228,19 +228,16 @@ public class ConsentResourceDTO {
     @ApiModelProperty(value = "")
     @JsonProperty("authorizationResources")
     @Valid
-    public List<@Valid AuthResource> getAuthorizationResources()
-    {
+    public List<@Valid AuthResponse> getAuthorizationResources() {
         return authorizationResources;
     }
 
     @JsonProperty("authorizationResources")
-    public void setAuthorizationResources(List<@Valid AuthResource> authorizationResources)
-    {
+    public void setAuthorizationResources(List<@Valid AuthResponse> authorizationResources) {
         this.authorizationResources = authorizationResources;
     }
 
-    public ConsentResourceDTO addAuthorizationResourcesItem(AuthResource authorizationResourcesItem)
-    {
+    public DetailedConsentResource addAuthorizationResourcesItem(AuthResponse authorizationResourcesItem) {
         if (this.authorizationResources == null) {
             this.authorizationResources = new ArrayList<>();
         }
@@ -249,8 +246,7 @@ public class ConsentResourceDTO {
         return this;
     }
 
-    public ConsentResourceDTO removeAuthorizationResourcesItem(AuthResource authorizationResourcesItem)
-    {
+    public DetailedConsentResource removeAuthorizationResourcesItem(AuthResponse authorizationResourcesItem) {
         if (authorizationResourcesItem != null && this.authorizationResources != null) {
             this.authorizationResources.remove(authorizationResourcesItem);
         }
@@ -258,53 +254,101 @@ public class ConsentResourceDTO {
         return this;
     }
 
+    /**
+     *
+     **/
+    public DetailedConsentResource createdTime(Integer createdTime) {
+        this.createdTime = createdTime;
+        return this;
+    }
+
+
+    @ApiModelProperty(value = "")
+    @JsonProperty("createdTime")
+    public Integer getCreatedTime() {
+        return createdTime;
+    }
+
+    @JsonProperty("createdTime")
+    public void setCreatedTime(Integer createdTime) {
+        this.createdTime = createdTime;
+    }
+
+    /**
+     *
+     **/
+    public DetailedConsentResource updatedTime(Integer updatedTime) {
+        this.updatedTime = updatedTime;
+        return this;
+    }
+
+
+    @ApiModelProperty(value = "")
+    @JsonProperty("updatedTime")
+    public Integer getUpdatedTime() {
+        return updatedTime;
+    }
+
+    @JsonProperty("updatedTime")
+    public void setUpdatedTime(Integer updatedTime) {
+        this.updatedTime = updatedTime;
+    }
+
+
     @Override
-    public boolean equals(Object o)
-    {
+    public boolean equals(Object o) {
         if (this == o) {
             return true;
         }
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        ConsentResourceDTO consentResource = (ConsentResourceDTO) o;
-        return Objects.equals(this.clientID,
-                consentResource.clientID) &&
+        DetailedConsentResource detailedConsentResource = (DetailedConsentResource) o;
+        return Objects.equals(this.consentId,
+                detailedConsentResource.consentId) &&
+                Objects.equals(this.clientID,
+                        detailedConsentResource.clientID) &&
                 Objects.equals(this.consentType,
-                        consentResource.consentType) &&
+                        detailedConsentResource.consentType) &&
                 Objects.equals(this.currentStatus,
-                        consentResource.currentStatus) &&
+                        detailedConsentResource.currentStatus) &&
                 Objects.equals(this.receipt,
-                        consentResource.receipt) &&
+                        detailedConsentResource.receipt) &&
                 Objects.equals(this.validityPeriod,
-                        consentResource.validityPeriod) &&
+                        detailedConsentResource.validityPeriod) &&
                 Objects.equals(this.recurringIndicator,
-                        consentResource.recurringIndicator) &&
+                        detailedConsentResource.recurringIndicator) &&
                 Objects.equals(this.consentAttributes,
-                        consentResource.consentAttributes) &&
+                        detailedConsentResource.consentAttributes) &&
                 Objects.equals(this.authorizationResources,
-                        consentResource.authorizationResources);
+                        detailedConsentResource.authorizationResources) &&
+                Objects.equals(this.createdTime,
+                        detailedConsentResource.createdTime) &&
+                Objects.equals(this.updatedTime,
+                        detailedConsentResource.updatedTime);
     }
 
     @Override
-    public int hashCode()
-    {
-        return Objects.hash(clientID,
+    public int hashCode() {
+        return Objects.hash(consentId,
+                clientID,
                 consentType,
                 currentStatus,
                 receipt,
                 validityPeriod,
                 recurringIndicator,
                 consentAttributes,
-                authorizationResources);
+                authorizationResources,
+                createdTime,
+                updatedTime);
     }
 
     @Override
-    public String toString()
-    {
+    public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("class ConsentResource {\n");
+        sb.append("class DetailedConsentResource {\n");
 
+        sb.append("    consentId: ").append(toIndentedString(consentId)).append("\n");
         sb.append("    clientID: ").append(toIndentedString(clientID)).append("\n");
         sb.append("    consentType: ").append(toIndentedString(consentType)).append("\n");
         sb.append("    currentStatus: ").append(toIndentedString(currentStatus)).append("\n");
@@ -313,6 +357,8 @@ public class ConsentResourceDTO {
         sb.append("    recurringIndicator: ").append(toIndentedString(recurringIndicator)).append("\n");
         sb.append("    consentAttributes: ").append(toIndentedString(consentAttributes)).append("\n");
         sb.append("    authorizationResources: ").append(toIndentedString(authorizationResources)).append("\n");
+        sb.append("    createdTime: ").append(toIndentedString(createdTime)).append("\n");
+        sb.append("    updatedTime: ").append(toIndentedString(updatedTime)).append("\n");
         sb.append("}");
         return sb.toString();
     }
@@ -321,8 +367,7 @@ public class ConsentResourceDTO {
      * Convert the given object to string with each line indented by 4 spaces
      * (except the first line).
      */
-    private String toIndentedString(Object o)
-    {
+    private String toIndentedString(Object o) {
         if (o == null) {
             return "null";
         }

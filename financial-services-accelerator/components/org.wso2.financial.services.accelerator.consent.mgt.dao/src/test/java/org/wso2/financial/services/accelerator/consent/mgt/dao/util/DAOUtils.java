@@ -1,12 +1,12 @@
 /**
- * Copyright (c) 2024, WSO2 LLC. (https://www.wso2.com).
+ * Copyright (c) 2025, WSO2 LLC. (https://www.wso2.com).
  * <p>
  * WSO2 LLC. licenses this file to you under the Apache License,
  * Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License.
  * You may obtain a copy of the License at
  * <p>
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  * <p>
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -32,9 +32,10 @@ import java.util.Map;
  */
 public class DAOUtils {
 
-    private static Map<String, BasicDataSource> dataSourceMap = new HashMap<>();
+    private static final Map<String, BasicDataSource> dataSourceMap = new HashMap<>();
 
-    public static void initializeDataSource(String databaseName, String scriptPath) throws Exception {
+    public static void initializeDataSource(String databaseName, String scriptPath) throws
+            Exception {
         BasicDataSource dataSource = new BasicDataSource();
         dataSource.setDriverClassName("org.h2.Driver");
         dataSource.setUsername("username");
@@ -44,10 +45,12 @@ public class DAOUtils {
         try (Connection connection = dataSource.getConnection()) {
             connection.createStatement().executeUpdate("RUNSCRIPT FROM '" + scriptPath + "'");
         }
-        dataSourceMap.put(databaseName, dataSource);
+        dataSourceMap.put(databaseName,
+                dataSource);
     }
 
-    public static Connection getConnection(String database) throws SQLException {
+    public static Connection getConnection(String database) throws
+            SQLException {
         if (dataSourceMap.get(database) != null) {
             return dataSourceMap.get(database).getConnection();
         }
@@ -56,7 +59,11 @@ public class DAOUtils {
 
     public static String getFilePath(String fileName) {
         if (StringUtils.isNotBlank(fileName)) {
-            return Paths.get(System.getProperty("user.dir"), "src", "test", "resources", fileName)
+            return Paths.get(System.getProperty("user.dir"),
+                            "src",
+                            "test",
+                            "resources",
+                            fileName)
                     .toString();
         }
         return null;

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
- ~ Copyright (c) 2024, WSO2 LLC. (https://www.wso2.com).
+ ~ Copyright (c) 2025, WSO2 LLC. (https://www.wso2.com).
  ~
  ~ WSO2 LLC. licenses this file to you under the Apache License,
  ~ Version 2.0 (the "License"); you may not use this file except
@@ -90,6 +90,16 @@
             <version>1.5.3</version>
         </dependency>
         <dependency>
+            <groupId>org.webjars</groupId>
+            <artifactId>swagger-ui</artifactId>
+            <version>5.12.0</version>  <!-- Use latest version -->
+        </dependency>
+        <dependency>
+        <groupId>io.swagger.core.v3</groupId>
+        <artifactId>swagger-jaxrs2</artifactId>
+        <version>2.2.20</version>
+        </dependency>
+        <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
         </dependency>
@@ -138,56 +148,74 @@
             <version>2.0.1.Final</version>
             <scope>compile</scope>
         </dependency>
+        <!-- OpenAPI Annotations for Swagger -->
+        <dependency>
+            <groupId>io.swagger.core.v3</groupId>
+            <artifactId>swagger-jaxrs2</artifactId>
+            <version>2.2.20</version>
+        </dependency>
+
+        <!-- Swagger UI Integration -->
+        <dependency>
+            <groupId>org.webjars</groupId>
+            <artifactId>swagger-ui</artifactId>
+            <version>4.15.5</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+        </dependency>
+
     </dependencies>
 
     <build>
         <plugins>
 
-            <plugin>
-                <groupId>org.openapitools</groupId>
-                <artifactId>openapi-generator-maven-plugin</artifactId>
-                <!-- RELEASE_VERSION -->
-                <version>7.12.0</version>
-                <!-- /RELEASE_VERSION -->
-                <executions>
-                    <execution>
-                        <phase>generate-sources</phase>
-                        <goals>
-                            <goal>generate</goal>
-                        </goals>
-                        <configuration>
-                            <inputSpec>${project.basedir}/src/main/resources/openapi.yaml</inputSpec>
-                            <generatorName>jaxrs-spec</generatorName>
-                            <output>${project.basedir}</output>
+            <!--            <plugin>-->
+            <!--                <groupId>org.openapitools</groupId>-->
+            <!--                <artifactId>openapi-generator-maven-plugin</artifactId>-->
+            <!--                &lt;!&ndash; RELEASE_VERSION &ndash;&gt;-->
+            <!--                <version>7.12.0</version>-->
+            <!--                &lt;!&ndash; /RELEASE_VERSION &ndash;&gt;-->
+            <!--                <executions>-->
+            <!--                    <execution>-->
+            <!--                        <phase>generate-sources</phase>-->
+            <!--                        <goals>-->
+            <!--                            <goal>generate</goal>-->
+            <!--                        </goals>-->
+            <!--                        <configuration>-->
+            <!--                            <inputSpec>${project.basedir}/src/main/resources/openapi.yaml</inputSpec>-->
+            <!--                            <generatorName>jaxrs-spec</generatorName>-->
+            <!--                            <output>${project.basedir}</output>-->
 
-                            <configOptions>
-                                <serializableModel>true</serializableModel>
-                                <artifactId>${project.artifactId}</artifactId>
-                                <groupId>${project.groupId}</groupId>
-                                <version>${project.version}</version>
-                                <skipOverwrite>true</skipOverwrite>
-                                <sourceFolder>src/main/java</sourceFolder>
-                                <basePackage>org.wso2.financial.services.accelerator.consent.mgt.endpoint</basePackage>
-                                <!--                <invokerPackage>com.redhat.todo</invokerPackage>-->
-                                <!--                <configPackage>com.redhat.todo.config</configPackage>-->
-                                <modelPackage>org.wso2.financial.services.accelerator.consent.mgt.endpoint.models
-                                </modelPackage>
-                                <apiPackage>org.wso2.financial.services.accelerator.consent.mgt.endpoint.api
-                                </apiPackage>
-                            </configOptions>
-                            <generateApis>true</generateApis>
-                            <generateModels>true</generateModels>
-                            <generateSupportingFiles>false</generateSupportingFiles>
-                            <generateApiTests>false</generateApiTests>
-                            <generateModelTests>false</generateModelTests>
-                            <templateDirectory>
-                                ${project.basedir}/src/main/resources/template-for-openapi-code-generation
-                            </templateDirectory>
+            <!--                            <configOptions>-->
+            <!--                                <serializableModel>true</serializableModel>-->
+            <!--                                <artifactId>${project.artifactId}</artifactId>-->
+            <!--                                <groupId>${project.groupId}</groupId>-->
+            <!--                                <version>${project.version}</version>-->
+            <!--                                <skipOverwrite>true</skipOverwrite>-->
+            <!--                                <sourceFolder>src/main/java</sourceFolder>-->
+            <!--                                <basePackage>org.wso2.financial.services.accelerator.consent.mgt.endpoint</basePackage>-->
+            <!--                                &lt;!&ndash;                <invokerPackage>com.redhat.todo</invokerPackage>&ndash;&gt;-->
+            <!--                                &lt;!&ndash;                <configPackage>com.redhat.todo.config</configPackage>&ndash;&gt;-->
+            <!--                                <modelPackage>org.wso2.financial.services.accelerator.consent.mgt.endpoint.model-->
+            <!--                                </modelPackage>-->
+            <!--                                <apiPackage>org.wso2.financial.services.accelerator.consent.mgt.endpoint.api-->
+            <!--                                </apiPackage>-->
+            <!--                            </configOptions>-->
+            <!--                            <generateApis>true</generateApis>-->
+            <!--                            <generateModels>true</generateModels>-->
+            <!--                            <generateSupportingFiles>false</generateSupportingFiles>-->
+            <!--                            <generateApiTests>false</generateApiTests>-->
+            <!--                            <generateModelTests>false</generateModelTests>-->
+            <!--                            <templateDirectory>-->
+            <!--                                ${project.basedir}/src/main/resources/template-for-openapi-code-generation-->
+            <!--                            </templateDirectory>-->
 
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
+            <!--                        </configuration>-->
+            <!--                    </execution>-->
+            <!--                </executions>-->
+            <!--            </plugin>-->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-dependency-plugin</artifactId>

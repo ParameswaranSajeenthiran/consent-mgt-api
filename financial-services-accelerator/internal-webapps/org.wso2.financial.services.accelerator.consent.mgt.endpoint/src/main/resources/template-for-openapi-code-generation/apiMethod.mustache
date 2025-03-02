@@ -7,7 +7,8 @@
             {{#scopes}}@AuthorizationScope(scope = "{{scope}}", description = "{{description}}"){{^-last}},
             {{/-last}}{{/scopes}} }){{^-last}},{{/-last}}{{/isOAuth}}
         {{^isOAuth}}@Authorization(value = "{{name}}"){{^-last}},{{/-last}}
-        {{/isOAuth}}{{/authMethods}} }{{/hasAuthMethods}}, tags={ {{#vendorExtensions.x-tags}}"{{tag}}"{{^-last}}, {{/-last}}{{/vendorExtensions.x-tags}} })
+        {{/isOAuth}}{{/authMethods}} }{{/hasAuthMethods}}, tags = { {{#vendorExtensions.x-tags}}"{{tag}}"{{^-last}},
+    {{/-last}}{{/vendorExtensions.x-tags}} })
     {{#implicitHeadersParams.0}}
     @io.swagger.annotations.ApiImplicitParams({
         {{#implicitHeadersParams}}
@@ -19,12 +20,12 @@
         @ApiResponse(code = {{{code}}}, message = "{{{message}}}", response = {{{baseType}}}.class{{#containerType}}, responseContainer = "{{{.}}}"{{/containerType}}){{^-last}},{{/-last}}{{/responses}}
     }){{/useSwaggerAnnotations}}
     public {{#supportAsync}}CompletionStage<{{/supportAsync}}Response{{#supportAsync}}>{{/supportAsync}} {{nickname}}({{#allParams}}{{>queryParams}}{{>pathParams}}{{>cookieParams}}{{>headerParams}}{{>bodyParams}}{{>formParams}}{{^-last}},{{/-last}}{{/allParams}}) {
-        try{
+        try {
             return Response.ok().entity(consentMgtApiHandler.{{nickname}}({{#allParams}}{{>param}}{{^-last}},{{/-last}}{{/allParams}})).build();
         } catch (Exception e) {
             // Handle other errors
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
             .entity("An unexpected error occurred: " + e.getMessage())
             .build();
-            }
+        }
     }

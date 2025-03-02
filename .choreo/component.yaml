@@ -1,4 +1,4 @@
-# Copyright (c) 2024, WSO2 LLC. (https://www.wso2.com/) All Rights Reserved.
+# Copyright (c) 2025, WSO2 LLC. (https://www.wso2.com/) All Rights Reserved.
 # 
 # WSO2 LLC. licenses this file to you under the Apache License,
 # Version 2.0 (the "License"); you may not use this file except
@@ -42,4 +42,4 @@ endpoints:
     # Defaults to wildcard route if not specified.
     # This is only applicable to REST endpoint types.
     # The path should be relative to the docker context.
-    schemaFilePath: openapi.yaml
+    schemaFilePath: financial-services-accelerator/internal-webapps/org.wso2.financial.services.accelerator.consent.mgt.endpoint/src/main/resources/openapi.yaml
