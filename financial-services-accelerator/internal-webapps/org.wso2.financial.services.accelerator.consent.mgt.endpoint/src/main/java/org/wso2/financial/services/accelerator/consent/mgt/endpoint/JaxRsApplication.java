@@ -13,7 +13,8 @@ import javax.ws.rs.core.Application;
  * JAX-RS application class.
  */
 @ApplicationPath("/api")  // Base path for JAX-RS
-@OpenAPIDefinition(info = @Info(title = "Banking API", version = "1.0", description = "Banking application API"))
+@OpenAPIDefinition(info = @Info(title = "Consent Management API", version = "1.0", description = "Banking application" +
+        " API"))
 public class JaxRsApplication extends Application {
     @Override
     public Set<Class<?>> getClasses() {

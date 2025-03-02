@@ -329,6 +329,12 @@
             </dependency>
             <dependency>
                 <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-api</artifactId>
+                <version>${org.slf4j.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-simple</artifactId>
                 <version>${org.slf4j.version}</version>
             </dependency>
@@ -444,6 +450,7 @@
         <mockito.testng.version>0.5.2</mockito.testng.version>
         <commons-dbcp.version>1.4</commons-dbcp.version>
         <orbit.version.h2.engine>1.2.140.wso2v3</orbit.version.h2.engine>
+        <org.slf4j.verison>1.7.21</org.slf4j.verison>
         <org.slf4j.version>2.0.0-alpha5</org.slf4j.version>
 
     </properties>
