@@ -1,13 +1,6 @@
 package {{package}};
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import org.wso2.financial.services.accelerator.consent.mgt.endpoint.handler.ConsentMgtApiHandler;
-{{#imports}}import {{import}};
-{{/imports}}
-
-import {{javaxPackage}}.ws.rs.*;
-import {{javaxPackage}}.ws.rs.core.Response;
-
 {{#useSwaggerAnnotations}}
     import io.swagger.annotations.Api;
     import io.swagger.annotations.ApiOperation;
@@ -15,13 +8,25 @@ import {{javaxPackage}}.ws.rs.core.Response;
     import io.swagger.annotations.ApiResponse;
     import io.swagger.annotations.ApiResponses;
 {{/useSwaggerAnnotations}}
-{{#supportAsync}}
-    import java.util.concurrent.CompletionStage;
-    import java.util.concurrent.CompletableFuture;
-{{/supportAsync}}
+import org.wso2.financial.services.accelerator.consent.mgt.endpoint.handler.ConsentMgtApiHandler;
+{{#imports}}import {{import}};
+{{/imports}}
+
 
 {{#useBeanValidation}}import {{javaxPackage}}.validation.constraints.NotNull;
-import {{javaxPackage}}.validation.Valid;{{/useBeanValidation}}
+import {{javaxPackage}}.validation.Valid;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.GET;
+import javax.ws.rs.HeaderParam;
+import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.Response;
+{{/useBeanValidation}}
 
 /**
 * Represents a collection of functions to interact with the API endpoints.
