@@ -89,14 +89,14 @@ paths:
                   $ref: '#/components/schemas/DetailedConsentResource'
         '400':
           description: Invalid consent id
-  /consent/{consentID}:
+  /consent/{consentId}:
     get:
       tags:
         - consent
       summary: Consent retrieval
       parameters:
         - $ref: '#/components/parameters/OrgInfoHeader'
-        - $ref: '#/components/parameters/ConsentID'
+        - $ref: '#/components/parameters/ConsentId'
         - $ref: '#/components/parameters/DetailedConsent'
         - $ref: '#/components/parameters/UserId'
         - $ref: '#/components/parameters/WithAttributes'
@@ -115,7 +115,7 @@ paths:
       summary: Consent amendment
       parameters:
         - $ref: '#/components/parameters/OrgInfoHeader'
-        - $ref: '#/components/parameters/ConsentID'
+        - $ref: '#/components/parameters/ConsentId'
       requestBody:
         content:
           application/json:
@@ -171,7 +171,7 @@ paths:
                 example: Successfully updated
         '400':
           description: Invalid consent id
-  /consent/{consentID}/status:
+  /consent/{consentId}/status:
     put:
       tags:
         - consent
@@ -195,7 +195,7 @@ paths:
                 example: Status updated
         '400':
           description: Invalid consent id
-  /consent/{consentID}/history:
+  /consent/{consentId}/history:
     get:
       tags:
         - consent
@@ -613,8 +613,8 @@ components:
       description: Flag to determine whether this is an exclusive consent
       schema:
         type: boolean
-    ConsentID:
-      name: consentID
+    ConsentId:
+      name: consentId
       in: path
       description: consent id
       required: true

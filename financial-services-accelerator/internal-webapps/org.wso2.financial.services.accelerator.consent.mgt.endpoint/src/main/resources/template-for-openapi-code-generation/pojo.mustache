@@ -1,7 +1,6 @@
-import com.fasterxml.jackson.annotation.JsonCreator;
+{{#hasRequired}}import com.fasterxml.jackson.annotation.JsonCreator;{{/hasRequired}}
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
-import com.fasterxml.jackson.annotation.JsonValue;
 import io.swagger.annotations.ApiModelProperty;
 
 import java.io.Serializable;
@@ -10,7 +9,7 @@ import java.util.List;
 import java.util.Objects;
 
 import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
+{{#hasRequired}}import javax.validation.constraints.NotNull;{{/hasRequired}}
 
 {{#discriminator}}{{>typeInfoAnnotation}}{{/discriminator}}{{#description}}/**
 * {{.}}

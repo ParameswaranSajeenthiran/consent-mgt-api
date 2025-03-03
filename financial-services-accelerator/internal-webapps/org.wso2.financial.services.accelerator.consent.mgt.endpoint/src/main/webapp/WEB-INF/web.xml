@@ -69,7 +69,7 @@
     <servlet-class>org.apache.cxf.jaxrs.servlet.CXFNonSpringJaxrsServlet</servlet-class>
     <init-param>
       <param-name>jaxrs.serviceClasses</param-name>
-      <param-value> org.wso2.financial.services.accelerator.consent.mgt.endpoint.JaxRsApplication,        io.swagger.v3.jaxrs2.integration.resources.OpenApiResource
+      <param-value> org.wso2.financial.services.accelerator.consent.mgt.endpoint.SwaggerApplication,io.swagger.v3.jaxrs2.integration.resources.OpenApiResource
 
       </param-value>
     </init-param>
