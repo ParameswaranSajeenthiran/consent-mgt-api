@@ -1271,7 +1271,7 @@ public class ConsentCoreDAOTests {
 
         try (Connection connection = DAOUtils.getConnection(DB_NAME)) {
             storeDataForConsentSearchTest(consentIDs, connection);
-            detailedConsentResources = consentCoreDAO.searchConsents(connection, consentIDs, null,
+            detailedConsentResources = consentCoreDAO.searchConsents(connection, null,consentIDs, null,
                     null, null, null, null, null,
                     10, 0);
         }
@@ -1296,7 +1296,7 @@ public class ConsentCoreDAOTests {
 
         try (Connection connection = DAOUtils.getConnection(DB_NAME)) {
             storeDataForConsentSearchTest(consentIDs, connection);
-            detailedConsentResources = consentCoreDAO.searchConsents(connection, consentIDs, null,
+            detailedConsentResources = consentCoreDAO.searchConsents(connection,null, consentIDs, null,
                     null, null, null, 1669917425L, 1669917425L,
                     10, 0);
         }
@@ -1313,7 +1313,7 @@ public class ConsentCoreDAOTests {
 
         try (Connection connection = DAOUtils.getConnection(DB_NAME)) {
             storeDataForConsentSearchTest(consentIDs, connection);
-            detailedConsentResources = consentCoreDAO.searchConsents(connection, null,
+            detailedConsentResources = consentCoreDAO.searchConsents(connection,null, null,
                     ConsentMgtDAOTestData.SAMPLE_CLIENT_IDS_LIST, null, null, null,
                     null, null, 10, 0);
         }
@@ -1338,7 +1338,7 @@ public class ConsentCoreDAOTests {
 
         try (Connection connection = DAOUtils.getConnection(DB_NAME)) {
             storeDataForConsentSearchTest(consentIDs, connection);
-            detailedConsentResources = consentCoreDAO.searchConsents(connection, null, null,
+            detailedConsentResources = consentCoreDAO.searchConsents(connection, null, null, null,
                     null, ConsentMgtDAOTestData.SAMPLE_CONSENT_STATUSES_LIST, null, null,
                     null, 10, 0);
         }
@@ -1363,7 +1363,7 @@ public class ConsentCoreDAOTests {
 
         try (Connection connection = DAOUtils.getConnection(DB_NAME)) {
             storeDataForConsentSearchTest(consentIDs, connection);
-            detailedConsentResources = consentCoreDAO.searchConsents(connection, null, null,
+            detailedConsentResources = consentCoreDAO.searchConsents(connection, null,null, null,
                     null, ConsentMgtDAOTestData.SAMPLE_CONSENT_STATUSES_LIST, null, null,
                     null, 10, 0);
         }
@@ -1388,7 +1388,7 @@ public class ConsentCoreDAOTests {
 
         try (Connection connection = DAOUtils.getConnection(DB_NAME)) {
             storeDataForConsentSearchTest(consentIDs, connection);
-            detailedConsentResources = consentCoreDAO.searchConsents(connection, null, null,
+            detailedConsentResources = consentCoreDAO.searchConsents(connection, null,null, null,
                     null, null, ConsentMgtDAOTestData.SAMPLE_USER_IDS_LIST, null,
                     null, 10, 0);
         }
@@ -1413,7 +1413,7 @@ public class ConsentCoreDAOTests {
 
         try (Connection connection = DAOUtils.getConnection(DB_NAME)) {
             storeDataForConsentSearchTest(consentIDs, connection);
-            detailedConsentResources = consentCoreDAO.searchConsents(connection, consentIDs, null,
+            detailedConsentResources = consentCoreDAO.searchConsents(connection,null, consentIDs, null,
                     null, null, null, null, null, null,
                     null);
         }
@@ -1438,7 +1438,7 @@ public class ConsentCoreDAOTests {
 
         try (Connection connection = DAOUtils.getConnection(DB_NAME)) {
             storeDataForConsentSearchTest(consentIDs, connection);
-            detailedConsentResources = consentCoreDAO.searchConsents(connection, consentIDs, null,
+            detailedConsentResources = consentCoreDAO.searchConsents(connection,null, consentIDs, null,
                     null, null, null, null, null, null,
                     1);
         }
@@ -1528,7 +1528,7 @@ public class ConsentCoreDAOTests {
 
         try (Connection connection = DAOUtils.getConnection(DB_NAME)) {
             storeDataForConsentSearchTest(consentIDs, connection);
-            detailedConsentResources = consentCoreDAO.searchConsents(connection, consentIDs, null,
+            detailedConsentResources = consentCoreDAO.searchConsents(connection,null, consentIDs, null,
                     null, null, null, null, null, 1,
                     null);
         }
@@ -1553,7 +1553,7 @@ public class ConsentCoreDAOTests {
 
         try (Connection connection = DAOUtils.getConnection(DB_NAME)) {
             storeDataForConsentSearchTest(consentIDs, connection);
-            detailedConsentResources = consentCoreDAO.searchConsents(connection, null, null,
+            detailedConsentResources = consentCoreDAO.searchConsents(connection,null, null, null,
                     null, null, null, null,
                     null, 10, 0);
         }
@@ -1579,7 +1579,7 @@ public class ConsentCoreDAOTests {
 
         try (Connection connection = DAOUtils.getConnection(DB_NAME)) {
             storeDataForConsentSearchTest(consentIDs, connection);
-            detailedConsentResources = consentCoreDAO.searchConsents(connection, null, null,
+            detailedConsentResources = consentCoreDAO.searchConsents(connection, null, null, null,
                     null, null, null, currentTime,
                     currentTime + 100, 10, 0);
         }
@@ -1604,7 +1604,7 @@ public class ConsentCoreDAOTests {
 
         Mockito.doThrow(SQLException.class).when(mockedConnection).prepareStatement(Mockito.anyString(),
                 Mockito.anyInt(), Mockito.anyInt());
-        consentCoreDAO.searchConsents(mockedConnection, null, null, null,
+        consentCoreDAO.searchConsents(mockedConnection, null,null, null, null,
                 null, null, null, null, null, null);
     }
 
@@ -1614,7 +1614,7 @@ public class ConsentCoreDAOTests {
         Mockito.doReturn(mockedPreparedStatement).when(mockedConnection)
                 .prepareStatement(Mockito.anyString(), Mockito.anyInt(), Mockito.anyInt());
         Mockito.doThrow(SQLException.class).when(mockedPreparedStatement).executeQuery();
-        consentCoreDAO.searchConsents(mockedConnection, null, null, null,
+        consentCoreDAO.searchConsents(mockedConnection, null,null, null, null,
                 null, null, null, null, null, null);
     }
 
@@ -2167,7 +2167,7 @@ public class ConsentCoreDAOTests {
 
             consentCoreDAO.storeConsentAttributes(connection, consentAttributesResource);
 
-            expirationEligibleConsents = consentCoreDAO.getExpiringConsents(connection,
+            expirationEligibleConsents = consentCoreDAO.getExpiringConsents(connection, null,
                     "authorised,awaitingAuthorisation");
 
         }
@@ -2193,7 +2193,7 @@ public class ConsentCoreDAOTests {
 
             consentCoreDAO.storeConsentAttributes(connection, consentAttributesResource);
 
-            expirationEligibleConsents = consentCoreDAO.getExpiringConsents(connection,
+            expirationEligibleConsents = consentCoreDAO.getExpiringConsents(connection,  null,
                     "authorised,awaitingAuthorisation");
 
         }
@@ -2205,7 +2205,7 @@ public class ConsentCoreDAOTests {
 
         Mockito.doReturn(mockedPreparedStatement).when(mockedConnection).prepareStatement(Mockito.anyString());
         Mockito.doThrow(SQLException.class).when(mockedPreparedStatement).executeQuery();
-        consentCoreDAO.getExpiringConsents(mockedConnection, "authorised,awaitingAuthorisation");
+        consentCoreDAO.getExpiringConsents(mockedConnection, null, "authorised,awaitingAuthorisation");
     }
 
     private void storeDataForConsentSearchTest(ArrayList<String> consentIDs,

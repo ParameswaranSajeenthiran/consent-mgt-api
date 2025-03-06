@@ -18,18 +18,48 @@
 
 package org.wso2.financial.services.accelerator.consent.mgt.service.exception;
 
+import javax.naming.NamingException;
+import javax.ws.rs.core.Response;
+
 /**
- * Used for runtime exceptions in consent management component.
+ * Used for creating runtime exceptions for financial services modules.
  */
-public class ConsentManagementRuntimeException extends FinancialServicesRuntimeException {
+public class ConsentManagementRuntimeException extends RuntimeException {
 
-    public ConsentManagementRuntimeException(String errorCode, Throwable cause) {
+    private static final long serialVersionUID = -5686395831712095972L;
+    private Response.Status errorCode;
 
-        super(errorCode, cause);
+    public ConsentManagementRuntimeException(Response.Status errorCode, Throwable cause) {
+
+        super(cause);
+        this.errorCode = errorCode;
     }
 
-    public ConsentManagementRuntimeException(String errorCode) {
+    public ConsentManagementRuntimeException(Response.Status errorCode,String message) {
 
-        super(errorCode);
+        super(message);
+        this.errorCode = errorCode;
     }
+
+    public ConsentManagementRuntimeException(Response.Status errorCode) {
+        super();
+        this.errorCode = errorCode;
+    }
+
+    public ConsentManagementRuntimeException(Response.Status status, String message, Throwable cause) {
+        super(message, cause);
+        this.errorCode = status;
+
+    }
+
+    public Response.Status getErrorCode() {
+
+        return errorCode;
+    }
+
+    public void setErrorCode(Response.Status errorCode) {
+
+        this.errorCode = errorCode;
+    }
+
 }

@@ -1,5 +1,6 @@
 package org.wso2.financial.services.accelerator.consent.mgt.endpoint.utils;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.cxf.helpers.IOUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -10,18 +11,23 @@ import org.wso2.financial.services.accelerator.consent.mgt.dao.models.ConsentMap
 import org.wso2.financial.services.accelerator.consent.mgt.dao.models.ConsentResource;
 import org.wso2.financial.services.accelerator.consent.mgt.dao.models.DetailedConsentResource;
 import org.wso2.financial.services.accelerator.consent.mgt.endpoint.constants.ConsentConstant;
-import org.wso2.financial.services.accelerator.consent.mgt.endpoint.exception.ConsentException;
+import org.wso2.financial.services.accelerator.consent.mgt.endpoint.model.AuthResponse;
+import org.wso2.financial.services.accelerator.consent.mgt.endpoint.model.AuthorizationResourceDTO;
+import org.wso2.financial.services.accelerator.consent.mgt.endpoint.model.ConsentResourceDTO;
+import org.wso2.financial.services.accelerator.consent.mgt.endpoint.model.ConsentResponse;
+import org.wso2.financial.services.accelerator.consent.mgt.endpoint.model.ReauthorizeResource;
+import org.wso2.financial.services.accelerator.consent.mgt.endpoint.model.Resource;
+import org.wso2.financial.services.accelerator.consent.mgt.service.exception.ConsentManagementRuntimeException;
 
-import java.beans.Introspector;
-import java.beans.PropertyDescriptor;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.core.Response;
 
 
 /**
@@ -122,22 +128,143 @@ public class ConsentUtils {
     }
 
     public static Map<String, String> convertToMap(Object obj) {
-        Map<String, String> map = new HashMap<>();
-        try {
-            for (PropertyDescriptor property : Introspector.getBeanInfo(obj.getClass(),
-                    Object.class).getPropertyDescriptors()) {
-                Object value = property.getReadMethod().invoke(obj);
-                if (value != null) {
-                    map.put(property.getName(),
-                            value.toString());
-                }
-            }
-        } catch (Exception e) {
-            throw new ConsentException(ResponseStatus.INTERNAL_SERVER_ERROR,
-                    "Exception occurred while converting object to map");
-        }
-        return map;
+        ObjectMapper objectMapper = new ObjectMapper();
+        Map<String, Object> map = objectMapper.convertValue(obj, Map.class);
+        return map.entrySet().stream()
+                .collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().toString()));
     }
+
+    /**
+     * copy propoerties from consentResource DTO to consentResource DAO
+     *
+     * @param consentResourceDTO
+     */
+    public static void copyPropertiesToConsentResource(ConsentResource consentResource,
+                                                       ConsentResourceDTO consentResourceDTO) throws
+            ConsentManagementException {
+        consentResource.setConsentType(consentResourceDTO.getConsentType());
+        consentResource.setClientID(consentResourceDTO.getClientID());
+        consentResource.setRecurringIndicator(consentResourceDTO.getRecurringIndicator());
+        consentResource.setValidityPeriod(consentResourceDTO.getValidityPeriod());
+        consentResource.setConsentAttributes(ConsentUtils.convertToMap(consentResourceDTO.getConsentAttributes()));
+        consentResource.setReceipt(consentResourceDTO.getReceipt());
+        consentResource.setCurrentStatus(consentResourceDTO.getCurrentStatus());
+    }
+
+    /**
+     * copy properties from authorizationResourceDTo to authorizationResource
+     */
+    public static void copyPropertiesToAuthorizationResource(AuthorizationResource authorizationResource,
+                                                            AuthorizationResourceDTO authorizationResourceDTO) {
+        authorizationResource.setAuthorizationType(authorizationResourceDTO.getAuthorizationType());
+        authorizationResource.setAuthorizationStatus(authorizationResourceDTO.getAuthorizationStatus());
+        authorizationResource.setUserID(authorizationResourceDTO.getUserId());
+    }
+
+    /**
+     * copy properties from authorizationResourceDTo to authorizationResource
+     */
+    public static void copyPropertiesToAuthorizationResource(AuthorizationResource authorizationResource,
+                                                             ReauthorizeResource authorizationResourceDTO) {
+        authorizationResource.setAuthorizationID(authorizationResourceDTO.getAuthorizationId());
+        authorizationResource.setAuthorizationType(authorizationResourceDTO.getAuthorizationType());
+        authorizationResource.setAuthorizationStatus(authorizationResourceDTO.getAuthorizationStatus());
+        authorizationResource.setUserID(authorizationResourceDTO.getUserId());
+        ArrayList<ConsentMappingResource> consentMappingResources = new ArrayList<>();
+        for ( Resource resource : authorizationResourceDTO.getResources()){
+            ConsentMappingResource consentMappingResource = new ConsentMappingResource();
+            consentMappingResource.setAccountID(resource.getAccountID());
+            consentMappingResource.setPermission(resource.getPermission());
+            consentMappingResource.setMappingStatus(resource.getResourceMappingStatus());
+            consentMappingResources.add(consentMappingResource);
+
+        }
+        authorizationResource.setConsentMappingResource(consentMappingResources);
+
+    }
+
+
+
+    /**
+     * copy properties from consentResource to consentResponse
+     */
+    public static void copyPropertiesToAuthorizationResourceResponse(AuthResponse authorizationResourceResponseResponse,
+                                                                     AuthorizationResource authorizationResource) {
+        authorizationResourceResponseResponse.setAuthId(authorizationResource.getAuthorizationID());
+        authorizationResourceResponseResponse.setUserId(authorizationResource.getUserID());
+        authorizationResourceResponseResponse.setAuthorizationStatus(authorizationResource.getAuthorizationStatus());
+        authorizationResourceResponseResponse.setAuthorizationType(authorizationResource.getAuthorizationType());
+
+
+    }
+
+    /**
+     * copy properties from consentResourceMapping  to consentResourceMappingResponse
+     */
+    public static void copyPropertiesToConsentMappingResourceResponse(Resource consentMappingResourceResponse,
+                                                                      ConsentMappingResource consentMappingResource) {
+        consentMappingResourceResponse.setResourceMappingId(consentMappingResource.getMappingID());
+        consentMappingResourceResponse.setAccountID(consentMappingResource.getAccountID());
+        consentMappingResourceResponse.setPermission(consentMappingResource.getPermission());
+        consentMappingResourceResponse.setResourceMappingStatus(consentMappingResource.getMappingStatus());
+
+    }
+
+    /**
+     * copy properties from consentResourceMapping  to consentResourceMappingResponse
+     */
+    public static void copyPropertiesToConsentMappingResource(Resource org_consentMappingResource,
+                                                                      ConsentMappingResource des_consentMappingResource) {
+        des_consentMappingResource.setMappingID(org_consentMappingResource.getResourceMappingId());
+        des_consentMappingResource.setAccountID(org_consentMappingResource.getAccountID());
+        des_consentMappingResource.setPermission(org_consentMappingResource.getPermission());
+        des_consentMappingResource.setMappingStatus(org_consentMappingResource.getResourceMappingStatus());
+
+    }
+
+    /**
+     * copy properties to consentResourceResponse
+     */
+    public static void copyPropertiesToConsentResourceResponse(ConsentResponse consentResourceResponse,
+                                                               DetailedConsentResource consentResource ,
+                                                               boolean withAuthResources) {
+        consentResourceResponse.setConsentID(consentResource.getConsentID());
+        consentResourceResponse.setClientID(consentResource.getClientID());
+        consentResourceResponse.setConsentType(consentResource.getConsentType());
+        consentResourceResponse.setRecurringIndicator(consentResource.isRecurringIndicator());
+        consentResourceResponse.setConsentAttributes(consentResource.getConsentAttributes());
+        consentResourceResponse.setCreatedTime((int) consentResource.getCreatedTime());
+        consentResourceResponse.setValidityPeriod((int)consentResource.getValidityPeriod());
+        consentResourceResponse.setCurrentStatus(consentResource.getCurrentStatus());
+        consentResourceResponse.setUpdatedTime((int) consentResource.getUpdatedTime());
+        consentResourceResponse.setReceipt(consentResource.getReceipt());
+
+
+
+
+        if (withAuthResources){
+            ArrayList<AuthResponse> authResponses = new ArrayList<>();
+            for (AuthorizationResource authorizationResource : consentResource.getAuthorizationResources()) {
+                AuthResponse authResponse = new AuthResponse();
+                ConsentUtils.copyPropertiesToAuthorizationResourceResponse(authResponse, authorizationResource);
+                ArrayList<Resource> resources = new ArrayList<>();
+                for (ConsentMappingResource consentMappingResource : authorizationResource.getConsentMappingResource()) {
+                    Resource resource = new Resource();
+                    ConsentUtils.copyPropertiesToConsentMappingResourceResponse(resource, consentMappingResource);
+                    resources.add(resource);
+                }
+                authResponse.setResources(resources);
+                authResponses.add(authResponse);
+            }
+            consentResourceResponse.setAuthorizationResources(authResponses);
+        }else{
+            consentResourceResponse.setAuthorizationResources(new ArrayList<>());
+        }
+    }
+
+
+
+
 
     /**
      * Convert detailed consent resource to JSON.
@@ -152,14 +279,9 @@ public class ConsentUtils {
                 detailedConsentResource.getConsentID());
         consentResource.put(ConsentConstant.CLIENT_ID,
                 detailedConsentResource.getClientID());
-        try {
-            consentResource.put(ConsentConstant.RECEIPT,
-                    new JSONObject(detailedConsentResource.getReceipt()));
-        } catch (JSONException e) {
-            throw new ConsentException(ResponseStatus.INTERNAL_SERVER_ERROR,
-                    "Exception occurred while parsing" +
-                            " receipt");
-        }
+        consentResource.put(ConsentConstant.RECEIPT,
+                    detailedConsentResource.getReceipt());
+
         consentResource.put(ConsentConstant.CONSENT_TYPE,
                 detailedConsentResource.getConsentType());
         consentResource.put(ConsentConstant.CURRENT_STATUS,

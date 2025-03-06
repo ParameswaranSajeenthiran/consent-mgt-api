@@ -31,6 +31,7 @@ import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
+import javax.ws.rs.core.Response;
 
 /**
  * This class is used for handling Financial Services consent data persistence in the JDBC Store. During the server
@@ -86,12 +87,18 @@ public final class JDBCPersistenceManager {
                     Context context = new InitialContext();
                     dataSource = (DataSource) context.lookup("java:/comp/env/" + dataSourceName);
                 } else {
-                    throw new ConsentManagementRuntimeException("Persistence Manager configuration for Financial " +
+                    throw new ConsentManagementRuntimeException(Response.Status.SERVICE_UNAVAILABLE,
+                            "Persistence Manager configuration for Financial" +
+                            " " +
                             "Services is not available in financial-services.xml file. Terminating the JDBC " +
                             "persistence manager initialization.");
                 }
             } catch (NamingException e) {
-                throw new ConsentManagementRuntimeException("Error when looking up the Consent Management Data Source.",
+                throw new ConsentManagementRuntimeException(Response.Status.SERVICE_UNAVAILABLE, "Error when looking " +
+                        "up the Consent " +
+                        "Management " +
+                        "Data " +
+                        "Source.",
                         e);
             }
         }
@@ -111,7 +118,10 @@ public final class JDBCPersistenceManager {
             log.debug("Returning database connection for Consent Management data source");
             return dbConnection;
         } catch (SQLException e) {
-            throw new ConsentManagementRuntimeException("Error when getting a database connection object from the " +
+            throw new ConsentManagementRuntimeException(Response.Status.SERVICE_UNAVAILABLE, "Error when getting a " +
+                    "database connection " +
+                    "object " +
+                    "from the " +
                     "consent management data source.", e);
         }
     }

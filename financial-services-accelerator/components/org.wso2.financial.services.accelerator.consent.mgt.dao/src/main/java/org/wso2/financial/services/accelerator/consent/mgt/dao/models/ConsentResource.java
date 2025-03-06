@@ -25,6 +25,7 @@ import java.util.Map;
  */
 public class ConsentResource {
 
+    private String orgID;
     private String consentID;
     private String clientID;
     private String receipt;
@@ -39,16 +40,18 @@ public class ConsentResource {
     public ConsentResource() {
     }
 
-    public ConsentResource(String clientID, String receipt, String consentType, String currentStatus) {
+    public ConsentResource(String orgId, String clientID, String receipt, String consentType, String currentStatus) {
+        this.orgID = orgId;
         this.clientID = clientID;
         this.receipt = receipt;
         this.consentType = consentType;
         this.currentStatus = currentStatus;
     }
 
-    public ConsentResource(String consentID, String clientID, String receipt, String consentType,
+    public ConsentResource(String orgID, String consentID, String clientID, String receipt, String consentType,
                            int consentFrequency, long validityPeriod, boolean recurringIndicator,
                            String currentStatus, long createdTime, long updatedTime) {
+        this.orgID = orgID;
         this.consentID = consentID;
         this.clientID = clientID;
         this.receipt = receipt;
@@ -91,6 +94,14 @@ public class ConsentResource {
     public void setConsentID(String consentID) {
 
         this.consentID = consentID;
+    }
+
+    public String getOrgID() {
+        return orgID;
+    }
+
+    public void setOrgID(String orgID) {
+        this.orgID = orgID;
     }
 
     public String getClientID() {

@@ -27,8 +27,12 @@ public class ConsentMgtCommonDBQueries {
 
     public String getStoreConsentPreparedStatement() {
 
-        return "INSERT INTO FS_CONSENT (CONSENT_ID, RECEIPT, CREATED_TIME, UPDATED_TIME, CLIENT_ID, CONSENT_TYPE, " +
-                "CURRENT_STATUS, CONSENT_FREQUENCY, VALIDITY_TIME, RECURRING_INDICATOR) VALUES (?, ?, ?, ?, ?, ?, ?, " +
+        return "INSERT INTO FS_CONSENT (ORG_ID, CONSENT_ID, RECEIPT, CREATED_TIME, UPDATED_TIME, CLIENT_ID, " +
+                "CONSENT_TYPE, " +
+                "CURRENT_STATUS, CONSENT_FREQUENCY, VALIDITY_TIME, RECURRING_INDICATOR) VALUES ( COALESCE(?, " +
+                "'DEFAULT_ORG')" +
+                ", ?, ?, ?, ?, ?, ?, " +
+                "?, " +
                 "?, ?, ?)";
     }
 
@@ -39,7 +43,7 @@ public class ConsentMgtCommonDBQueries {
 
     public String getGetConsentWithConsentAttributesPreparedStatement() {
 
-        return "SELECT FS_CONSENT.CONSENT_ID, RECEIPT, CREATED_TIME, UPDATED_TIME, CLIENT_ID, CONSENT_TYPE, " +
+        return "SELECT FS_CONSENT.CONSENT_ID, ORG_ID, RECEIPT, CREATED_TIME, UPDATED_TIME, CLIENT_ID, CONSENT_TYPE, " +
                 "CURRENT_STATUS, CONSENT_FREQUENCY, VALIDITY_TIME, RECURRING_INDICATOR, " +
                 "FS_CONSENT_ATTRIBUTE.ATT_KEY, FS_CONSENT_ATTRIBUTE.ATT_VALUE FROM FS_CONSENT RIGHT JOIN " +
                 "FS_CONSENT_ATTRIBUTE ON FS_CONSENT.CONSENT_ID = FS_CONSENT_ATTRIBUTE.CONSENT_ID WHERE FS_CONSENT" +
@@ -49,8 +53,10 @@ public class ConsentMgtCommonDBQueries {
     public String getGetDetailedConsentPreparedStatement() {
 
         return "SELECT obc.CONSENT_ID," +
+                "ORG_ID, " +
                 "RECEIPT, " +
                 "CLIENT_ID, " +
+                "ORG_ID, " +
                 "CONSENT_TYPE, " +
                 "CURRENT_STATUS, " +
                 "CONSENT_FREQUENCY, " +
@@ -178,6 +184,7 @@ public class ConsentMgtCommonDBQueries {
         }
 
         StringBuilder query = new StringBuilder("SELECT OBC.CONSENT_ID, " +
+                "ORG_ID, " +
                 "RECEIPT, " +
                 "CLIENT_ID, " +
                 "CONSENT_TYPE, " +

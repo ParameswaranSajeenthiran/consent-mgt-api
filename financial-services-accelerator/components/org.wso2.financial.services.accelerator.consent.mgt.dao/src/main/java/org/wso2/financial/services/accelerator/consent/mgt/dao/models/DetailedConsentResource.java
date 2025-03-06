@@ -26,6 +26,7 @@ import java.util.Map;
  */
 public class DetailedConsentResource {
 
+    private String orgID;
     private String consentID;
     private String clientID;
     private String receipt;
@@ -44,12 +45,37 @@ public class DetailedConsentResource {
 
     }
 
-    public DetailedConsentResource(String consentID, String clientID, String receipt, String consentType,
+    public DetailedConsentResource(String consentID, String clientID, String receipt,
+                                   String consentType,
                                    String currentStatus, int consentFrequency, long validityPeriod, long createdTime,
                                    long updatedTime, boolean recurringIndicator,
                                    Map<String, String> consentAttributes,
                                    ArrayList<AuthorizationResource> authorizationResources,
                                    ArrayList<ConsentMappingResource> consentMappingResources) {
+        this.consentID = consentID;
+        this.clientID = clientID;
+        this.receipt = receipt;
+        this.consentType = consentType;
+        this.currentStatus = currentStatus;
+        this.consentFrequency = consentFrequency;
+        this.validityPeriod = validityPeriod;
+        this.createdTime = createdTime;
+        this.updatedTime = updatedTime;
+        this.recurringIndicator = recurringIndicator;
+        this.consentAttributes = consentAttributes;
+        this.authorizationResources = authorizationResources;
+        this.consentMappingResources = consentMappingResources;
+
+    }
+
+    public DetailedConsentResource(String orgID, String consentID, String clientID, String receipt,
+                                   String consentType,
+                                   String currentStatus, int consentFrequency, long validityPeriod, long createdTime,
+                                   long updatedTime, boolean recurringIndicator,
+                                   Map<String, String> consentAttributes,
+                                   ArrayList<AuthorizationResource> authorizationResources,
+                                   ArrayList<ConsentMappingResource> consentMappingResources) {
+        this.orgID = orgID;
         this.consentID = consentID;
         this.clientID = clientID;
         this.receipt = receipt;
@@ -81,6 +107,14 @@ public class DetailedConsentResource {
         return consentID;
     }
 
+    public String getOrgID() {
+        return orgID;
+    }
+
+    public void setOrgID(String orgInfo) {
+        this.orgID = orgInfo;
+    }
+
     public void setConsentID(String consentID) {
 
         this.consentID = consentID;
@@ -90,6 +124,7 @@ public class DetailedConsentResource {
 
         return clientID;
     }
+
 
     public void setClientID(String clientID) {
 
@@ -144,6 +179,11 @@ public class DetailedConsentResource {
     public void setRecurringIndicator(boolean recurringIndicator) {
 
         this.recurringIndicator = recurringIndicator;
+    }
+
+    public boolean getRecurringIndicator() {
+
+        return recurringIndicator;
     }
 
     public String getCurrentStatus() {

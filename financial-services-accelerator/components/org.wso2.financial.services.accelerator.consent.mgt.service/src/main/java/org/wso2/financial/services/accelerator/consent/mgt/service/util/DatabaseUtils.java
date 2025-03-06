@@ -20,7 +20,7 @@ package org.wso2.financial.services.accelerator.consent.mgt.service.util;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.wso2.financial.services.accelerator.consent.mgt.service.exception.FinancialServicesRuntimeException;
+import org.wso2.financial.services.accelerator.consent.mgt.service.exception.ConsentManagementRuntimeException;
 import org.wso2.financial.services.accelerator.consent.mgt.service.persistence.JDBCPersistenceManager;
 
 import java.sql.Connection;
@@ -37,9 +37,10 @@ public class DatabaseUtils {
      * Get a database connection instance from the Consent Management Persistence Manager.
      *
      * @return Database Connection
-     * @throws FinancialServicesRuntimeException Error when getting a database connection to Consent Management database
+     * @throws ConsentManagementRuntimeException Error when getting a database connection to Consent Management database
      */
-    public static Connection getDBConnection() throws FinancialServicesRuntimeException {
+    public static Connection getDBConnection() throws
+            ConsentManagementRuntimeException {
 
         return JDBCPersistenceManager.getInstance().getDBConnection();
     }

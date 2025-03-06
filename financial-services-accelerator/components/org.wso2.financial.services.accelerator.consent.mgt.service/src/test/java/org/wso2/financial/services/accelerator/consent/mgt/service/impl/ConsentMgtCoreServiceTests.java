@@ -269,7 +269,7 @@ public class ConsentMgtCoreServiceTests {
     public void testCreateExclusiveConsent() throws Exception {
 
         doReturn(ConsentMgtServiceTestData.getSampleDetailedStoredTestConsentResourcesList())
-                .when(mockedConsentCoreDAO).searchConsents(any(), any(), any(), any(),
+                .when(mockedConsentCoreDAO).searchConsents(any(),any(), any(), any(), any(),
                         any(), any(), anyLong(), anyLong(), anyInt(),
                         anyInt());
         doNothing().when(mockedConsentCoreDAO).updateConsentStatus(any(), anyString(),
@@ -305,7 +305,7 @@ public class ConsentMgtCoreServiceTests {
     public void testCreateExclusiveConsentDataRetrieveError() throws Exception {
 
         doThrow(ConsentDataRetrievalException.class)
-                .when(mockedConsentCoreDAO).searchConsents(any(), any(), any(), any(),
+                .when(mockedConsentCoreDAO).searchConsents(any(),any(), any(), any(), any(),
                         any(), any(), any(), any(), any(), any());
         doReturn(ConsentMgtServiceTestData.getSampleStoredConsentResource()).when(mockedConsentCoreDAO)
                 .storeConsentResource(any(), any());
@@ -320,7 +320,7 @@ public class ConsentMgtCoreServiceTests {
     public void testCreateExclusiveConsentDataUpdateError() throws Exception {
 
         doReturn(ConsentMgtServiceTestData.getSampleDetailedStoredTestConsentResourcesList())
-                .when(mockedConsentCoreDAO).searchConsents(any(), any(), any(), any(),
+                .when(mockedConsentCoreDAO).searchConsents(any(),any(), any(), any(), any(),
                         any(), any(), any(), any(), any(), any());
         doThrow(ConsentDataUpdationException.class)
                 .when(mockedConsentCoreDAO).updateConsentStatus(any(), anyString(),
@@ -338,7 +338,7 @@ public class ConsentMgtCoreServiceTests {
     public void testCreateExclusiveConsentDataInsertError() throws Exception {
 
         doReturn(ConsentMgtServiceTestData.getSampleDetailedStoredTestConsentResourcesList())
-                .when(mockedConsentCoreDAO).searchConsents(any(), any(), any(), any(),
+                .when(mockedConsentCoreDAO).searchConsents(any(),any(), any(), any(), any(),
                         any(), any(), anyLong(), anyLong(), anyInt(),
                         anyInt());
         doNothing().when(mockedConsentCoreDAO).updateConsentStatus(any(), anyString(),
@@ -444,7 +444,7 @@ public class ConsentMgtCoreServiceTests {
         detailedConsentResources.add(ConsentMgtServiceTestData.getSampleDetailedStoredTestConsentResource());
 
         doReturn(detailedConsentResources).when(mockedConsentCoreDAO)
-                .searchConsents(any(), any(), any(), any(), any(),
+                .searchConsents(any(),any(), any(), any(), any(), any(),
                         any(), anyLong(), anyLong(), anyInt(), anyInt());
         doReturn(ConsentMgtServiceTestData
                 .getSampleTestConsentStatusAuditRecord(ConsentMgtServiceTestData.UNMATCHED_CONSENT_ID,
@@ -1574,7 +1574,7 @@ public class ConsentMgtCoreServiceTests {
         detailedConsentResources.add(ConsentMgtServiceTestData.getSampleDetailedStoredTestConsentResource());
 
         doReturn(detailedConsentResources).when(mockedConsentCoreDAO)
-                .searchConsents(any(), any(), any(), any(), any(),
+                .searchConsents(any(),any(), any(), any(), any(), any(),
                         any(), anyLong(), anyLong(),  anyInt(), anyInt());
         doNothing().when(mockedConsentCoreDAO).updateConsentStatus(any(), anyString(),
                 anyString());
@@ -1597,7 +1597,7 @@ public class ConsentMgtCoreServiceTests {
         detailedConsentResources.add(ConsentMgtServiceTestData.getSampleDetailedStoredTestConsentResource());
 
         doReturn(detailedConsentResources).when(mockedConsentCoreDAO)
-                .searchConsents(any(), any(), any(), any(), any(),
+                .searchConsents(any(),any(), any(), any(), any(), any(),
                         any(), anyLong(), anyLong(), anyInt(), anyInt());
         doNothing().when(mockedConsentCoreDAO).updateConsentStatus(any(), anyString(),
                 anyString());
@@ -1624,7 +1624,7 @@ public class ConsentMgtCoreServiceTests {
         detailedConsentResources.add(detailedConsentResource);
 
         doReturn(detailedConsentResources).when(mockedConsentCoreDAO)
-                .searchConsents(any(), any(), any(), any(), any(),
+                .searchConsents(any(),any(), any(), any(), any(), any(),
                         any(), anyLong(), anyLong(), anyInt(), anyInt());
         doNothing().when(mockedConsentCoreDAO).updateConsentStatus(any(), anyString(),
                 anyString());
@@ -1643,7 +1643,7 @@ public class ConsentMgtCoreServiceTests {
     public void testRevokeExistingApplicableConsentsRetrieveError() throws Exception {
 
         doThrow(ConsentDataRetrievalException.class).when(mockedConsentCoreDAO)
-                .searchConsents(any(), any(), any(), any(), any(),
+                .searchConsents(any(),any(), any(), any(), any(), any(),
                         any(), any(), any(), any(), any());
 
         consentCoreServiceImpl.revokeExistingApplicableConsents(sampleID, ConsentMgtServiceTestData.SAMPLE_USER_ID,
@@ -1658,7 +1658,7 @@ public class ConsentMgtCoreServiceTests {
         detailedConsentResources.add(ConsentMgtServiceTestData.getSampleDetailedStoredTestConsentResource());
 
         doReturn(detailedConsentResources).when(mockedConsentCoreDAO)
-                .searchConsents(any(), any(), any(), any(), any(),
+                .searchConsents(any(),any(), any(), any(), any(), any(),
                         any(), any(), any(), any(), any());
         doThrow(ConsentDataUpdationException.class).when(mockedConsentCoreDAO)
                 .updateConsentStatus(any(), anyString(), anyString());
@@ -1675,7 +1675,7 @@ public class ConsentMgtCoreServiceTests {
         detailedConsentResources.add(ConsentMgtServiceTestData.getSampleDetailedStoredTestConsentResource());
 
         doReturn(detailedConsentResources).when(mockedConsentCoreDAO)
-                .searchConsents(any(), any(), any(), any(), any(),
+                .searchConsents(any(),any(), any(), any(), any(), any(),
                         any(), any(), any(), any(), any());
         doNothing().when(mockedConsentCoreDAO).updateConsentStatus(any(), anyString(),
                 anyString());
@@ -2006,7 +2006,7 @@ public class ConsentMgtCoreServiceTests {
                 .getSampleTestAuthorizationResource(sampleID, null);
 
         doReturn(ConsentMgtServiceTestData.getSampleDetailedStoredTestConsentResourcesList())
-                .when(mockedConsentCoreDAO).searchConsents(any(), any(), any(), any(),
+                .when(mockedConsentCoreDAO).searchConsents(any(),any(), any(), any(), any(),
                         any(), any(), anyLong(), anyLong(), anyInt(),
                         anyInt());
         doNothing().when(mockedConsentCoreDAO).updateAuthorizationStatus(any(), anyString(),
@@ -2657,11 +2657,11 @@ public class ConsentMgtCoreServiceTests {
         detailedConsentResources.add(ConsentMgtServiceTestData.getSampleDetailedStoredTestConsentResource());
 
         doReturn(detailedConsentResources)
-                .when(mockedConsentCoreDAO).searchConsents(any(), any(), any(), any(),
+                .when(mockedConsentCoreDAO).searchConsents(any(),any(), any(), any(), any(),
                         any(), any(), anyLong(), anyLong(), anyInt(),
                         anyInt());
 
-        consentCoreServiceImpl.searchDetailedConsents(ConsentMgtServiceTestData.SAMPLE_CLIENT_IDS_LIST,
+        consentCoreServiceImpl.searchDetailedConsents(null,ConsentMgtServiceTestData.SAMPLE_CLIENT_IDS_LIST,
                 ConsentMgtServiceTestData.SAMPLE_CLIENT_IDS_LIST, ConsentMgtServiceTestData.SAMPLE_CONSENT_TYPES_LIST,
                 ConsentMgtServiceTestData.SAMPLE_CONSENT_STATUSES_LIST,
                 ConsentMgtServiceTestData.SAMPLE_USER_IDS_LIST,
@@ -2672,10 +2672,11 @@ public class ConsentMgtCoreServiceTests {
     public void testSearchConsentsRetrieveError() throws Exception {
 
         doThrow(ConsentDataRetrievalException.class)
-                .when(mockedConsentCoreDAO).searchConsents(any(), any(), any(), any(),
+                .when(mockedConsentCoreDAO).searchConsents(any(),any(), any(), any(), any(),
                         any(), any(), any(), any(), any(), any());
 
-        consentCoreServiceImpl.searchDetailedConsents(ConsentMgtServiceTestData.SAMPLE_CLIENT_IDS_LIST,
+        consentCoreServiceImpl.searchDetailedConsents(ConsentMgtServiceTestData.ORG_INFO,
+                ConsentMgtServiceTestData.SAMPLE_CLIENT_IDS_LIST,
                 ConsentMgtServiceTestData.SAMPLE_CLIENT_IDS_LIST, ConsentMgtServiceTestData.SAMPLE_CONSENT_TYPES_LIST,
                 ConsentMgtServiceTestData.SAMPLE_CONSENT_STATUSES_LIST,
                 ConsentMgtServiceTestData.SAMPLE_USER_IDS_LIST,
@@ -2686,11 +2687,11 @@ public class ConsentMgtCoreServiceTests {
     public void testSearchConsentsWithLimits() throws Exception {
 
         doThrow(ConsentDataRetrievalException.class)
-                .when(mockedConsentCoreDAO).searchConsents(any(), any(), any(), any(),
+                .when(mockedConsentCoreDAO).searchConsents(any(),any(), any(), any(), any(),
                         any(), any(), anyLong(), anyLong(), anyInt(),
                         anyInt());
 
-        consentCoreServiceImpl.searchDetailedConsents(ConsentMgtServiceTestData.SAMPLE_CLIENT_IDS_LIST,
+        consentCoreServiceImpl.searchDetailedConsents(null, ConsentMgtServiceTestData.SAMPLE_CLIENT_IDS_LIST,
                 ConsentMgtServiceTestData.SAMPLE_CLIENT_IDS_LIST, ConsentMgtServiceTestData.SAMPLE_CONSENT_TYPES_LIST,
                 ConsentMgtServiceTestData.SAMPLE_CONSENT_STATUSES_LIST,
                 ConsentMgtServiceTestData.SAMPLE_USER_IDS_LIST,

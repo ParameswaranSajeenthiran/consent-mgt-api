@@ -24,13 +24,21 @@ paths:
       summary: Consent initiation
       parameters:
         - $ref: '#/components/parameters/OrgInfoHeader'
-        - $ref: '#/components/parameters/isImplicitAuth'
-        - $ref: '#/components/parameters/ExclusiveConsent'
+        - in: query
+          name: isImplicitAuth
+          schema:
+            type: boolean
+            example: true,false
+        - in: query
+          name: isExclusiveConsent
+          schema:
+            type: boolean
+            example: true, false
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/ConsentResource'
+              $ref: '#/components/schemas/ConsentResourceDTO'
         required: true
       responses:
         '200':
@@ -245,7 +253,7 @@ paths:
           description: Invalid consent id
 components:
   schemas:
-    ConsentResource:
+    ConsentResourceDTO:
       type: object
       required:
         - clientID
@@ -265,7 +273,7 @@ components:
           type: string
           example: awaitingAuthorisation
         receipt:
-          type: object
+          type: string
         validityPeriod:
           type: integer
           example: 3600
@@ -276,7 +284,7 @@ components:
         authorizationResources:
           type: array
           items:
-            $ref: '#/components/schemas/AuthResource'
+            $ref: '#/components/schemas/AuthorizationResourceDTO'
     ConsentResponse:
       type: object
       required:
@@ -301,7 +309,7 @@ components:
           type: string
           example: awaitingAuthorisation
         receipt:
-          type: object
+          type: string
         validityPeriod:
           type: integer
           example: 3600
@@ -340,7 +348,7 @@ components:
           type: string
           example: awaitingAuthorisation
         receipt:
-          type: object
+          type: string
         validityPeriod:
           type: integer
           example: 3600
@@ -356,12 +364,12 @@ components:
           type: integer
         updatedTime:
           type: integer
-    AuthResource:
+    AuthorizationResourceDTO:
       type: object
       required:
         - authorizationStatus
         - authorizationType
-        - userId
+        - userID
       properties:
         authorizationStatus:
           type: string
@@ -369,7 +377,7 @@ components:
         authorizationType:
           type: string
           example: authorization
-        userId:
+        userID:
           type: string
           example: psu@wso2.com
         resources:
@@ -379,10 +387,10 @@ components:
     AuthResponse:
       type: object
       required:
-        - authId
+        - authorizationId
         - authorizationStatus
         - authorizationType
-        - userId
+        - userID
       properties:
         authId:
           type: string
@@ -393,7 +401,7 @@ components:
         authorizationType:
           type: string
           example: authorization
-        userId:
+        userID:
           type: string
           example: psu@wso2.com
         resources:
@@ -403,10 +411,10 @@ components:
     ReauthorizeResource:
       type: object
       properties:
-        authId:
+        authorizationId:
           type: string
           example: 5162ab67-b4e1-4e88-b429-f0bf34fae343
-        userId:
+        userID:
           type: string
           example: psu@wso2.com
         authorizationStatus:
@@ -434,8 +442,6 @@ components:
         resourceMappingStatus:
           type: string
           example: active
-        resourceAttributes:
-          type: object
     ResourcePermission:
       type: object
       properties:
@@ -445,8 +451,6 @@ components:
         permission:
           type: string
           example: read
-        resourceAttributes:
-          type: object
     AmendmentResource:
       type: object
       properties:
@@ -486,7 +490,7 @@ components:
           type: string
           example: awaitingAuthorization
         receipt:
-          type: object
+          type: string
         validityPeriod:
           type: integer
           example: 3600
@@ -504,7 +508,7 @@ components:
         clientID:
           type: string
           example: TUwYBlObBMmu7zvDnnhs96rZHxka
-        userId:
+        userID:
           type: string
           example: psu@wso2.com
         consentType:
@@ -524,7 +528,7 @@ components:
     ConsentStatusUpdateResource:
       type: object
       properties:
-        userId:
+        userID:
           type: string
           example: psu@wso2.com
         status:
@@ -542,7 +546,7 @@ components:
         newConsentStatus:
           type: string
           example: created
-        authResource:
+        authorizationResource:
           $ref: '#/components/schemas/AuthResponse'
         resources:
           type: array
@@ -554,7 +558,7 @@ components:
         consentID:
           type: string
           example: 604d9278-4c3b-45d5-b3bb-1e428acdf1ec
-        authResource:
+        authorizationResource:
           $ref: '#/components/schemas/AuthResponse'
         updatedTime:
           type: integer
@@ -569,7 +573,7 @@ components:
         clientID:
           type: string
           example: TUwYBlObBMmu7zvDnnhs96rZHxka
-        userId:
+        userID:
           type: string
           example: psu@wso2.com
         applicableStatus:
@@ -601,6 +605,7 @@ components:
       schema:
         type: string
         format: jwt
+        default: "DEFAULT_ORG"
     isImplicitAuth:
       name: IsImplicitAuth
       in: header

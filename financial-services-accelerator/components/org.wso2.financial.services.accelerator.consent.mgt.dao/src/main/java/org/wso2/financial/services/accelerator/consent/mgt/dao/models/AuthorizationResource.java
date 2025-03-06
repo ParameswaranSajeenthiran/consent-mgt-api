@@ -18,6 +18,8 @@
 
 package org.wso2.financial.services.accelerator.consent.mgt.dao.models;
 
+import java.util.ArrayList;
+
 /**
  * Model for the Authorization resource.
  */
@@ -29,6 +31,7 @@ public class AuthorizationResource {
     private String authorizationStatus;
     private String authorizationType;
     private long updatedTime;
+    private ArrayList<ConsentMappingResource> consentMappingResource;
 
     public AuthorizationResource() {
 
@@ -101,5 +104,14 @@ public class AuthorizationResource {
     public void setUpdatedTime(long updatedTime) {
 
         this.updatedTime = updatedTime;
+    }
+
+    public ArrayList<ConsentMappingResource> getConsentMappingResource() {
+        return consentMappingResource;
+    }
+
+    public void setConsentMappingResource(
+            ArrayList<ConsentMappingResource> consentMappingResource) {
+        this.consentMappingResource = consentMappingResource;
     }
 }

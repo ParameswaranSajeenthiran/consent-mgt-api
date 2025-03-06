@@ -4,6 +4,6 @@
               maxActive="50" maxIdle="30" maxWait="10000"
               username="root" password="password"
               driverClassName="com.mysql.cj.jdbc.Driver"
-              url="jdbc:mysql://localhost:3306/fs_consentdb?useSSL=false"/>
+              url="jdbc:mysql://localhost:3306/fs_consentdb_test?useSSL=false"/>
 <!--    <Resources cacheMaxSize="20250" />-->
 </Context>

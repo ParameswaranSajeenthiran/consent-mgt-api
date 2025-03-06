@@ -295,7 +295,8 @@ public interface ConsentCoreService {
      * @param reason
      * @param userId
      */
-    void bulkUpdateConsentStatus(String clientId, String status, String reason, String userId, String consentType)
+    void bulkUpdateConsentStatus(String orgID, String clientId, String status, String reason, String userId,
+                                 String consentType, ArrayList<String> applicableExistingStatus)
             throws ConsentManagementException;
 
 
@@ -659,7 +660,8 @@ public interface ConsentCoreService {
      * @return a list of detailed consent resources according to the provided parameters
      * @throws ConsentManagementException thrown if any error occur
      */
-    ArrayList<DetailedConsentResource> searchDetailedConsents(ArrayList<String> consentIDs, ArrayList<String> clientIDs,
+    ArrayList<DetailedConsentResource> searchDetailedConsents(String orgID, ArrayList<String> consentIDs,
+                                                              ArrayList<String> clientIDs,
                                                               ArrayList<String> consentTypes,
                                                               ArrayList<String> consentStatuses,
                                                               ArrayList<String> userIDs, Long fromTime, Long toTime,
@@ -718,7 +720,7 @@ public interface ConsentCoreService {
                                                                      String newConsentStatus,
                                                                      Map<String, String> consentAttributes,
                                                                      String userID,
-                                                                     Map<String, Object> additionalAmendmentData)
+                                                                     ArrayList<AuthorizationResource> newAuthResources)
                 throws ConsentManagementException;
 
 

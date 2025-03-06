@@ -338,7 +338,7 @@ public interface ConsentCoreDAO {
      * if all parameters are null
      * @throws ConsentDataRetrievalException thrown if any error occur
      */
-    ArrayList<DetailedConsentResource> searchConsents(Connection connection, ArrayList<String> consentIDs,
+    ArrayList<DetailedConsentResource> searchConsents(Connection connection, String orgID, ArrayList<String> consentIDs,
                                                       ArrayList<String> clientIDs, ArrayList<String> consentTypes,
                                                       ArrayList<String> consentStatuses, ArrayList<String> userIDs,
                                                       Long fromTime, Long toTime, Integer limit, Integer offset)
@@ -446,7 +446,7 @@ public interface ConsentCoreDAO {
      * (eligible for expiration).
      * @throws ConsentDataRetrievalException thrown if any error occurs in the process
      */
-    ArrayList<DetailedConsentResource> getExpiringConsents(Connection connection,
+    ArrayList<DetailedConsentResource> getExpiringConsents(Connection connection,String orgID,
                                                            String statusesEligibleForExpiration)
             throws ConsentDataRetrievalException;
 

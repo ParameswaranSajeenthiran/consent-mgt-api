@@ -47,6 +47,7 @@ import java.sql.SQLException;
 import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -90,17 +91,18 @@ public class ConsentCoreDAOImpl implements ConsentCoreDAO {
         try (PreparedStatement storeConsentPreparedStmt = connection.prepareStatement(storeConsentPrepStatement)) {
 
             log.debug("Setting parameters to prepared statement to store consent resource");
+            storeConsentPreparedStmt.setString(1, consentResource.getOrgID());
 
-            storeConsentPreparedStmt.setString(1, consentID);
-            storeConsentPreparedStmt.setString(2, consentResource.getReceipt());
-            storeConsentPreparedStmt.setLong(3, createdTime);
-            storeConsentPreparedStmt.setLong(4, updatedTime);
-            storeConsentPreparedStmt.setString(5, consentResource.getClientID());
-            storeConsentPreparedStmt.setString(6, consentResource.getConsentType());
-            storeConsentPreparedStmt.setString(7, consentResource.getCurrentStatus());
-            storeConsentPreparedStmt.setLong(8, consentResource.getConsentFrequency());
-            storeConsentPreparedStmt.setLong(9, consentResource.getValidityPeriod());
-            storeConsentPreparedStmt.setBoolean(10, consentResource.isRecurringIndicator());
+            storeConsentPreparedStmt.setString(2, consentID);
+            storeConsentPreparedStmt.setString(3, consentResource.getReceipt());
+            storeConsentPreparedStmt.setLong(4, createdTime);
+            storeConsentPreparedStmt.setLong(5, updatedTime);
+            storeConsentPreparedStmt.setString(6, consentResource.getClientID());
+            storeConsentPreparedStmt.setString(7, consentResource.getConsentType());
+            storeConsentPreparedStmt.setString(8, consentResource.getCurrentStatus());
+            storeConsentPreparedStmt.setLong(9, consentResource.getConsentFrequency());
+            storeConsentPreparedStmt.setLong(10, consentResource.getValidityPeriod());
+            storeConsentPreparedStmt.setBoolean(11, consentResource.isRecurringIndicator());
 
             // with result, we can determine whether the insertion was successful or not
             int result = storeConsentPreparedStmt.executeUpdate();
@@ -949,7 +951,10 @@ public class ConsentCoreDAOImpl implements ConsentCoreDAO {
     //                  ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE)
     // Suppression reason - False Positive : Cannot bind variables separately as the query is complex
     // Suppressed warning count - 1
-    public ArrayList<DetailedConsentResource> searchConsents(Connection connection, ArrayList<String> consentIDs,
+
+
+    public ArrayList<DetailedConsentResource> searchConsents(Connection connection,
+                                                             String orgID, ArrayList<String> consentIDs,
                                                              ArrayList<String> clientIDs,
                                                              ArrayList<String> consentTypes,
                                                              ArrayList<String> consentStatuses,
@@ -962,7 +967,14 @@ public class ConsentCoreDAOImpl implements ConsentCoreDAO {
         int parameterIndex = 0;
         Map<String, ArrayList<String>> applicableConditionsMap = new HashMap<>();
 
-        validateAndSetSearchConditions(applicableConditionsMap, consentIDs, clientIDs, consentTypes, consentStatuses);
+
+        if(orgID == null){
+            orgID = ConsentMgtDAOConstants.DEFAULT_ORG;
+        }
+        ArrayList<String> orgIDs = new ArrayList<>();
+        orgIDs.add(orgID);
+        validateAndSetSearchConditions(orgIDs,applicableConditionsMap, consentIDs, clientIDs, consentTypes,
+                consentStatuses);
 
         // Don't limit if either of limit or offset is null
         if (limit == null) {
@@ -1431,7 +1443,7 @@ public class ConsentCoreDAOImpl implements ConsentCoreDAO {
     // Suppressed content - connection.prepareStatement(expiringConsentStatement)
     // Suppression reason - False Positive : Cannot bind variables separately as the query is complex
     // Suppressed warning count - 1
-    public ArrayList<DetailedConsentResource> getExpiringConsents(Connection connection,
+    public ArrayList<DetailedConsentResource> getExpiringConsents(Connection connection, String orgID,
                                                                   String statusesEligibleForExpiration)
             throws ConsentDataRetrievalException {
 
@@ -1467,7 +1479,7 @@ public class ConsentCoreDAOImpl implements ConsentCoreDAO {
                     log.debug("No consents found for expiration check eligibility.");
                 }
                 if (!consentIdList.isEmpty()) {
-                    return searchConsents(connection, consentIdList, null, null, null,
+                    return searchConsents(connection,null, consentIdList, null, null, null,
                             null, null, null, null, null);
                 } else {
                     return new ArrayList<>();
@@ -1485,7 +1497,8 @@ public class ConsentCoreDAOImpl implements ConsentCoreDAO {
         }
     }
 
-    void validateAndSetSearchConditions(Map<String, ArrayList<String>> applicableConditionsMap,
+    void validateAndSetSearchConditions(ArrayList<String> orgIDs,
+                                        Map<String, ArrayList<String>> applicableConditionsMap,
                                         ArrayList<String> consentIDs, ArrayList<String> clientIDs,
                                         ArrayList<String> consentTypes, ArrayList<String> consentStatuses) {
 
@@ -1506,6 +1519,10 @@ public class ConsentCoreDAOImpl implements ConsentCoreDAO {
         if (CollectionUtils.isNotEmpty(consentStatuses)) {
             applicableConditionsMap.put(ConsentMgtDAOConstants.COLUMNS_MAP.get(ConsentMgtDAOConstants.CONSENT_STATUSES),
                     consentStatuses);
+        }
+        if (CollectionUtils.isNotEmpty(orgIDs)) {
+            applicableConditionsMap.put(ConsentMgtDAOConstants.COLUMNS_MAP.get(ConsentMgtDAOConstants.ORG_ID),
+                    orgIDs);
         }
     }
 

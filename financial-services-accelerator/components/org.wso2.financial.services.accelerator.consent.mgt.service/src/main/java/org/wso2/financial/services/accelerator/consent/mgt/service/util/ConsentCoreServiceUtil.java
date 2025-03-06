@@ -104,7 +104,11 @@ public class ConsentCoreServiceUtil {
         HashMap<String, Object> consentDataMap = new HashMap<>();
         consentDataMap.put(ConsentCoreServiceConstants.CONSENT_RESOURCE, consentResource);
         //TODO: authorizationResources.get(0).getUserID()
-        postStateChange(connection, consentCoreDAO, consentID, authorizationResources.get(0).getUserID(),
+        ///  authorizationResources is null and get the userId
+
+        String userId = authorizationResources != null ?
+                !authorizationResources.isEmpty() ? authorizationResources.get(0).getUserID(): null : null;
+        postStateChange(connection, consentCoreDAO, consentID, userId ,
                 consentResource.getCurrentStatus(),
                 null, ConsentCoreServiceConstants.CREATE_CONSENT_REASON,
                 consentResource.getClientID(), consentDataMap);
@@ -128,12 +132,24 @@ public class ConsentCoreServiceUtil {
 
                 storedAuthorizationResource = consentCoreDAO.storeAuthorizationResource(connection,
                         authorizationResource);
-                storedAuthorizationResources.add(storedAuthorizationResource);
+                ArrayList<ConsentMappingResource> storedConsentMappingResources = new ArrayList<>();
+                for ( ConsentMappingResource consentMappingResource : authorizationResource.getConsentMappingResource()) {
+                    consentMappingResource.setAuthorizationID(storedAuthorizationResource.getAuthorizationID());
+                    consentMappingResource.setMappingStatus(ConsentCoreServiceConstants.ACTIVE_MAPPING_STATUS);
+                   ConsentMappingResource storedConsentMappingResource =
+                           consentCoreDAO.storeConsentMappingResource(connection,
+                            consentMappingResource);
+                   storedConsentMappingResources.add(storedConsentMappingResource);
+                }
+                storedAuthorizationResource.setConsentMappingResource(storedConsentMappingResources);
 
+
+                storedAuthorizationResources.add(storedAuthorizationResource);
             }
         }
 
-        DetailedConsentResource detailedConsentResource = new DetailedConsentResource(consentID,
+        DetailedConsentResource detailedConsentResource =
+                new DetailedConsentResource(storedConsentResource.getOrgID(), consentID,
                 storedConsentResource.getClientID(), storedConsentResource.getReceipt(),
                 storedConsentResource.getConsentType(), storedConsentResource.getCurrentStatus(),
                 storedConsentResource.getConsentFrequency(), storedConsentResource.getValidityPeriod(),
@@ -220,7 +236,8 @@ public class ConsentCoreServiceUtil {
             storedAuthorizationResource = consentCoreDAO.storeAuthorizationResource(connection, authorizationResource);
         }
 
-        DetailedConsentResource detailedConsentResource = new DetailedConsentResource(consentID,
+        DetailedConsentResource detailedConsentResource =
+                new DetailedConsentResource(storedConsentResource.getOrgID(), consentID,
                 storedConsentResource.getClientID(), storedConsentResource.getReceipt(),
                 storedConsentResource.getConsentType(), storedConsentResource.getCurrentStatus(),
                 storedConsentResource.getConsentFrequency(), storedConsentResource.getValidityPeriod(),
@@ -272,7 +289,7 @@ public class ConsentCoreServiceUtil {
         // Get existing applicable consents
         log.debug("Retrieving existing authorized consents");
         ArrayList<DetailedConsentResource> retrievedExistingAuthorizedConsentsList =
-                consentCoreDAO.searchConsents(connection, null, clientIDsList, consentTypesList,
+                consentCoreDAO.searchConsents(connection,null, null, clientIDsList, consentTypesList,
                         consentStatusesList, userIDsList, null, null, null,
                         null);
 
@@ -787,28 +804,15 @@ public class ConsentCoreServiceUtil {
      *
      * @param connection                Database connection
      * @param consentCoreDAO            Consent core DAO
-     * @param additionalAmendmentData   Additional amendment data
+     * @param newAuthorizationResources   new Authorization resources
      * @throws ConsentManagementException If an error occurs when processing the additional amendment data
      * @throws ConsentDataInsertionException If an error occurs when inserting data
      */
     public static void processAdditionalConsentAmendmentData(Connection connection, ConsentCoreDAO consentCoreDAO,
-                                                             Map<String, Object> additionalAmendmentData)
+                                                             ArrayList<AuthorizationResource> newAuthorizationResources)
             throws ConsentManagementException, ConsentDataInsertionException {
+            for (AuthorizationResource authResource : newAuthorizationResources) {
 
-        Map<String, AuthorizationResource> newAuthResources;
-        Map<String, ArrayList<ConsentMappingResource>> newMappingResources;
-
-        if (additionalAmendmentData.containsKey(ConsentCoreServiceConstants.ADDITIONAL_AUTHORIZATION_RESOURCES) &&
-                additionalAmendmentData.containsKey(ConsentCoreServiceConstants.ADDITIONAL_MAPPING_RESOURCES)) {
-
-            newAuthResources = (Map<String, AuthorizationResource>) additionalAmendmentData
-                    .get(ConsentCoreServiceConstants.ADDITIONAL_AUTHORIZATION_RESOURCES);
-            newMappingResources = (Map<String, ArrayList<ConsentMappingResource>>) additionalAmendmentData
-                    .get(ConsentCoreServiceConstants.ADDITIONAL_MAPPING_RESOURCES);
-
-            for (Map.Entry<String, AuthorizationResource> authResourceEntry : newAuthResources.entrySet()) {
-                String userId = authResourceEntry.getKey();
-                AuthorizationResource authResource = authResourceEntry.getValue();
 
                 if (StringUtils.isBlank(authResource.getConsentID()) ||
                         StringUtils.isBlank(authResource.getAuthorizationType()) ||
@@ -820,9 +824,8 @@ public class ConsentCoreServiceUtil {
                 // create authorization resource
                 AuthorizationResource authorizationResource =
                         consentCoreDAO.storeAuthorizationResource(connection, authResource);
-                ArrayList<ConsentMappingResource> mappingResources = newMappingResources.get(userId);
 
-                for (ConsentMappingResource mappingResource : mappingResources) {
+                for (ConsentMappingResource mappingResource : authResource.getConsentMappingResource()) {
 
                     if (StringUtils.isBlank(mappingResource.getAccountID()) ||
                             StringUtils.isBlank(mappingResource.getMappingStatus())) {
@@ -836,5 +839,5 @@ public class ConsentCoreServiceUtil {
                 }
             }
         }
-    }
+
 }
