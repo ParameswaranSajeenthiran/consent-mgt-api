@@ -577,6 +577,7 @@ public class ConsentManagementDAOUtil {
             if (count < recordIdCount - 1) {
                 whereClauseBuilder.append(SPACE).append(DB_OPERATORS_MAP.get(ConsentMgtDAOConstants.OR));
             }
+
         }
         return whereClauseBuilder.toString();
     }

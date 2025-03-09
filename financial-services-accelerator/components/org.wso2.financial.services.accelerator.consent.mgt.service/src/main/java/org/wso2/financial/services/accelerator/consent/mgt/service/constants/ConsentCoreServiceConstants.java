@@ -50,8 +50,11 @@ public class ConsentCoreServiceConstants {
     public static final String DEFAULT_PERMISSION_VALUE = "n/a";
     public static final String ADDITIONAL_AUTHORIZATION_RESOURCES =  "AdditionalAuthorizationResources";
     public static final String ADDITIONAL_MAPPING_RESOURCES = "AdditionalMappingResources";
+    public static final String AMENDMENT_REASON_CONSENT_AMENDMENT_FLOW = "ConsentAmendmentFlow";
+    public static final String AMENDMENT_REASON_CONSENT_REVOCATION = "ConsentRevocation";
 
     // Error Constants
+    public static final String ORGANIZATION_MISMATCH_ERROR_MSG = "OrgInfo does not match, please provide the correct OrgInfo";
     public static final String DATA_INSERTION_ROLLBACK_ERROR_MSG = "Error occurred while inserting data. Rolling" +
             " back the transaction";
     public static final String DATABASE_CONNECTION_CLOSE_LOG_MSG = "Closing database connection";

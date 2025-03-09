@@ -235,4 +235,13 @@ public class DetailedConsentResource {
 
         this.consentMappingResources = consentMappingResources;
     }
+
+     public DetailedConsentResource clone() {
+        return new DetailedConsentResource(this.orgID, this.consentID, this.clientID, this.receipt, this.consentType,
+                this.currentStatus, this.consentFrequency, this.validityPeriod, this.createdTime, this.updatedTime,
+                this.recurringIndicator, this.consentAttributes, this.authorizationResources, this.consentMappingResources);
+
+
+
+    }
 }

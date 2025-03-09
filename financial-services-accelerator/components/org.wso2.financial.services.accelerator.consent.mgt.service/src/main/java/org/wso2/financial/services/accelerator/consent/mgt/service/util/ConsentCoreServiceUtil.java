@@ -19,6 +19,7 @@
 package org.wso2.financial.services.accelerator.consent.mgt.service.util;
 
 import com.google.gson.Gson;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import net.minidev.json.JSONObject;
 import net.minidev.json.parser.JSONParser;
 import net.minidev.json.parser.ParseException;
@@ -40,6 +41,7 @@ import org.wso2.financial.services.accelerator.consent.mgt.dao.models.ConsentRes
 import org.wso2.financial.services.accelerator.consent.mgt.dao.models.ConsentStatusAuditRecord;
 import org.wso2.financial.services.accelerator.consent.mgt.dao.models.DetailedConsentResource;
 import org.wso2.financial.services.accelerator.consent.mgt.service.constants.ConsentCoreServiceConstants;
+import org.wso2.financial.services.accelerator.consent.mgt.service.impl.ConsentCoreServiceImpl;
 
 import java.sql.Connection;
 import java.util.ArrayList;
@@ -51,6 +53,7 @@ import java.util.Map;
 /**
  * Consent Core Service Util.
  */
+@SuppressFBWarnings("CRLF_INJECTION_LOGS")
 public class ConsentCoreServiceUtil {
 
     private static final Log log = LogFactory.getLog(ConsentCoreServiceUtil.class);
@@ -99,19 +102,13 @@ public class ConsentCoreServiceUtil {
             isConsentAttributesStored = consentCoreDAO.storeConsentAttributes(connection, consentAttributes);
         }
 
-        /* Create audit record, setting previous consent status as null since this is the first time the
-           consent is created and execute state change listener */
-        HashMap<String, Object> consentDataMap = new HashMap<>();
-        consentDataMap.put(ConsentCoreServiceConstants.CONSENT_RESOURCE, consentResource);
+
         //TODO: authorizationResources.get(0).getUserID()
         ///  authorizationResources is null and get the userId
 
         String userId = authorizationResources != null ?
                 !authorizationResources.isEmpty() ? authorizationResources.get(0).getUserID(): null : null;
-        postStateChange(connection, consentCoreDAO, consentID, userId ,
-                consentResource.getCurrentStatus(),
-                null, ConsentCoreServiceConstants.CREATE_CONSENT_REASON,
-                consentResource.getClientID(), consentDataMap);
+
 
         ArrayList<AuthorizationResource> storedAuthorizationResources = new ArrayList<>();
         // Create an authorization resource if isImplicitAuth parameter is true
@@ -154,8 +151,9 @@ public class ConsentCoreServiceUtil {
                 storedConsentResource.getConsentType(), storedConsentResource.getCurrentStatus(),
                 storedConsentResource.getConsentFrequency(), storedConsentResource.getValidityPeriod(),
                 storedConsentResource.getCreatedTime(), storedConsentResource.getUpdatedTime(),
-                storedConsentResource.isRecurringIndicator(), null, null,
-                null);
+                storedConsentResource.isRecurringIndicator(), consentResource.getConsentAttributes(), null,
+                new ArrayList<>());
+
 
         if (isConsentAttributesStored) {
             detailedConsentResource.setConsentAttributes(consentResource.getConsentAttributes());
@@ -163,6 +161,20 @@ public class ConsentCoreServiceUtil {
         if (isImplicitAuthorization) {
             detailedConsentResource.setAuthorizationResources(storedAuthorizationResources);
         }
+                /* Create audit record, setting previous consent status as null since this is the first time the
+           consent is created and execute state change listener */
+        HashMap<String, Object> consentDataMap = new HashMap<>();
+        consentDataMap.put(ConsentCoreServiceConstants.DETAILED_CONSENT_RESOURCE, detailedConsentResource);
+        DetailedConsentResource oldDetailedConsent = new DetailedConsentResource();
+        oldDetailedConsent.setConsentAttributes(new HashMap<>());
+        oldDetailedConsent.setAuthorizationResources(new ArrayList<>());
+        oldDetailedConsent.setConsentMappingResources(new ArrayList<>());
+        consentDataMap.put(ConsentCoreServiceConstants.CONSENT_AMENDMENT_HISTORY_RESOURCE, oldDetailedConsent);
+
+        postStateChange(connection, consentCoreDAO, consentID, userId ,
+                consentResource.getCurrentStatus(),
+                null, ConsentCoreServiceConstants.CREATE_CONSENT_REASON,
+                consentResource.getClientID(), consentDataMap );
         return detailedConsentResource;
     }
 
@@ -352,28 +364,59 @@ public class ConsentCoreServiceUtil {
                                        String reason, String clientId, Map<String, Object> consentDataMap)
             throws ConsentDataInsertionException, ConsentManagementException {
 
-        createAuditRecord(connection, consentCoreDAO, consentID, userID, newConsentStatus, previousConsentStatus,
+       ConsentStatusAuditRecord  consentStatusAuditRecord =  createAuditRecord(connection, consentCoreDAO, consentID,
+               userID,
+                newConsentStatus,
+                previousConsentStatus,
                 reason);
         // TODO: Uncomment and test when ConsentStateChangeListenerImpl is implemented
-//        ConsentStateChangeListenerImpl.getInstance().onStateChange(consentID, userID, newConsentStatus,
-//                previousConsentStatus, reason, clientId, consentDataMap);
+
+        DetailedConsentResource detailedCurrentConsent = (DetailedConsentResource)
+                consentDataMap.get(ConsentCoreServiceConstants.DETAILED_CONSENT_RESOURCE);
+        DetailedConsentResource detailedHistoryConsent = (DetailedConsentResource)
+                consentDataMap.get(ConsentCoreServiceConstants.CONSENT_AMENDMENT_HISTORY_RESOURCE);
+
+
+        ConsentHistoryResource consentHistoryResource = new ConsentHistoryResource();
+        consentHistoryResource.setDetailedConsentResource(detailedHistoryConsent);
+        consentHistoryResource.setReason(reason);
+        consentHistoryResource.setTimestamp(System.currentTimeMillis());
+
+        ConsentCoreServiceImpl consentCoreService = new ConsentCoreServiceImpl();
+        boolean result = consentCoreService.storeConsentAmendmentHistory(
+                consentStatusAuditRecord.getStatusAuditID(),
+                consentHistoryResource,
+                detailedCurrentConsent);
+
+        if (result) {
+            if (log.isDebugEnabled()) {
+                log.debug(String.format("Consent Amendment History of consentID: %s persisted successfully.",
+                        consentID));
+            }
+        } else {
+            log.error(String.format("Failed to persist Consent Amendment History of consentID : %s. " ,
+                    consentID));
+        }
+
+
     }
 
     /**
      * Create an audit record for the consent status change.
      *
-     * @param connection             database connection
-     * @param consentCoreDAO         consent core DAO
-     * @param consentID              consent ID
-     * @param userID                 user ID
-     * @param newConsentStatus       new consent status
-     * @param previousConsentStatus  previous consent status
-     * @param reason                 reason for the status change
+     * @param connection            database connection
+     * @param consentCoreDAO        consent core DAO
+     * @param consentID             consent ID
+     * @param userID                user ID
+     * @param newConsentStatus      new consent status
+     * @param previousConsentStatus previous consent status
+     * @param reason                reason for the status change
+     * @return
      * @throws ConsentDataInsertionException thrown if an error occurs when storing the audit record
      */
-    public static void createAuditRecord(Connection connection, ConsentCoreDAO consentCoreDAO, String consentID,
-                                         String userID, String newConsentStatus, String previousConsentStatus,
-                                         String reason) throws ConsentDataInsertionException {
+    public static ConsentStatusAuditRecord createAuditRecord(Connection connection, ConsentCoreDAO consentCoreDAO, String consentID,
+                                                             String userID, String newConsentStatus, String previousConsentStatus,
+                                                             String reason) throws ConsentDataInsertionException {
 
         // Create an audit record
         String actionBy = StringUtils.isNotEmpty(userID) ? userID : null;
@@ -384,7 +427,7 @@ public class ConsentCoreServiceUtil {
             log.debug(("Storing audit record for consent of ID: " +
                     consentStatusAuditRecord.getConsentID()).replaceAll("[\r\n]", ""));
         }
-        consentCoreDAO.storeConsentStatusAuditRecord(connection, consentStatusAuditRecord);
+        return consentCoreDAO.storeConsentStatusAuditRecord(connection, consentStatusAuditRecord);
     }
 
     /**
@@ -770,8 +813,114 @@ public class ConsentCoreServiceUtil {
                     currentConsentResource.setAuthorizationResources(consentAuthResourceHistory);
                 }
             }
-            consentHistoryResource.setDetailedConsentResource(currentConsentResource);
+            consentHistoryResource.setDetailedConsentResource(currentConsentResource.clone());
             consentAmendmentHistoryDataMap.put(historyId, consentHistoryResource);
+        }
+        return consentAmendmentHistoryDataMap;
+    }
+
+    /**
+     * Method to process the consent amendment history data.
+     *
+     * @param consentAmendmentHistoryRetrievalResult  Consent amendment history retrieval result
+     * @param currentConsentResource                  Current consent resource
+     * @return Consent amendment history data map
+     * @throws ConsentManagementException Consent management exception
+     */
+    public static ArrayList<ConsentHistoryResource> processConsentAmendmentHistoryDataAsArray(
+            Map<String, ConsentHistoryResource> consentAmendmentHistoryRetrievalResult,
+            DetailedConsentResource currentConsentResource) throws ConsentManagementException {
+
+        Gson gson = new Gson();
+        ArrayList<ConsentHistoryResource> consentAmendmentHistoryDataMap = new ArrayList<>();
+
+        for (Map.Entry<String, ConsentHistoryResource> consentHistoryDataEntry :
+                consentAmendmentHistoryRetrievalResult.entrySet()) {
+            String historyId = consentHistoryDataEntry.getKey();
+            ConsentHistoryResource consentHistoryResource = consentHistoryDataEntry.getValue();
+
+            for (Map.Entry<String, Object> consentHistoryDataTypeEntry :
+                    consentHistoryResource.getChangedAttributesJsonDataMap().entrySet()) {
+                String consentDataType = consentHistoryDataTypeEntry.getKey();
+                Object changedAttributes = consentHistoryDataTypeEntry.getValue();
+
+                if (ConsentCoreServiceConstants.TYPE_CONSENT_BASIC_DATA.equals(consentDataType)) {
+                    JSONObject changedValuesJSON = parseChangedAttributeJsonString(changedAttributes.toString());
+                    if (changedValuesJSON.containsKey(ConsentCoreServiceConstants.RECEIPT)) {
+                        currentConsentResource.setReceipt(
+                                (String) changedValuesJSON.get(ConsentCoreServiceConstants.RECEIPT));
+                    }
+                    if (changedValuesJSON.containsKey(ConsentCoreServiceConstants.VALIDITY_TIME)) {
+                        currentConsentResource.setValidityPeriod(Long.parseLong((String)
+                                changedValuesJSON.get(ConsentCoreServiceConstants.VALIDITY_TIME)));
+                    }
+                    if (changedValuesJSON.containsKey(ConsentCoreServiceConstants.UPDATED_TIME)) {
+                        currentConsentResource.setUpdatedTime(Long.parseLong((String)
+                                changedValuesJSON.get(ConsentCoreServiceConstants.UPDATED_TIME)));
+                    }
+                    if (changedValuesJSON.containsKey(ConsentCoreServiceConstants.CURRENT_STATUS)) {
+                        currentConsentResource.setCurrentStatus((String)
+                                changedValuesJSON.get(ConsentCoreServiceConstants.CURRENT_STATUS));
+                    }
+
+                } else if (ConsentCoreServiceConstants.TYPE_CONSENT_ATTRIBUTES_DATA.equals(consentDataType)) {
+                    JSONObject changedValuesJSON = parseChangedAttributeJsonString(changedAttributes.toString());
+                    for (Map.Entry<String, Object> attribute : changedValuesJSON.entrySet()) {
+                        Object attributeValue = attribute.getValue();
+                        if (attributeValue == null) {
+                            //Ignore the consent attribute from the consent history if it's value is stored as null
+                            currentConsentResource.getConsentAttributes().remove(attribute.getKey());
+                        } else {
+                            currentConsentResource.getConsentAttributes().put(attribute.getKey(),
+                                    attributeValue.toString());
+                        }
+                    }
+
+                } else if (ConsentCoreServiceConstants.TYPE_CONSENT_MAPPING_DATA.equals(consentDataType)) {
+                    Map<String, Object> changedConsentMappingsDataMap = (Map<String, Object>) changedAttributes;
+                    ArrayList<ConsentMappingResource> consentMappings =
+                            currentConsentResource.getConsentMappingResources();
+                    ArrayList<ConsentMappingResource> consentMappingsHistory = new ArrayList<>();
+                    for (ConsentMappingResource mapping : consentMappings) {
+                        String mappingID = mapping.getMappingID();
+                        if (changedConsentMappingsDataMap.containsKey(mappingID)) {
+                            JSONObject changedValuesJSON = parseChangedAttributeJsonString(
+                                    changedConsentMappingsDataMap.get(mappingID).toString());
+                            if (changedValuesJSON.isEmpty()) {
+                                //Skip setting the mapping to consent history if the value is null
+                                continue;
+                            }
+                            //set the value available in the history as the mapping status
+                            mapping.setMappingStatus(
+                                    changedValuesJSON.get(ConsentCoreServiceConstants.MAPPING_STATUS).toString());
+                        }
+                        consentMappingsHistory.add(gson.fromJson(gson.toJson(mapping), ConsentMappingResource.class));
+                    }
+                    currentConsentResource.setConsentMappingResources(consentMappingsHistory);
+
+                } else if (ConsentCoreServiceConstants.TYPE_CONSENT_AUTH_RESOURCE_DATA.equals(consentDataType)) {
+                    Map<String, Object> changedConsentAuthResourceDataMap = (Map<String, Object>) changedAttributes;
+                    ArrayList<AuthorizationResource> consentAuthResources = currentConsentResource
+                            .getAuthorizationResources();
+                    ArrayList<AuthorizationResource> consentAuthResourceHistory = new ArrayList<>();
+                    for (AuthorizationResource authResource : consentAuthResources) {
+                        String authID = authResource.getAuthorizationID();
+                        if (changedConsentAuthResourceDataMap.containsKey(authID)) {
+                            JSONObject changedValuesJSON = parseChangedAttributeJsonString(
+                                    changedConsentAuthResourceDataMap.get(authID).toString());
+                            if (changedValuesJSON.isEmpty()) {
+                                //Skip setting the auth resource to consent history if the value is null
+                                continue;
+                            }
+                        }
+                        consentAuthResourceHistory.add(gson.fromJson(gson.toJson(authResource),
+                                AuthorizationResource.class));
+                    }
+                    currentConsentResource.setAuthorizationResources(consentAuthResourceHistory);
+                }
+            }
+            consentHistoryResource.setDetailedConsentResource(currentConsentResource);
+            consentAmendmentHistoryDataMap.add(consentHistoryResource);
         }
         return consentAmendmentHistoryDataMap;
     }

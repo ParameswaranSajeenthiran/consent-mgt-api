@@ -30,6 +30,7 @@ import org.wso2.financial.services.accelerator.consent.mgt.dao.models.DetailedCo
 
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -631,7 +632,9 @@ public interface ConsentCoreService {
      * @return a map of consent history resources
      * @throws ConsentManagementException thrown if any error occurs in the process
      */
-    Map<String, ConsentHistoryResource> getConsentAmendmentHistoryData(String consentID)
+    Map<String, ConsentHistoryResource> getConsentAmendmentHistoryData(
+                                                                       List<String> statusAuditRecordIds,
+                                                                       String consentID)
             throws ConsentManagementException;
 
     /**
@@ -712,7 +715,8 @@ public interface ConsentCoreService {
             throws ConsentManagementException;
 
     //
-    DetailedConsentResource amendDetailedConsentWithBulkAuthResource(String consentID, String consentReceipt,
+    DetailedConsentResource amendDetailedConsentWithBulkAuthResource(String orgId, String consentID,
+                                                                     String consentReceipt,
                                                                      Long consentValidityTime,
                                                                      ArrayList<AuthorizationResource>
                                                                              authorizationResources,

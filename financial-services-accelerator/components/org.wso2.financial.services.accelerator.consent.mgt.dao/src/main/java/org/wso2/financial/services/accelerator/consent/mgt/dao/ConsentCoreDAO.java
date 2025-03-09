@@ -439,7 +439,7 @@ public interface ConsentCoreDAO {
      * @throws ConsentDataRetrievalException thrown if any error occurs in the process
      */
     Map<String, ConsentHistoryResource> retrieveConsentAmendmentHistory(Connection connection,
-                                                List<String> recordIDsList) throws ConsentDataRetrievalException;
+                                                List<String> recordIDsList, String consentID) throws ConsentDataRetrievalException;
 
     /**
      * This method is used to fetch consents which has a expiring time as a consent attribute

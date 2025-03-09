@@ -326,7 +326,8 @@ public class ConsentMgtCommonDBQueries {
 
     public String getGetConsentHistoryPreparedStatement(String whereClause) {
 
-        return "SELECT * FROM FS_CONSENT_HISTORY " + whereClause + "ORDER BY EFFECTIVE_TIMESTAMP DESC";
+        return "SELECT * FROM FS_CONSENT_HISTORY " + whereClause +
+                "ORDER BY EFFECTIVE_TIMESTAMP DESC";
     }
 
     public String getSearchExpiringConsentPreparedStatement(String statusesEligibleForExpirationCondition) {

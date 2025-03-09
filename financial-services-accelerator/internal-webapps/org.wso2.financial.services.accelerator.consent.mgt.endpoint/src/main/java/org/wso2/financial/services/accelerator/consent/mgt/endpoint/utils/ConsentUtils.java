@@ -227,7 +227,7 @@ public class ConsentUtils {
      */
     public static void copyPropertiesToConsentResourceResponse(ConsentResponse consentResourceResponse,
                                                                DetailedConsentResource consentResource ,
-                                                               boolean withAuthResources) {
+                                                               boolean withAuthResources ,boolean withConsentMappingResources) {
         consentResourceResponse.setConsentID(consentResource.getConsentID());
         consentResourceResponse.setClientID(consentResource.getClientID());
         consentResourceResponse.setConsentType(consentResource.getConsentType());
@@ -248,10 +248,12 @@ public class ConsentUtils {
                 AuthResponse authResponse = new AuthResponse();
                 ConsentUtils.copyPropertiesToAuthorizationResourceResponse(authResponse, authorizationResource);
                 ArrayList<Resource> resources = new ArrayList<>();
-                for (ConsentMappingResource consentMappingResource : authorizationResource.getConsentMappingResource()) {
-                    Resource resource = new Resource();
-                    ConsentUtils.copyPropertiesToConsentMappingResourceResponse(resource, consentMappingResource);
-                    resources.add(resource);
+                if(withConsentMappingResources) {
+                    for (ConsentMappingResource consentMappingResource : authorizationResource.getConsentMappingResource()) {
+                        Resource resource = new Resource();
+                        ConsentUtils.copyPropertiesToConsentMappingResourceResponse(resource, consentMappingResource);
+                        resources.add(resource);
+                    }
                 }
                 authResponse.setResources(resources);
                 authResponses.add(authResponse);

@@ -29,6 +29,7 @@ import org.wso2.financial.services.accelerator.consent.mgt.dao.exceptions.Consen
 import org.wso2.financial.services.accelerator.consent.mgt.dao.exceptions.ConsentDataInsertionException;
 import org.wso2.financial.services.accelerator.consent.mgt.dao.exceptions.ConsentDataRetrievalException;
 import org.wso2.financial.services.accelerator.consent.mgt.dao.exceptions.ConsentDataUpdationException;
+import org.wso2.financial.services.accelerator.consent.mgt.dao.exceptions.ConsentManagementRuntimeException;
 import org.wso2.financial.services.accelerator.consent.mgt.dao.models.AuthorizationResource;
 import org.wso2.financial.services.accelerator.consent.mgt.dao.models.ConsentAttributes;
 import org.wso2.financial.services.accelerator.consent.mgt.dao.models.ConsentFile;
@@ -1139,7 +1140,7 @@ public class ConsentCoreDAOImpl implements ConsentCoreDAO {
         String statusAuditID = StringUtils.isEmpty(consentStatusAuditRecord.getStatusAuditID()) ?
                 UUID.randomUUID().toString() : consentStatusAuditRecord.getStatusAuditID();
         // Unix time in seconds
-        long actionTime = (consentStatusAuditRecord.getActionTime() == 0) ? System.currentTimeMillis() / 1000 :
+        long actionTime = (consentStatusAuditRecord.getActionTime() == 0) ? System.currentTimeMillis()  :
                 consentStatusAuditRecord.getActionTime();
 
         String storeConsentStatusAuditRecordPrepStatement =
@@ -1403,7 +1404,7 @@ public class ConsentCoreDAOImpl implements ConsentCoreDAO {
     // Suppression reason - False Positive : Cannot bind variables separately as the query is complex
     // Suppressed warning count - 1
     public Map<String, ConsentHistoryResource> retrieveConsentAmendmentHistory(Connection connection,
-                                               List<String> recordIDsList) throws ConsentDataRetrievalException {
+                                               List<String> recordIDsList, String consentID) throws ConsentDataRetrievalException {
 
         String whereClause = ConsentManagementDAOUtil.constructConsentHistoryPreparedStatement(recordIDsList.size());
         String getConsentHistoryPrepStatement = sqlStatements.getGetConsentHistoryPreparedStatement(whereClause);
@@ -1417,7 +1418,7 @@ public class ConsentCoreDAOImpl implements ConsentCoreDAO {
                 getConsentHistoryPreparedStmt.setString(count, recordIDsList.get(count - 1));
             }
 
-            String consentID = recordIDsList.get(0);
+
             try (ResultSet resultSet = getConsentHistoryPreparedStmt.executeQuery()) {
                 if (resultSet.isBeforeFirst()) {
                     return ConsentManagementDAOUtil.constructConsentHistoryRetrievalResult(consentID, resultSet);

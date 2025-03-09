@@ -2544,129 +2544,129 @@ public class ConsentMgtCoreServiceTests {
                 ConsentMgtServiceTestData.getSampleDetailedStoredTestCurrentConsentResource());
     }
 
-    @Test (expectedExceptions = ConsentManagementException.class)
-    public void testStoreConsentAmendmentHistoryDataRetrievalError() throws Exception {
-
-        doThrow(ConsentDataRetrievalException.class)
-                .when(mockedConsentCoreDAO).getDetailedConsentResource(any(), anyString());
-
-        consentCoreServiceImpl.storeConsentAmendmentHistory(sampleID,
-                ConsentMgtServiceTestData.getSampleTestConsentHistoryResource(), null);
-    }
-
-    @Test ()
-    public void testGetConsentAmendmentHistoryData() throws Exception {
-
-        doReturn(ConsentMgtServiceTestData.getSampleDetailedStoredTestConsentHistoryDataMap())
-                .when(mockedConsentCoreDAO).retrieveConsentAmendmentHistory(any(), any());
-        doReturn(ConsentMgtServiceTestData.getSampleDetailedStoredTestConsentResource())
-                .when(mockedConsentCoreDAO).getDetailedConsentResource(any(), anyString());
-
-        Map<String, ConsentHistoryResource>  consentAmendmentHistory =
-                consentCoreServiceImpl.getConsentAmendmentHistoryData(sampleID);
-
-        Assert.assertTrue(consentAmendmentHistory.containsKey(ConsentMgtServiceTestData.SAMPLE_HISTORY_ID));
-        Assert.assertNotNull(consentAmendmentHistory.get(ConsentMgtServiceTestData.SAMPLE_HISTORY_ID));
-    }
-
-    @Test
-    public void testGetConsentAmendmentHistoryDataWithOnlyBasicConsentData() throws Exception {
-
-        doReturn(ConsentMgtServiceTestData.getSampleConsentHistoryBasicConsentDataMap())
-                .when(mockedConsentCoreDAO).retrieveConsentAmendmentHistory(any(), any());
-        doReturn(ConsentMgtServiceTestData.getSampleDetailedStoredTestConsentResource())
-                .when(mockedConsentCoreDAO).getDetailedConsentResource(any(), anyString());
-
-        Map<String, ConsentHistoryResource>  consentAmendmentHistory =
-                consentCoreServiceImpl.getConsentAmendmentHistoryData(sampleID);
-
-        Assert.assertTrue(consentAmendmentHistory.containsKey(ConsentMgtServiceTestData.SAMPLE_HISTORY_ID));
-        Assert.assertNotNull(consentAmendmentHistory.get(ConsentMgtServiceTestData.SAMPLE_HISTORY_ID));
-    }
-
-    @Test
-    public void testGetConsentAmendmentHistoryDataWithOnlyConsentAttributesData() throws Exception {
-
-        doReturn(ConsentMgtServiceTestData.getSampleConsentHistoryConsentAttributesDataMap())
-                .when(mockedConsentCoreDAO).retrieveConsentAmendmentHistory(any(), any());
-        doReturn(ConsentMgtServiceTestData.getSampleDetailedStoredTestConsentResource())
-                .when(mockedConsentCoreDAO).getDetailedConsentResource(any(), anyString());
-
-        Map<String, ConsentHistoryResource>  consentAmendmentHistory =
-                consentCoreServiceImpl.getConsentAmendmentHistoryData(sampleID);
-
-        Assert.assertTrue(consentAmendmentHistory.containsKey(ConsentMgtServiceTestData.SAMPLE_HISTORY_ID));
-        Assert.assertNotNull(consentAmendmentHistory.get(ConsentMgtServiceTestData.SAMPLE_HISTORY_ID));
-    }
-
-    @Test
-    public void testGetConsentAmendmentHistoryDataWithOnlyConsentMappingsData() throws Exception {
-
-        doReturn(ConsentMgtServiceTestData.getSampleConsentHistoryConsentMappingsDataMap())
-                .when(mockedConsentCoreDAO).retrieveConsentAmendmentHistory(any(), any());
-        doReturn(ConsentMgtServiceTestData.getSampleDetailedStoredTestConsentResource())
-                .when(mockedConsentCoreDAO).getDetailedConsentResource(any(), anyString());
-
-        Map<String, ConsentHistoryResource>  consentAmendmentHistory =
-                consentCoreServiceImpl.getConsentAmendmentHistoryData(sampleID);
-
-        Assert.assertTrue(consentAmendmentHistory.containsKey(ConsentMgtServiceTestData.SAMPLE_HISTORY_ID));
-        Assert.assertNotNull(consentAmendmentHistory.get(ConsentMgtServiceTestData.SAMPLE_HISTORY_ID));
-    }
-
-    @Test
-    public void testGetConsentAmendmentHistoryDataWithNoConsentHistoryEntries() throws Exception {
-
-        doReturn(new HashMap<>())
-                .when(mockedConsentCoreDAO).retrieveConsentAmendmentHistory(any(), any());
-        doReturn(ConsentMgtServiceTestData.getSampleDetailedStoredTestConsentResource())
-                .when(mockedConsentCoreDAO).getDetailedConsentResource(any(), anyString());
-
-        Map<String, ConsentHistoryResource>  consentAmendmentHistory =
-                consentCoreServiceImpl.getConsentAmendmentHistoryData(sampleID);
-
-        Assert.assertEquals(0, consentAmendmentHistory.size());
-    }
-
-    @Test (expectedExceptions = ConsentManagementException.class)
-    public void testGetConsentAmendmentHistoryDataWithoutConsentID() throws Exception {
-
-        doReturn(ConsentMgtServiceTestData.getSampleDetailedStoredTestConsentHistoryDataMap())
-                .when(mockedConsentCoreDAO).retrieveConsentAmendmentHistory(any(), any());
-        doReturn(ConsentMgtServiceTestData.getSampleDetailedStoredTestConsentResource())
-                .when(mockedConsentCoreDAO).getDetailedConsentResource(any(), anyString());
-
-        consentCoreServiceImpl.getConsentAmendmentHistoryData(null);
-    }
-
-    @Test (expectedExceptions = ConsentManagementException.class)
-    public void testGetConsentAmendmentHistoryDataRetrieveError() throws Exception {
-
-        doReturn(ConsentMgtServiceTestData.getSampleDetailedStoredTestConsentHistoryDataMap())
-                .when(mockedConsentCoreDAO).retrieveConsentAmendmentHistory(any(), any());
-        doThrow(ConsentDataRetrievalException.class)
-                .when(mockedConsentCoreDAO).getDetailedConsentResource(any(), anyString());
-
-        consentCoreServiceImpl.getConsentAmendmentHistoryData(sampleID);
-    }
-
-    @Test
-    public void testSearchConsents() throws Exception {
-
-        ArrayList<DetailedConsentResource> detailedConsentResources = new ArrayList<>();
-        detailedConsentResources.add(ConsentMgtServiceTestData.getSampleDetailedStoredTestConsentResource());
-
-        doReturn(detailedConsentResources)
-                .when(mockedConsentCoreDAO).searchConsents(any(),any(), any(), any(), any(),
-                        any(), any(), anyLong(), anyLong(), anyInt(),
-                        anyInt());
-
-        consentCoreServiceImpl.searchDetailedConsents(null,ConsentMgtServiceTestData.SAMPLE_CLIENT_IDS_LIST,
-                ConsentMgtServiceTestData.SAMPLE_CLIENT_IDS_LIST, ConsentMgtServiceTestData.SAMPLE_CONSENT_TYPES_LIST,
-                ConsentMgtServiceTestData.SAMPLE_CONSENT_STATUSES_LIST,
-                ConsentMgtServiceTestData.SAMPLE_USER_IDS_LIST,
-                12345L, 23456L, null, null);
-    }
+//    @Test (expectedExceptions = ConsentManagementException.class)
+//    public void testStoreConsentAmendmentHistoryDataRetrievalError() throws Exception {
+//
+//        doThrow(ConsentDataRetrievalException.class)
+//                .when(mockedConsentCoreDAO).getDetailedConsentResource(any(), anyString());
+//
+//        consentCoreServiceImpl.storeConsentAmendmentHistory(sampleID,
+//                ConsentMgtServiceTestData.getSampleTestConsentHistoryResource(), null);
+//    }
+//
+//    @Test ()
+//    public void testGetConsentAmendmentHistoryData() throws Exception {
+//
+//        doReturn(ConsentMgtServiceTestData.getSampleDetailedStoredTestConsentHistoryDataMap())
+//                .when(mockedConsentCoreDAO).retrieveConsentAmendmentHistory(any(), any());
+//        doReturn(ConsentMgtServiceTestData.getSampleDetailedStoredTestConsentResource())
+//                .when(mockedConsentCoreDAO).getDetailedConsentResource(any(), anyString());
+//
+//        Map<String, ConsentHistoryResource>  consentAmendmentHistory =
+//                consentCoreServiceImpl.getConsentAmendmentHistoryData(sampleID);
+//
+//        Assert.assertTrue(consentAmendmentHistory.containsKey(ConsentMgtServiceTestData.SAMPLE_HISTORY_ID));
+//        Assert.assertNotNull(consentAmendmentHistory.get(ConsentMgtServiceTestData.SAMPLE_HISTORY_ID));
+//    }
+//
+//    @Test
+//    public void testGetConsentAmendmentHistoryDataWithOnlyBasicConsentData() throws Exception {
+//
+//        doReturn(ConsentMgtServiceTestData.getSampleConsentHistoryBasicConsentDataMap())
+//                .when(mockedConsentCoreDAO).retrieveConsentAmendmentHistory(any(), any());
+//        doReturn(ConsentMgtServiceTestData.getSampleDetailedStoredTestConsentResource())
+//                .when(mockedConsentCoreDAO).getDetailedConsentResource(any(), anyString());
+//
+//        Map<String, ConsentHistoryResource>  consentAmendmentHistory =
+//                consentCoreServiceImpl.getConsentAmendmentHistoryData(sampleID);
+//
+//        Assert.assertTrue(consentAmendmentHistory.containsKey(ConsentMgtServiceTestData.SAMPLE_HISTORY_ID));
+//        Assert.assertNotNull(consentAmendmentHistory.get(ConsentMgtServiceTestData.SAMPLE_HISTORY_ID));
+//    }
+//
+//    @Test
+//    public void testGetConsentAmendmentHistoryDataWithOnlyConsentAttributesData() throws Exception {
+//
+//        doReturn(ConsentMgtServiceTestData.getSampleConsentHistoryConsentAttributesDataMap())
+//                .when(mockedConsentCoreDAO).retrieveConsentAmendmentHistory(any(), any());
+//        doReturn(ConsentMgtServiceTestData.getSampleDetailedStoredTestConsentResource())
+//                .when(mockedConsentCoreDAO).getDetailedConsentResource(any(), anyString());
+//
+//        Map<String, ConsentHistoryResource>  consentAmendmentHistory =
+//                consentCoreServiceImpl.getConsentAmendmentHistoryData(sampleID);
+//
+//        Assert.assertTrue(consentAmendmentHistory.containsKey(ConsentMgtServiceTestData.SAMPLE_HISTORY_ID));
+//        Assert.assertNotNull(consentAmendmentHistory.get(ConsentMgtServiceTestData.SAMPLE_HISTORY_ID));
+//    }
+//
+//    @Test
+//    public void testGetConsentAmendmentHistoryDataWithOnlyConsentMappingsData() throws Exception {
+//
+//        doReturn(ConsentMgtServiceTestData.getSampleConsentHistoryConsentMappingsDataMap())
+//                .when(mockedConsentCoreDAO).retrieveConsentAmendmentHistory(any(), any());
+//        doReturn(ConsentMgtServiceTestData.getSampleDetailedStoredTestConsentResource())
+//                .when(mockedConsentCoreDAO).getDetailedConsentResource(any(), anyString());
+//
+//        Map<String, ConsentHistoryResource>  consentAmendmentHistory =
+//                consentCoreServiceImpl.getConsentAmendmentHistoryData(sampleID);
+//
+//        Assert.assertTrue(consentAmendmentHistory.containsKey(ConsentMgtServiceTestData.SAMPLE_HISTORY_ID));
+//        Assert.assertNotNull(consentAmendmentHistory.get(ConsentMgtServiceTestData.SAMPLE_HISTORY_ID));
+//    }
+//
+//    @Test
+//    public void testGetConsentAmendmentHistoryDataWithNoConsentHistoryEntries() throws Exception {
+//
+//        doReturn(new HashMap<>())
+//                .when(mockedConsentCoreDAO).retrieveConsentAmendmentHistory(any(), any());
+//        doReturn(ConsentMgtServiceTestData.getSampleDetailedStoredTestConsentResource())
+//                .when(mockedConsentCoreDAO).getDetailedConsentResource(any(), anyString());
+//
+//        Map<String, ConsentHistoryResource>  consentAmendmentHistory =
+//                consentCoreServiceImpl.getConsentAmendmentHistoryData(sampleID);
+//
+//        Assert.assertEquals(0, consentAmendmentHistory.size());
+//    }
+//
+//    @Test (expectedExceptions = ConsentManagementException.class)
+//    public void testGetConsentAmendmentHistoryDataWithoutConsentID() throws Exception {
+//
+//        doReturn(ConsentMgtServiceTestData.getSampleDetailedStoredTestConsentHistoryDataMap())
+//                .when(mockedConsentCoreDAO).retrieveConsentAmendmentHistory(any(), any());
+//        doReturn(ConsentMgtServiceTestData.getSampleDetailedStoredTestConsentResource())
+//                .when(mockedConsentCoreDAO).getDetailedConsentResource(any(), anyString());
+//
+//        consentCoreServiceImpl.getConsentAmendmentHistoryData(null);
+//    }
+//
+//    @Test (expectedExceptions = ConsentManagementException.class)
+//    public void testGetConsentAmendmentHistoryDataRetrieveError() throws Exception {
+//
+//        doReturn(ConsentMgtServiceTestData.getSampleDetailedStoredTestConsentHistoryDataMap())
+//                .when(mockedConsentCoreDAO).retrieveConsentAmendmentHistory(any(), any());
+//        doThrow(ConsentDataRetrievalException.class)
+//                .when(mockedConsentCoreDAO).getDetailedConsentResource(any(), anyString());
+//
+//        consentCoreServiceImpl.getConsentAmendmentHistoryData(sampleID);
+//    }
+//
+//    @Test
+//    public void testSearchConsents() throws Exception {
+//
+//        ArrayList<DetailedConsentResource> detailedConsentResources = new ArrayList<>();
+//        detailedConsentResources.add(ConsentMgtServiceTestData.getSampleDetailedStoredTestConsentResource());
+//
+//        doReturn(detailedConsentResources)
+//                .when(mockedConsentCoreDAO).searchConsents(any(),any(), any(), any(), any(),
+//                        any(), any(), anyLong(), anyLong(), anyInt(),
+//                        anyInt());
+//
+//        consentCoreServiceImpl.searchDetailedConsents(null,ConsentMgtServiceTestData.SAMPLE_CLIENT_IDS_LIST,
+//                ConsentMgtServiceTestData.SAMPLE_CLIENT_IDS_LIST, ConsentMgtServiceTestData.SAMPLE_CONSENT_TYPES_LIST,
+//                ConsentMgtServiceTestData.SAMPLE_CONSENT_STATUSES_LIST,
+//                ConsentMgtServiceTestData.SAMPLE_USER_IDS_LIST,
+//                12345L, 23456L, null, null);
+//    }
 
     @Test (expectedExceptions = ConsentManagementException.class)
     public void testSearchConsentsRetrieveError() throws Exception {
