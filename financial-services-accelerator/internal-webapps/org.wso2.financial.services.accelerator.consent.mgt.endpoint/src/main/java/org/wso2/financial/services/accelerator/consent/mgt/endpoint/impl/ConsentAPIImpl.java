@@ -1,9 +1,8 @@
-package org.wso2.financial.services.accelerator.consent.mgt.endpoint.handler;
+package org.wso2.financial.services.accelerator.consent.mgt.endpoint.impl;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.json.JSONException;
@@ -29,32 +28,31 @@ import org.wso2.financial.services.accelerator.consent.mgt.endpoint.utils.Consen
 import org.wso2.financial.services.accelerator.consent.mgt.service.exception.ConsentManagementRuntimeException;
 import org.wso2.financial.services.accelerator.consent.mgt.service.impl.ConsentCoreServiceImpl;
 
-import javax.ws.rs.core.Response;
-import java.lang.reflect.Array;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
+import javax.ws.rs.core.Response;
+
+
 /**
- * ConsentMgtApiHandler.
+ * ConsentAPIImpl.
  */
-public class ConsentMgtApiHandler {
-    private static final Log log = LogFactory.getLog(ConsentMgtApiHandler.class);
+public class ConsentAPIImpl {
+    private static final Log log = LogFactory.getLog(ConsentAPIImpl.class);
     private final ConsentCoreServiceImpl consentCoreService = new ConsentCoreServiceImpl();
 
-    public ConsentMgtApiHandler() {
+    public ConsentAPIImpl() {
     }
 
 
     public Response consentGet(
             String orgInfo,
             String consentType, String consentStatus
-            , String userID, long fromTimeValue, long toTimeValue, int limitValue, int offsetValue)
-             {
+            , String userID, long fromTimeValue, long toTimeValue, int limitValue, int offsetValue) {
 
         int total = 0;
         ConsentCoreServiceImpl consentCoreService = new ConsentCoreServiceImpl();
@@ -71,10 +69,10 @@ public class ConsentMgtApiHandler {
         ArrayList<String> consentStatuses = new ArrayList<>();
         ArrayList<String> userIDs = new ArrayList<>();
         if (consentType != null) {
-            Collections.addAll( consentTypes, consentType.split(","));
+            Collections.addAll(consentTypes, consentType.split(","));
         }
         if (consentStatus != null) {
-            Collections.addAll( consentStatuses, consentStatus.split(","));
+            Collections.addAll(consentStatuses, consentStatus.split(","));
         }
         if (userID != null) {
             userIDs.add(userID);
@@ -91,20 +89,20 @@ public class ConsentMgtApiHandler {
         offset = offsetValue == 0 ? null : offsetValue;
 
 
-                 results = consentCoreService.searchDetailedConsents(
-                         orgInfo,
-                         consentIDs,
-                         clientIDs,
-                         consentTypes,
-                         consentStatuses,
-                         userIDs,
-                         fromTime,
-                         toTime,
-                         limit,
-                         offset);
+        results = consentCoreService.searchDetailedConsents(
+                orgInfo,
+                consentIDs,
+                clientIDs,
+                consentTypes,
+                consentStatuses,
+                userIDs,
+                fromTime,
+                toTime,
+                limit,
+                offset);
 
 
-                 if (limit != null || offset != null) {
+        if (limit != null || offset != null) {
             results = consentCoreService.searchDetailedConsents(orgInfo, consentIDs,
                     clientIDs,
                     consentTypes,
@@ -115,52 +113,54 @@ public class ConsentMgtApiHandler {
                     null,
                     null);
         }
-                 ArrayList<ConsentResponse> consentResponses = new ArrayList<>();
-                 for ( DetailedConsentResource result : results) {
-                     ConsentResponse consentResponse = new ConsentResponse();
-                     ConsentUtils.copyPropertiesToConsentResourceResponse(consentResponse, result,
-                             false,false);
-                     ArrayList<AuthResponse> authResponses = new ArrayList<>();
+        ArrayList<ConsentResponse> consentResponses = new ArrayList<>();
+        for (DetailedConsentResource result : results) {
+            ConsentResponse consentResponse = new ConsentResponse();
+            ConsentUtils.copyPropertiesToConsentResourceResponse(consentResponse, result,
+                    false, false);
+            ArrayList<AuthResponse> authResponses = new ArrayList<>();
 
-                     // get consent mapping resources for each AuthorizationResource in a Map
-                     Map<String, ArrayList<ConsentMappingResource>> consentMappingResources = new HashMap<>();
-                     for (ConsentMappingResource consentMappingResource : result.getConsentMappingResources()) {
-                         if (!consentMappingResources.containsKey(consentMappingResource.getAuthorizationID())) {
-                             consentMappingResources.put(consentMappingResource.getAuthorizationID(),
-                                     new ArrayList<>());
-                         }
-                         consentMappingResources.get(consentMappingResource.getAuthorizationID()).add(consentMappingResource);
-                     }
-
-
-                     for (AuthorizationResource authorizationResource : result.getAuthorizationResources()) {
-                         AuthResponse authorizationResourceResponse = new AuthResponse();
-                         ConsentUtils.copyPropertiesToAuthorizationResourceResponse(authorizationResourceResponse, authorizationResource);
-                         ArrayList<Resource> resources = new ArrayList<>();
-                         //add the consent mapping resources to the resources
-                         if (consentMappingResources.containsKey(authorizationResource.getAuthorizationID())) {
-                             for (ConsentMappingResource consentMappingResource : consentMappingResources.get(authorizationResource.getAuthorizationID())) {
-                                 Resource resource = new Resource();
-                                 ConsentUtils.copyPropertiesToConsentMappingResourceResponse(resource, consentMappingResource);
-                                 resources.add(resource);
-                             }
-                         }
-                         authorizationResourceResponse.setResources(resources);
-                         authResponses.add(authorizationResourceResponse);
-                     }
-                     consentResponse.setAuthorizationResources(authResponses);
-                     consentResponses.add(consentResponse);
+            // get consent mapping resources for each AuthorizationResource in a Map
+            Map<String, ArrayList<ConsentMappingResource>> consentMappingResources = new HashMap<>();
+            for (ConsentMappingResource consentMappingResource : result.getConsentMappingResources()) {
+                if (!consentMappingResources.containsKey(consentMappingResource.getAuthorizationID())) {
+                    consentMappingResources.put(consentMappingResource.getAuthorizationID(),
+                            new ArrayList<>());
+                }
+                consentMappingResources.get(consentMappingResource.getAuthorizationID()).add(consentMappingResource);
+            }
 
 
-                 }
+            for (AuthorizationResource authorizationResource : result.getAuthorizationResources()) {
+                AuthResponse authorizationResourceResponse = new AuthResponse();
+                ConsentUtils.copyPropertiesToAuthorizationResourceResponse(authorizationResourceResponse,
+                        authorizationResource);
+                ArrayList<Resource> resources = new ArrayList<>();
+                //add the consent mapping resources to the resources
+                if (consentMappingResources.containsKey(authorizationResource.getAuthorizationID())) {
+                    for (ConsentMappingResource consentMappingResource : consentMappingResources.get(
+                            authorizationResource.getAuthorizationID())) {
+                        Resource resource = new Resource();
+                        ConsentUtils.copyPropertiesToConsentMappingResourceResponse(resource, consentMappingResource);
+                        resources.add(resource);
+                    }
+                }
+                authorizationResourceResponse.setResources(resources);
+                authResponses.add(authorizationResourceResponse);
+            }
+            consentResponse.setAuthorizationResources(authResponses);
+            consentResponses.add(consentResponse);
 
 
-        return Response.ok().entity(consentResponses).build() ;
+        }
+
+
+        return Response.ok().entity(consentResponses).build();
     }
 
     //
 
-    public Response consentPost (
+    public Response consentPost(
             ConsentResourceDTO consentResourceDTO,
             String orgInfo, boolean isImplicitAuth, boolean exclusiveConsent)
             throws
@@ -174,8 +174,8 @@ public class ConsentMgtApiHandler {
         consentResource.setOrgID(orgInfo);
 
         // if consentFrequency is an attribute in consentAttributes, then set it to the consentResource
-        Map<String, String> consentAttributes =ConsentUtils.convertToMap(consentResourceDTO.getConsentAttributes());
-        if (!consentAttributes.isEmpty()){
+        Map<String, String> consentAttributes = ConsentUtils.convertToMap(consentResourceDTO.getConsentAttributes());
+        if (!consentAttributes.isEmpty()) {
             if (consentAttributes.containsKey("consentFrequency")) {
                 consentResource.setConsentFrequency(Integer.parseInt(consentAttributes.get("consentFrequency")));
             } else {
@@ -186,7 +186,7 @@ public class ConsentMgtApiHandler {
 
         ArrayList<AuthorizationResource> authorizations = new ArrayList<>();
 
-        if(isImplicitAuth){
+        if (isImplicitAuth) {
             for (AuthorizationResourceDTO authorizationResourceDTO : consentResourceDTO.getAuthorizationResources()) {
                 AuthorizationResource authorizationResource = new AuthorizationResource();
                 ConsentUtils.copyPropertiesToAuthorizationResource(authorizationResource, authorizationResourceDTO);
@@ -196,7 +196,7 @@ public class ConsentMgtApiHandler {
                     res.setPermission(resource.getPermission());
                     res.setAccountID(resource.getAccountID());
                     consentMappingResources.add(res);
-            }
+                }
                 authorizationResource.setConsentMappingResource(consentMappingResources);
                 authorizations.add(authorizationResource);
 
@@ -218,7 +218,7 @@ public class ConsentMgtApiHandler {
 
         // Handle response
         ConsentResponse consentResponse = new ConsentResponse();
-        ConsentUtils.copyPropertiesToConsentResourceResponse(consentResponse, result , isImplicitAuth ,isImplicitAuth);
+        ConsentUtils.copyPropertiesToConsentResourceResponse(consentResponse, result, isImplicitAuth, isImplicitAuth);
 
         return Response.status(Response.Status.CREATED).entity(consentResponse).build();
 
@@ -236,18 +236,18 @@ public class ConsentMgtApiHandler {
 
     public Response consentStatusPut(BulkConsentStatusUpdateResource bulkConsentStatusUpdateResource, String orgInfo)
             throws
-            ConsentManagementRuntimeException
-             {
-            consentCoreService.bulkUpdateConsentStatus(
-                    orgInfo,
-                    bulkConsentStatusUpdateResource.getClientID(),
-                    bulkConsentStatusUpdateResource.getStatus(),
-                    bulkConsentStatusUpdateResource.getReason(),
-                    bulkConsentStatusUpdateResource.getUserId(),
-                    bulkConsentStatusUpdateResource.getConsentType(),
-                    (ArrayList<String>) bulkConsentStatusUpdateResource.getApplicableStatusesForStateChange());
+            ConsentManagementRuntimeException,
+            ConsentManagementException {
+        consentCoreService.bulkUpdateConsentStatus(
+                orgInfo,
+                bulkConsentStatusUpdateResource.getClientID(),
+                bulkConsentStatusUpdateResource.getStatus(),
+                bulkConsentStatusUpdateResource.getReason(),
+                bulkConsentStatusUpdateResource.getUserId(),
+                bulkConsentStatusUpdateResource.getConsentType(),
+                (ArrayList<String>) bulkConsentStatusUpdateResource.getApplicableStatusesForStateChange());
 
-            return Response.ok().entity("Status Updated").build();
+        return Response.ok().entity("Status Updated").build();
     }
 
     public ConsentResponse consentConsentIdPut(
@@ -269,8 +269,8 @@ public class ConsentMgtApiHandler {
         for (ReauthorizeResource authResourceDTO : amendmentResource.getAuthorizationResources()) {
             if (authResourceDTO.getAuthorizationId() != null) {
                 AuthorizationResource auth = new AuthorizationResource();
-               ConsentUtils.copyPropertiesToAuthorizationResource(auth, authResourceDTO);
-               auth.setConsentID(consentID);
+                ConsentUtils.copyPropertiesToAuthorizationResource(auth, authResourceDTO);
+                auth.setConsentID(consentID);
                 reAuthorization.add(auth);
 
                 for (Resource resource : authResourceDTO.getResources()) {
@@ -296,8 +296,8 @@ public class ConsentMgtApiHandler {
                 }
             } else {
                 AuthorizationResource auth = new AuthorizationResource();
-               ConsentUtils.copyPropertiesToAuthorizationResource(auth, authResourceDTO);
-            auth.setConsentID(consentID);
+                ConsentUtils.copyPropertiesToAuthorizationResource(auth, authResourceDTO);
+                auth.setConsentID(consentID);
                 newAuthorization.add(auth);
 
             }
@@ -324,7 +324,7 @@ public class ConsentMgtApiHandler {
 
         ConsentResponse consentResponse = new ConsentResponse();
         ConsentUtils.copyPropertiesToConsentResourceResponse(consentResponse, amendmentResponse,
-                false,false);
+                false, false);
         ArrayList<AuthResponse> authResponses = new ArrayList<>();
 
         // get consent mapping resources for each AuthorizationResource in a Map
@@ -340,11 +340,13 @@ public class ConsentMgtApiHandler {
 
         for (AuthorizationResource authorizationResource : amendmentResponse.getAuthorizationResources()) {
             AuthResponse authorizationResourceResponse = new AuthResponse();
-            ConsentUtils.copyPropertiesToAuthorizationResourceResponse(authorizationResourceResponse, authorizationResource);
+            ConsentUtils.copyPropertiesToAuthorizationResourceResponse(authorizationResourceResponse,
+                    authorizationResource);
             ArrayList<Resource> resources = new ArrayList<>();
             //add the consent mapping resources to the resources
             if (consentMappingResources.containsKey(authorizationResource.getAuthorizationID())) {
-                for (ConsentMappingResource consentMappingResource : consentMappingResources.get(authorizationResource.getAuthorizationID())) {
+                for (ConsentMappingResource consentMappingResource : consentMappingResources.get(
+                        authorizationResource.getAuthorizationID())) {
                     Resource resource = new Resource();
                     ConsentUtils.copyPropertiesToConsentMappingResourceResponse(resource, consentMappingResource);
                     resources.add(resource);
@@ -364,8 +366,7 @@ public class ConsentMgtApiHandler {
 //
     public Object consentConsentIdGet(
             String consentID, String orgInfo, boolean isDetailedConsent, String userId,
-            boolean isWithAttributes)
-             {
+            boolean isWithAttributes) {
 
 
         if (ConsentUtils.isConsentIdValid(consentID)) {
@@ -385,29 +386,35 @@ public class ConsentMgtApiHandler {
 
                     ConsentResponse consentResponse = new ConsentResponse();
                     ConsentUtils.copyPropertiesToConsentResourceResponse(consentResponse, detailedConsentResource,
-                            false ,false);
+                            false, false);
                     ArrayList<AuthResponse> authResponses = new ArrayList<>();
 
                     // get consent mapping resources for each AuthorizationResource in a Map
                     Map<String, ArrayList<ConsentMappingResource>> consentMappingResources = new HashMap<>();
-                    for (ConsentMappingResource consentMappingResource : detailedConsentResource.getConsentMappingResources()) {
+                    for (ConsentMappingResource consentMappingResource :
+                            detailedConsentResource.getConsentMappingResources()) {
                         if (!consentMappingResources.containsKey(consentMappingResource.getAuthorizationID())) {
                             consentMappingResources.put(consentMappingResource.getAuthorizationID(),
                                     new ArrayList<>());
                         }
-                        consentMappingResources.get(consentMappingResource.getAuthorizationID()).add(consentMappingResource);
+                        consentMappingResources.get(consentMappingResource.getAuthorizationID())
+                                .add(consentMappingResource);
                     }
 
 
-                    for (AuthorizationResource authorizationResource : detailedConsentResource.getAuthorizationResources()) {
+                    for (AuthorizationResource authorizationResource :
+                            detailedConsentResource.getAuthorizationResources()) {
                         AuthResponse authorizationResourceResponse = new AuthResponse();
-                        ConsentUtils.copyPropertiesToAuthorizationResourceResponse(authorizationResourceResponse, authorizationResource);
+                        ConsentUtils.copyPropertiesToAuthorizationResourceResponse(authorizationResourceResponse,
+                                authorizationResource);
                         ArrayList<Resource> resources = new ArrayList<>();
-                      //add the consent mapping resources to the resources
+                        //add the consent mapping resources to the resources
                         if (consentMappingResources.containsKey(authorizationResource.getAuthorizationID())) {
-                            for (ConsentMappingResource consentMappingResource : consentMappingResources.get(authorizationResource.getAuthorizationID())) {
+                            for (ConsentMappingResource consentMappingResource : consentMappingResources.get(
+                                    authorizationResource.getAuthorizationID())) {
                                 Resource resource = new Resource();
-                               ConsentUtils.copyPropertiesToConsentMappingResourceResponse(resource, consentMappingResource);
+                                ConsentUtils.copyPropertiesToConsentMappingResourceResponse(resource,
+                                        consentMappingResource);
                                 resources.add(resource);
                             }
                         }
@@ -417,12 +424,11 @@ public class ConsentMgtApiHandler {
                     consentResponse.setAuthorizationResources(authResponses);
 
 
-
                     return consentResponse;
 
 
                 } else {
-                    ConsentResource consent ;
+                    ConsentResource consent;
                     if (Objects.equals(isWithAttributes,
                             true)) {
                         consent = consentCoreService.getConsent(consentID,
@@ -462,32 +468,32 @@ public class ConsentMgtApiHandler {
             }
         } else {
             log.error("Invalid Consent ID");
-                 throw new ConsentManagementRuntimeException(Response.Status.BAD_REQUEST,
-                         "Invalid Consent ID");
+            throw new ConsentManagementRuntimeException(Response.Status.BAD_REQUEST,
+                    "Invalid Consent ID");
         }
     }
 
     public String consentConsentIdDelete(String consentID, String orgInfo, String userID) throws
             ConsentManagementException {
-            ConsentResource consentResource = consentCoreService.getConsent(consentID,
-                    false);
-            if (!consentResource.getOrgID().equals(orgInfo)) {
-                log.error("OrgInfo does not match");
-                throw new ConsentManagementRuntimeException(Response.Status.NOT_FOUND,
-                        "OrgInfo does not match, please provide the correct OrgInfo");
-            }
-            consentCoreService.revokeConsent(consentID,
-                    "revoked",
-                    userID,
-                    false);
-            return "Revoked";
+        ConsentResource consentResource = consentCoreService.getConsent(consentID,
+                false);
+        if (!consentResource.getOrgID().equals(orgInfo)) {
+            log.error("OrgInfo does not match");
+            throw new ConsentManagementRuntimeException(Response.Status.NOT_FOUND,
+                    "OrgInfo does not match, please provide the correct OrgInfo");
+        }
+        consentCoreService.revokeConsent(consentID,
+                "revoked",
+                userID,
+                false);
+        return "Revoked";
 
     }
 
 
     public Response consentConsentIdHistoryGet(
             String consentID, String orgInfo, Boolean detailed, String status, String actionBy, long fromTimeValue,
-            long toTimeValue, String statusAuditId ) throws
+            long toTimeValue, String statusAuditId) throws
             ConsentManagementException,
             JsonProcessingException {
         Long fromTime = null;
@@ -499,9 +505,9 @@ public class ConsentMgtApiHandler {
 
         ArrayList<ConsentStatusAuditRecord> consentStatusAuditRecords =
                 consentCoreService.searchConsentStatusAuditRecords(consentID, status,
-                actionBy, fromTime,
-                toTime,
-                statusAuditId);
+                        actionBy, fromTime,
+                        toTime,
+                        statusAuditId);
 
         // extract the consent status audit record Ids
         ArrayList<String> consentStatusAuditRecordIds = new ArrayList<>();
@@ -511,10 +517,10 @@ public class ConsentMgtApiHandler {
 
         ArrayList<ConsentHistoryResource> results =
                 new ArrayList<>(consentCoreService.getConsentAmendmentHistoryData(consentStatusAuditRecordIds,
-                consentID).values());
-       if (!detailed){
-           ArrayList<ConsentHistoryResource> newResults = new ArrayList<>();
-              for (ConsentHistoryResource result : results) {
+                        consentID).values());
+        if (!detailed) {
+            ArrayList<ConsentHistoryResource> newResults = new ArrayList<>();
+            for (ConsentHistoryResource result : results) {
                 DetailedConsentResource detailedConsentResource = new DetailedConsentResource();
                 detailedConsentResource.setConsentID(result.getDetailedConsentResource().getConsentID());
                 detailedConsentResource.setReceipt(result.getDetailedConsentResource().getReceipt());
@@ -525,17 +531,17 @@ public class ConsentMgtApiHandler {
                 detailedConsentResource.setCreatedTime(result.getDetailedConsentResource().getCreatedTime());
                 result.setDetailedConsentResource(detailedConsentResource);
                 newResults.add(result);
-              }
-           // remove null values from the consent
-           ObjectMapper objectMapper = new ObjectMapper();
-           objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+            }
+            // remove null values from the consent
+            ObjectMapper objectMapper = new ObjectMapper();
+            objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
 
-           return Response.ok().entity(objectMapper.writeValueAsString(newResults)).build();
+            return Response.ok().entity(objectMapper.writeValueAsString(newResults)).build();
 
 
-       } else {
-              return Response.ok().entity(results).build();
-       }
+        } else {
+            return Response.ok().entity(results).build();
+        }
 
 
     }

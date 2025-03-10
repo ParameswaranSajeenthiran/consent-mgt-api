@@ -6,7 +6,7 @@
  * in compliance with the License.
  * You may obtain a copy of the License at
  * <p>
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  * <p>
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -18,7 +18,6 @@
 
 package org.wso2.financial.services.accelerator.consent.mgt.service.exception;
 
-import javax.naming.NamingException;
 import javax.ws.rs.core.Response;
 
 /**
@@ -35,16 +34,12 @@ public class ConsentManagementRuntimeException extends RuntimeException {
         this.errorCode = errorCode;
     }
 
-    public ConsentManagementRuntimeException(Response.Status errorCode,String message) {
+    public ConsentManagementRuntimeException(Response.Status errorCode, String message) {
 
         super(message);
         this.errorCode = errorCode;
     }
 
-    public ConsentManagementRuntimeException(Response.Status errorCode) {
-        super();
-        this.errorCode = errorCode;
-    }
 
     public ConsentManagementRuntimeException(Response.Status status, String message, Throwable cause) {
         super(message, cause);
@@ -57,9 +52,5 @@ public class ConsentManagementRuntimeException extends RuntimeException {
         return errorCode;
     }
 
-    public void setErrorCode(Response.Status errorCode) {
-
-        this.errorCode = errorCode;
-    }
 
 }

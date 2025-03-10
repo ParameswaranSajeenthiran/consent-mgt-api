@@ -35,6 +35,17 @@ public class ConsentStatusAuditRecord {
 
     }
 
+    public ConsentStatusAuditRecord(String statusAuditID, String consentID, String currentStatus, long actionTime,
+                                    String reason, String actionBy, String previousStatus) {
+        this.statusAuditID = statusAuditID;
+        this.consentID = consentID;
+        this.currentStatus = currentStatus;
+        this.actionTime = actionTime;
+        this.reason = reason;
+        this.actionBy = actionBy;
+        this.previousStatus = previousStatus;
+    }
+
     public ConsentStatusAuditRecord(String consentID, String currentStatus, long actionTime,
                                     String reason, String actionBy, String previousStatus) {
         this.consentID = consentID;

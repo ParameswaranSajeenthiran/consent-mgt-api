@@ -671,21 +671,6 @@ public interface ConsentCoreService {
                                                               Integer limit, Integer offset)
             throws ConsentManagementException;
 
-    /**
-     * This method is used to amend consent receipt or validity period. The consent ID is mandatory. One of consent
-     * receipt of validity period must be provided. An audit record is created to indicate that the consent is
-     * amended. But the consent status won't be changed (since when an authorized consent is amended, the status
-     * remains the same)
-     *
-     * @param consentID             consent ID
-     * @param consentReceipt        new consent receipt
-     * @param consentValidityTime   new consent validity time
-     * @param userID                user ID to create audit record
-     * @return the updated consent resource
-     * @throws ConsentManagementException thrown if any error occurs in the process
-     */
-    ConsentResource amendConsentData(String consentID, String consentReceipt, Long consentValidityTime, String userID)
-            throws ConsentManagementException;
 
     /**
      * This method is used to amend the selected properties of the entire detailed consent. The consent ID is mandatory.

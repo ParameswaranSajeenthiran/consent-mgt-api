@@ -6,7 +6,7 @@
  * in compliance with the License.
  * You may obtain a copy of the License at
  * <p>
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  * <p>
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -236,11 +236,11 @@ public class DetailedConsentResource {
         this.consentMappingResources = consentMappingResources;
     }
 
-     public DetailedConsentResource clone() {
+    public DetailedConsentResource clone() {
         return new DetailedConsentResource(this.orgID, this.consentID, this.clientID, this.receipt, this.consentType,
                 this.currentStatus, this.consentFrequency, this.validityPeriod, this.createdTime, this.updatedTime,
-                this.recurringIndicator, this.consentAttributes, this.authorizationResources, this.consentMappingResources);
-
+                this.recurringIndicator, this.consentAttributes, this.authorizationResources,
+                this.consentMappingResources);
 
 
     }

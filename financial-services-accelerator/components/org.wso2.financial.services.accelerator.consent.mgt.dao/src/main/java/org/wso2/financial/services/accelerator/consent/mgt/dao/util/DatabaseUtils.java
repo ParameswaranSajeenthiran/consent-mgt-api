@@ -16,12 +16,12 @@
  * under the License.
  */
 
-package org.wso2.financial.services.accelerator.consent.mgt.service.util;
+package org.wso2.financial.services.accelerator.consent.mgt.dao.util;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.wso2.financial.services.accelerator.consent.mgt.service.exception.ConsentManagementRuntimeException;
-import org.wso2.financial.services.accelerator.consent.mgt.service.persistence.JDBCPersistenceManager;
+import org.wso2.financial.services.accelerator.consent.mgt.dao.exceptions.ConsentManagementRuntimeException;
+import org.wso2.financial.services.accelerator.consent.mgt.dao.persistence.JDBCPersistenceManager;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -35,7 +35,6 @@ public class DatabaseUtils {
 
     /**
      * Get a database connection instance from the Consent Management Persistence Manager.
-     *
      * @return Database Connection
      * @throws ConsentManagementRuntimeException Error when getting a database connection to Consent Management database
      */
