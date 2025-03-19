@@ -14,7 +14,7 @@ import javax.ws.rs.ext.Provider;
  * Exception mapper for ConstraintViolationException.
  */
 @Provider
-public class ConstraintViolationExceptionMapper implements ExceptionMapper<MismatchedInputException> {
+public class ConstraintViolationException implements ExceptionMapper<MismatchedInputException> {
 
     @Override
     public Response toResponse(MismatchedInputException exception) {

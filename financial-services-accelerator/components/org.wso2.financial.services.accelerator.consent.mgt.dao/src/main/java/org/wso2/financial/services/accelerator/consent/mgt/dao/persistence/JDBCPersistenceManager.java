@@ -22,7 +22,7 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.wso2.financial.services.accelerator.consent.mgt.dao.exceptions.ConsentManagementRuntimeException;
+import org.wso2.financial.services.accelerator.consent.mgt.dao.exceptions.ConsentMgtException;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -44,7 +44,8 @@ public final class JDBCPersistenceManager {
     private static volatile DataSource dataSource;
     private static final Log log = LogFactory.getLog(JDBCPersistenceManager.class);
 
-    private JDBCPersistenceManager() {
+    private JDBCPersistenceManager() throws
+            ConsentMgtException {
 
         initDataSource();
     }
@@ -54,7 +55,8 @@ public final class JDBCPersistenceManager {
      *
      * @return JDBCPersistenceManager instance
      */
-    public static synchronized JDBCPersistenceManager getInstance() {
+    public static synchronized JDBCPersistenceManager getInstance() throws
+            ConsentMgtException {
         if (instance == null) {
             synchronized (JDBCPersistenceManager.class) {
                 if (instance == null) {
@@ -73,7 +75,8 @@ public final class JDBCPersistenceManager {
     // Suppression reason - False Positive : Since the dataSourceName is taken from the deployment.toml, it can be
     //                      trusted
     // Suppressed warning count - 1
-    private void initDataSource() {
+    private void initDataSource() throws
+            ConsentMgtException {
 
         if (dataSource != null) {
             return;
@@ -86,12 +89,12 @@ public final class JDBCPersistenceManager {
                     Context context = new InitialContext();
                     dataSource = (DataSource) context.lookup("java:/comp/env/" + dataSourceName);
                 } else {
-                    throw new ConsentManagementRuntimeException("Persistence Manager configuration for Financial " +
+                    throw new ConsentMgtException("Persistence Manager configuration for Financial " +
                             "Services is not available in financial-services.xml file. Terminating the JDBC " +
                             "persistence manager initialization.");
                 }
             } catch (NamingException e) {
-                throw new ConsentManagementRuntimeException("Error when looking up the Consent Management Data Source.",
+                throw new ConsentMgtException("Error when looking up the Consent Management Data Source.",
                         e);
             }
         }
@@ -101,9 +104,10 @@ public final class JDBCPersistenceManager {
      * Returns an database connection for Consent Management data source.
      *
      * @return Database connection.
-     * @throws ConsentManagementRuntimeException Exception occurred when getting the data source.
+     * @throws ConsentMgtException Exception occurred when getting the data source.
      */
-    public Connection getDBConnection() throws ConsentManagementRuntimeException {
+    public Connection getDBConnection() throws
+            ConsentMgtException {
 
         try {
             Connection dbConnection = dataSource.getConnection();
@@ -111,7 +115,7 @@ public final class JDBCPersistenceManager {
             log.debug("Returning database connection for Consent Management data source");
             return dbConnection;
         } catch (SQLException e) {
-            throw new ConsentManagementRuntimeException("Error when getting a database connection object from the " +
+            throw new ConsentMgtException("Error when getting a database connection object from the " +
                     "consent management data source.", e);
         }
     }

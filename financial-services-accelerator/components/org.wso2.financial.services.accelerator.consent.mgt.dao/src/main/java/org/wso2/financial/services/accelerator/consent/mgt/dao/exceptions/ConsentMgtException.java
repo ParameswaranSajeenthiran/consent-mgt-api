@@ -18,29 +18,49 @@
 
 package org.wso2.financial.services.accelerator.consent.mgt.dao.exceptions;
 
+import javax.ws.rs.core.Response;
 
 /**
- * Used for runtime exceptions in consent management component.
+ * Used for creating runtime exceptions for financial services modules.
  */
-public class ConsentManagementRuntimeException extends RuntimeException {
+public class ConsentMgtException extends Exception {
 
     private static final long serialVersionUID = -5686395831712095972L;
-    private String errorCode;
+    private Response.Status errorCode;
 
-    public ConsentManagementRuntimeException(String errorCode, Throwable cause) {
+    public ConsentMgtException(Response.Status errorCode, Throwable cause) {
+
         super(cause);
         this.errorCode = errorCode;
     }
 
-    public ConsentManagementRuntimeException(String errorCode) {
+
+    public ConsentMgtException(Response.Status errorCode, String message) {
+
+        super(message);
         this.errorCode = errorCode;
     }
 
-    public String getErrorCode() {
-        return this.errorCode;
+    public ConsentMgtException(String message) {
+
+        super(message);
     }
 
-    public void setErrorCode(String errorCode) {
-        this.errorCode = errorCode;
+
+    public ConsentMgtException(Response.Status status, String message, Throwable cause) {
+        super(message, cause);
+        this.errorCode = status;
+
     }
+
+    public ConsentMgtException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    public Response.Status getErrorCode() {
+
+        return errorCode;
+    }
+
+
 }

@@ -31,7 +31,7 @@ import org.wso2.financial.services.accelerator.consent.mgt.dao.exceptions.Consen
 import org.wso2.financial.services.accelerator.consent.mgt.dao.exceptions.ConsentDataInsertionException;
 import org.wso2.financial.services.accelerator.consent.mgt.dao.exceptions.ConsentDataRetrievalException;
 import org.wso2.financial.services.accelerator.consent.mgt.dao.exceptions.ConsentDataUpdationException;
-import org.wso2.financial.services.accelerator.consent.mgt.dao.exceptions.ConsentManagementException;
+import org.wso2.financial.services.accelerator.consent.mgt.dao.exceptions.ConsentMgtException;
 import org.wso2.financial.services.accelerator.consent.mgt.dao.models.AuthorizationResource;
 import org.wso2.financial.services.accelerator.consent.mgt.dao.models.ConsentAttributes;
 import org.wso2.financial.services.accelerator.consent.mgt.dao.models.ConsentHistoryResource;
@@ -42,7 +42,6 @@ import org.wso2.financial.services.accelerator.consent.mgt.dao.models.DetailedCo
 import org.wso2.financial.services.accelerator.consent.mgt.dao.persistence.ConsentStoreInitializer;
 import org.wso2.financial.services.accelerator.consent.mgt.dao.util.DatabaseUtils;
 import org.wso2.financial.services.accelerator.consent.mgt.service.constants.ConsentCoreServiceConstants;
-import org.wso2.financial.services.accelerator.consent.mgt.service.exception.ConsentManagementRuntimeException;
 import org.wso2.financial.services.accelerator.consent.mgt.service.util.ConsentMgtServiceTestData;
 
 import java.sql.Connection;
@@ -173,7 +172,7 @@ public class ConsentCoreServiceImplTest {
                         ConsentMgtServiceTestData.SAMPLE_CURRENT_STATUS));
     }
 
-    @Test(expectedExceptions = ConsentManagementException.class)
+    @Test(expectedExceptions = ConsentMgtException.class)
     public void testBindUserAccountsToConsentWithoutNewCurrentConsentStatus() throws
             Exception {
 
@@ -184,7 +183,7 @@ public class ConsentCoreServiceImplTest {
                 ConsentMgtServiceTestData.SAMPLE_AUTHORIZATION_STATUS, null);
     }
 
-    @Test(expectedExceptions = ConsentManagementException.class)
+    @Test(expectedExceptions = ConsentMgtException.class)
     public void testBindUserAccountsToConsentWithoutConsentID() throws
             Exception {
 
@@ -198,7 +197,7 @@ public class ConsentCoreServiceImplTest {
                 ConsentMgtServiceTestData.SAMPLE_CURRENT_STATUS);
     }
 
-    @Test(expectedExceptions = ConsentManagementException.class)
+    @Test(expectedExceptions = ConsentMgtException.class)
     public void testBindUserAccountsToConsentWithoutClientID() throws
             Exception {
 
@@ -212,7 +211,7 @@ public class ConsentCoreServiceImplTest {
                 ConsentMgtServiceTestData.SAMPLE_CURRENT_STATUS);
     }
 
-    @Test(expectedExceptions = ConsentManagementException.class)
+    @Test(expectedExceptions = ConsentMgtException.class)
     public void testBindUserAccountsToConsentWithoutConsentType() throws
             Exception {
 
@@ -226,7 +225,7 @@ public class ConsentCoreServiceImplTest {
                 ConsentMgtServiceTestData.SAMPLE_CURRENT_STATUS);
     }
 
-    @Test(expectedExceptions = ConsentManagementException.class)
+    @Test(expectedExceptions = ConsentMgtException.class)
     public void testBindUserAccountsToConsentWithoutUserID() throws
             Exception {
 
@@ -237,7 +236,7 @@ public class ConsentCoreServiceImplTest {
                 ConsentMgtServiceTestData.SAMPLE_CURRENT_STATUS);
     }
 
-    @Test(expectedExceptions = ConsentManagementException.class)
+    @Test(expectedExceptions = ConsentMgtException.class)
     public void testBindUserAccountsToConsentWithoutAuthID() throws
             Exception {
 
@@ -249,7 +248,7 @@ public class ConsentCoreServiceImplTest {
                 ConsentMgtServiceTestData.SAMPLE_CURRENT_STATUS);
     }
 
-    @Test(expectedExceptions = ConsentManagementException.class)
+    @Test(expectedExceptions = ConsentMgtException.class)
     public void testBindUserAccountsToConsentWithoutNewAuthStatus() throws
             Exception {
 
@@ -260,7 +259,7 @@ public class ConsentCoreServiceImplTest {
                 ConsentMgtServiceTestData.SAMPLE_CURRENT_STATUS);
     }
 
-    @Test(expectedExceptions = ConsentManagementException.class)
+    @Test(expectedExceptions = ConsentMgtException.class)
     public void testBindUserAccountsToConsentWithEmptyAccountsAndPermissionsMap() throws
             Exception {
 
@@ -271,7 +270,7 @@ public class ConsentCoreServiceImplTest {
                         ConsentMgtServiceTestData.SAMPLE_CURRENT_STATUS));
     }
 
-    @Test(expectedExceptions = ConsentManagementException.class)
+    @Test(expectedExceptions = ConsentMgtException.class)
     public void testBindUserAccountsToConsentDataUpdateError() throws
             Exception {
 
@@ -286,7 +285,7 @@ public class ConsentCoreServiceImplTest {
                 ConsentMgtServiceTestData.SAMPLE_CURRENT_STATUS);
     }
 
-//    @Test(expectedExceptions = ConsentManagementException.class)
+//    @Test(expectedExceptions = ConsentMgtException.class)
 //    public void testBindUserAccountsToConsentDataInsertError() throws
 //            Exception {
 //
@@ -318,7 +317,7 @@ public class ConsentCoreServiceImplTest {
 //                ConsentMgtServiceTestData.SAMPLE_CONSUMED_STATUS);
 //    }
 
-    @Test(expectedExceptions = ConsentManagementException.class)
+    @Test(expectedExceptions = ConsentMgtException.class)
     public void testUpdateConsentStatusDataRetrievalError() throws
             Exception {
 
@@ -329,7 +328,7 @@ public class ConsentCoreServiceImplTest {
                 ConsentMgtServiceTestData.SAMPLE_CONSUMED_STATUS);
     }
 
-    @Test(expectedExceptions = ConsentManagementException.class)
+    @Test(expectedExceptions = ConsentMgtException.class)
     public void testUpdateConsentStatusDataUpdateError() throws
             Exception {
 
@@ -343,7 +342,7 @@ public class ConsentCoreServiceImplTest {
                 ConsentMgtServiceTestData.SAMPLE_CONSUMED_STATUS);
     }
 
-    @Test(expectedExceptions = ConsentManagementException.class)
+    @Test(expectedExceptions = ConsentMgtException.class)
     public void testUpdateConsentStatusDataInsertError() throws
             Exception {
 
@@ -359,7 +358,7 @@ public class ConsentCoreServiceImplTest {
                 ConsentMgtServiceTestData.SAMPLE_CONSUMED_STATUS);
     }
 
-    @Test(expectedExceptions = ConsentManagementException.class)
+    @Test(expectedExceptions = ConsentMgtException.class)
     public void testUpdateConsentStatusWithoutConsentId() throws
             Exception {
 
@@ -367,7 +366,7 @@ public class ConsentCoreServiceImplTest {
                 ConsentMgtServiceTestData.SAMPLE_CONSUMED_STATUS);
     }
 
-    @Test(expectedExceptions = ConsentManagementException.class)
+    @Test(expectedExceptions = ConsentMgtException.class)
     public void testUpdateConsentStatusWithoutConsentStatus() throws
             Exception {
 
@@ -401,7 +400,7 @@ public class ConsentCoreServiceImplTest {
         }
     }
 
-    @Test(expectedExceptions = ConsentManagementException.class)
+    @Test(expectedExceptions = ConsentMgtException.class)
     public void testCreateConsentAccountMappingRollBackWhenCreation() throws
             Exception {
 
@@ -415,7 +414,7 @@ public class ConsentCoreServiceImplTest {
                 ConsentMgtServiceTestData.SAMPLE_ACCOUNT_IDS_AND_PERMISSIONS_MAP);
     }
 
-    @Test(expectedExceptions = ConsentManagementException.class)
+    @Test(expectedExceptions = ConsentMgtException.class)
     public void testCreateConsentAccountMappingWithoutAuthID() throws
             Exception {
 
@@ -423,7 +422,7 @@ public class ConsentCoreServiceImplTest {
                 ConsentMgtServiceTestData.SAMPLE_ACCOUNT_IDS_AND_PERMISSIONS_MAP);
     }
 
-    @Test(expectedExceptions = ConsentManagementException.class)
+    @Test(expectedExceptions = ConsentMgtException.class)
     public void testCreateConsentAccountMappingWithoutAccountAndPermissionsMap() throws
             Exception {
 
@@ -440,14 +439,14 @@ public class ConsentCoreServiceImplTest {
                 .deactivateAccountMappings(ConsentMgtServiceTestData.UNMATCHED_MAPPING_IDS));
     }
 
-    @Test(expectedExceptions = ConsentManagementException.class)
+    @Test(expectedExceptions = ConsentMgtException.class)
     public void testDeactivateAccountMappingsWithEmptyMappingIDList() throws
             Exception {
 
         consentCoreServiceImpl.deactivateAccountMappings(new ArrayList<>());
     }
 
-    @Test(expectedExceptions = ConsentManagementException.class)
+    @Test(expectedExceptions = ConsentMgtException.class)
     public void testDeactivateAccountMappingsRollback() throws
             Exception {
 
@@ -467,7 +466,7 @@ public class ConsentCoreServiceImplTest {
                 ConsentMgtServiceTestData.SAMPLE_MAPPING_STATUS);
     }
 
-    @Test(expectedExceptions = ConsentManagementException.class)
+    @Test(expectedExceptions = ConsentMgtException.class)
     public void testUpdateAccountMappingStatusWithoutMappingIds() throws
             Exception {
 
@@ -478,7 +477,7 @@ public class ConsentCoreServiceImplTest {
                 ConsentMgtServiceTestData.SAMPLE_MAPPING_STATUS);
     }
 
-    @Test(expectedExceptions = ConsentManagementException.class)
+    @Test(expectedExceptions = ConsentMgtException.class)
     public void testUpdateAccountMappingStatusDataUpdateError() throws
             Exception {
 
@@ -622,7 +621,7 @@ public class ConsentCoreServiceImplTest {
                     ConsentCoreServiceConstants.CONSENT_REVOKE_REASON);
             Assert.assertTrue(isConsentRevoked);
         } catch (Exception e) {
-            Assert.assertTrue(e instanceof ConsentManagementException);
+            Assert.assertTrue(e instanceof ConsentMgtException);
         }
 
     }
@@ -655,7 +654,7 @@ public class ConsentCoreServiceImplTest {
         Assert.assertTrue(isConsentRevoked);
     }
 
-    @Test(expectedExceptions = ConsentManagementException.class)
+    @Test(expectedExceptions = ConsentMgtException.class)
     public void testRevokeConsentWithoutConsentID() throws
             Exception {
 
@@ -664,7 +663,7 @@ public class ConsentCoreServiceImplTest {
                 false, ConsentCoreServiceConstants.CONSENT_REVOKE_REASON);
     }
 
-    @Test(expectedExceptions = ConsentManagementException.class)
+    @Test(expectedExceptions = ConsentMgtException.class)
     public void testRevokeConsentWithoutNewConsentStatus() throws
             Exception {
 
@@ -672,7 +671,7 @@ public class ConsentCoreServiceImplTest {
                 null, ConsentMgtServiceTestData.SAMPLE_USER_ID, false);
     }
 
-    @Test(expectedExceptions = ConsentManagementException.class)
+    @Test(expectedExceptions = ConsentMgtException.class)
     public void testRevokeConsentDataRetrievalError() throws
             Exception {
 
@@ -684,7 +683,7 @@ public class ConsentCoreServiceImplTest {
                 false, ConsentCoreServiceConstants.CONSENT_REVOKE_REASON);
     }
 
-    @Test(expectedExceptions = ConsentManagementException.class)
+    @Test(expectedExceptions = ConsentMgtException.class)
     public void testRevokeConsentDataInsertionError() throws
             Exception {
 
@@ -704,7 +703,7 @@ public class ConsentCoreServiceImplTest {
                 false);
     }
 
-    @Test(expectedExceptions = ConsentManagementException.class)
+    @Test(expectedExceptions = ConsentMgtException.class)
     public void testRevokeConsentDataUpdateError() throws
             Exception {
 
@@ -849,7 +848,7 @@ public class ConsentCoreServiceImplTest {
                 ConsentMgtServiceTestData.SAMPLE_CURRENT_STATUS, false);
     }
 
-    @Test(expectedExceptions = ConsentManagementException.class)
+    @Test(expectedExceptions = ConsentMgtException.class)
     public void testRevokeExistingApplicableConsentsRetrieveError() throws
             Exception {
 
@@ -862,7 +861,7 @@ public class ConsentCoreServiceImplTest {
                 ConsentMgtServiceTestData.SAMPLE_CURRENT_STATUS, false);
     }
 
-    @Test(expectedExceptions = ConsentManagementException.class)
+    @Test(expectedExceptions = ConsentMgtException.class)
     public void testRevokeExistingApplicableConsentsUpdateError() throws
             Exception {
 
@@ -880,7 +879,7 @@ public class ConsentCoreServiceImplTest {
                 ConsentMgtServiceTestData.SAMPLE_CURRENT_STATUS, false);
     }
 
-//    @Test(expectedExceptions = ConsentManagementException.class)
+//    @Test(expectedExceptions = ConsentMgtException.class)
 //    public void testRevokeExistingApplicableConsentsInsertionError() throws
 //            Exception {
 //
@@ -900,7 +899,7 @@ public class ConsentCoreServiceImplTest {
 //                ConsentMgtServiceTestData.SAMPLE_CURRENT_STATUS, false);
 //    }
 
-    @Test(expectedExceptions = ConsentManagementException.class)
+    @Test(expectedExceptions = ConsentMgtException.class)
     public void testRevokeExistingApplicableConsentsWithoutClientID() throws
             Exception {
 
@@ -909,7 +908,7 @@ public class ConsentCoreServiceImplTest {
                 ConsentMgtServiceTestData.SAMPLE_CURRENT_STATUS, false);
     }
 
-    @Test(expectedExceptions = ConsentManagementException.class)
+    @Test(expectedExceptions = ConsentMgtException.class)
     public void testRevokeExistingApplicableConsentsWithoutRevokedConsentStatus() throws
             Exception {
 
@@ -918,7 +917,7 @@ public class ConsentCoreServiceImplTest {
                 ConsentMgtServiceTestData.SAMPLE_CURRENT_STATUS, null, false);
     }
 
-    @Test(expectedExceptions = ConsentManagementException.class)
+    @Test(expectedExceptions = ConsentMgtException.class)
     public void testRevokeExistingApplicableConsentsWithoutUserID() throws
             Exception {
 
@@ -928,7 +927,7 @@ public class ConsentCoreServiceImplTest {
                 , false);
     }
 
-    @Test(expectedExceptions = ConsentManagementException.class)
+    @Test(expectedExceptions = ConsentMgtException.class)
     public void testRevokeExistingApplicableConsentsWithoutConsentType() throws
             Exception {
 
@@ -938,7 +937,7 @@ public class ConsentCoreServiceImplTest {
                 , false);
     }
 
-    @Test(expectedExceptions = ConsentManagementException.class)
+    @Test(expectedExceptions = ConsentMgtException.class)
     public void testRevokeExistingApplicableConsentsWithoutApplicableStatusToRevoke() throws
             Exception {
 
@@ -1042,7 +1041,7 @@ public class ConsentCoreServiceImplTest {
                         ConsentMgtServiceTestData.SAMPLE_CURRENT_STATUS, consentResource.getCurrentStatus()));
     }
 
-    @Test(expectedExceptions = ConsentManagementException.class)
+    @Test(expectedExceptions = ConsentMgtException.class)
     public void testReAuthorizeExistingAuthResourcesWithoutConsentID() throws
             Exception {
 
@@ -1052,7 +1051,7 @@ public class ConsentCoreServiceImplTest {
                 ConsentMgtServiceTestData.SAMPLE_CURRENT_STATUS, ConsentMgtServiceTestData.SAMPLE_CURRENT_STATUS));
     }
 
-    @Test(expectedExceptions = ConsentManagementException.class)
+    @Test(expectedExceptions = ConsentMgtException.class)
     public void testReAuthorizeExistingAuthResourcesWithoutAuthID() throws
             Exception {
 
@@ -1064,7 +1063,7 @@ public class ConsentCoreServiceImplTest {
                         ConsentMgtServiceTestData.SAMPLE_CURRENT_STATUS));
     }
 
-    @Test(expectedExceptions = ConsentManagementException.class)
+    @Test(expectedExceptions = ConsentMgtException.class)
     public void testReAuthorizeExistingAuthResourcesWithoutUserID() throws
             Exception {
 
@@ -1075,7 +1074,7 @@ public class ConsentCoreServiceImplTest {
                         ConsentMgtServiceTestData.SAMPLE_CURRENT_STATUS));
     }
 
-    @Test(expectedExceptions = ConsentManagementException.class)
+    @Test(expectedExceptions = ConsentMgtException.class)
     public void testReAuthorizeExistingAuthResourcesWithoutCurrentConsentStatus() throws
             Exception {
 
@@ -1086,7 +1085,7 @@ public class ConsentCoreServiceImplTest {
                         null, ConsentMgtServiceTestData.SAMPLE_CURRENT_STATUS));
     }
 
-    @Test(expectedExceptions = ConsentManagementException.class)
+    @Test(expectedExceptions = ConsentMgtException.class)
     public void testReAuthorizeExistingAuthResourcesWithoutNewConsentStatus() throws
             Exception {
 
@@ -1098,7 +1097,7 @@ public class ConsentCoreServiceImplTest {
                         ConsentMgtServiceTestData.SAMPLE_CURRENT_STATUS, null));
     }
 
-    @Test(expectedExceptions = ConsentManagementException.class)
+    @Test(expectedExceptions = ConsentMgtException.class)
     public void testReAuthorizeExistingAuthResourcesWithoutAccountsAndPermissionsMap() throws
             Exception {
 
@@ -1110,7 +1109,7 @@ public class ConsentCoreServiceImplTest {
                         ConsentMgtServiceTestData.SAMPLE_CURRENT_STATUS));
     }
 
-    @Test(expectedExceptions = ConsentManagementException.class)
+    @Test(expectedExceptions = ConsentMgtException.class)
     public void testReAuthorizeExistingAuthResourcesDataRetrieveError() throws
             Exception {
 
@@ -1122,7 +1121,7 @@ public class ConsentCoreServiceImplTest {
                 ConsentMgtServiceTestData.SAMPLE_CURRENT_STATUS, ConsentMgtServiceTestData.SAMPLE_CURRENT_STATUS);
     }
 
-    @Test(expectedExceptions = ConsentManagementException.class)
+    @Test(expectedExceptions = ConsentMgtException.class)
     public void testReAuthorizeExistingAuthResourcesDataInsertError() throws
             Exception {
 
@@ -1140,7 +1139,7 @@ public class ConsentCoreServiceImplTest {
                 ConsentMgtServiceTestData.SAMPLE_CURRENT_STATUS, ConsentMgtServiceTestData.SAMPLE_CURRENT_STATUS);
     }
 
-    @Test(expectedExceptions = ConsentManagementException.class)
+    @Test(expectedExceptions = ConsentMgtException.class)
     public void testReAuthorizeExistingAuthResourcesDataUpdateError() throws
             Exception {
 
@@ -1198,7 +1197,7 @@ public class ConsentCoreServiceImplTest {
                 ConsentMgtServiceTestData.SAMPLE_AUTHORIZATION_STATUS);
     }
 
-    @Test(expectedExceptions = ConsentManagementException.class)
+    @Test(expectedExceptions = ConsentMgtException.class)
     public void testReAuthorizeConsentWithNewAuthResourceDataRetrieveError() throws
             Exception {
 
@@ -1213,7 +1212,7 @@ public class ConsentCoreServiceImplTest {
                 ConsentMgtServiceTestData.SAMPLE_AUTHORIZATION_STATUS);
     }
 
-    @Test(expectedExceptions = ConsentManagementException.class)
+    @Test(expectedExceptions = ConsentMgtException.class)
     public void testReAuthorizeConsentWithNewAuthResourceDataUpdateError() throws
             Exception {
 
@@ -1233,7 +1232,7 @@ public class ConsentCoreServiceImplTest {
                 ConsentMgtServiceTestData.SAMPLE_AUTHORIZATION_STATUS);
     }
 
-    @Test(expectedExceptions = ConsentManagementException.class)
+    @Test(expectedExceptions = ConsentMgtException.class)
     public void testReAuthorizeConsentWithNewAuthResourceDataInsertError() throws
             Exception {
 
@@ -1262,7 +1261,7 @@ public class ConsentCoreServiceImplTest {
                 ConsentMgtServiceTestData.SAMPLE_AUTHORIZATION_STATUS);
     }
 
-    @Test(expectedExceptions = ConsentManagementException.class)
+    @Test(expectedExceptions = ConsentMgtException.class)
     public void testReAuthorizeConsentWithNewAuthResourceWithoutConsentID() throws
             Exception {
 
@@ -1274,7 +1273,7 @@ public class ConsentCoreServiceImplTest {
                 ConsentMgtServiceTestData.SAMPLE_AUTHORIZATION_STATUS);
     }
 
-    @Test(expectedExceptions = ConsentManagementException.class)
+    @Test(expectedExceptions = ConsentMgtException.class)
     public void testReAuthorizeConsentWithNewAuthResourceWithoutUserID() throws
             Exception {
 
@@ -1286,7 +1285,7 @@ public class ConsentCoreServiceImplTest {
                 ConsentMgtServiceTestData.SAMPLE_AUTHORIZATION_STATUS);
     }
 
-    @Test(expectedExceptions = ConsentManagementException.class)
+    @Test(expectedExceptions = ConsentMgtException.class)
     public void testReAuthorizeConsentWithNewAuthResourceWithoutAccountsMap() throws
             Exception {
 
@@ -1297,7 +1296,7 @@ public class ConsentCoreServiceImplTest {
                 ConsentMgtServiceTestData.SAMPLE_AUTHORIZATION_STATUS);
     }
 
-    @Test(expectedExceptions = ConsentManagementException.class)
+    @Test(expectedExceptions = ConsentMgtException.class)
     public void testReAuthorizeConsentWithNewAuthResourceWithoutCurrentConsentStatus() throws
             Exception {
 
@@ -1308,7 +1307,7 @@ public class ConsentCoreServiceImplTest {
                 ConsentMgtServiceTestData.SAMPLE_AUTHORIZATION_STATUS);
     }
 
-    @Test(expectedExceptions = ConsentManagementException.class)
+    @Test(expectedExceptions = ConsentMgtException.class)
     public void testReAuthorizeConsentWithNewAuthResourceWithoutNewConsentStatus() throws
             Exception {
 
@@ -1320,7 +1319,7 @@ public class ConsentCoreServiceImplTest {
                 ConsentMgtServiceTestData.SAMPLE_AUTHORIZATION_STATUS);
     }
 
-    @Test(expectedExceptions = ConsentManagementException.class)
+    @Test(expectedExceptions = ConsentMgtException.class)
     public void testReAuthorizeConsentWithNewAuthResourceWithoutNewExistingAuthStatus() throws
             Exception {
 
@@ -1332,7 +1331,7 @@ public class ConsentCoreServiceImplTest {
                 ConsentMgtServiceTestData.SAMPLE_AUTHORIZATION_STATUS);
     }
 
-    @Test(expectedExceptions = ConsentManagementException.class)
+    @Test(expectedExceptions = ConsentMgtException.class)
     public void testReAuthorizeConsentWithNewAuthResourceWithoutNewAuthStatus() throws
             Exception {
 
@@ -1343,7 +1342,7 @@ public class ConsentCoreServiceImplTest {
                 null, ConsentMgtServiceTestData.SAMPLE_AUTHORIZATION_STATUS);
     }
 
-    @Test(expectedExceptions = ConsentManagementException.class)
+    @Test(expectedExceptions = ConsentMgtException.class)
     public void testReAuthorizeConsentWithNewAuthResourceWithoutNewAuthType() throws
             Exception {
 
@@ -1362,14 +1361,14 @@ public class ConsentCoreServiceImplTest {
                 ConsentMgtServiceTestData.SAMPLE_CONSENT_ATTRIBUTES_MAP);
     }
 
-    @Test(expectedExceptions = ConsentManagementException.class)
+    @Test(expectedExceptions = ConsentMgtException.class)
     public void storeConsentAttributesWithoutParameters() throws
             Exception {
 
         consentCoreServiceImpl.storeConsentAttributes(null, null);
     }
 
-    @Test(expectedExceptions = ConsentManagementException.class)
+    @Test(expectedExceptions = ConsentMgtException.class)
     public void storeConsentAttributesWithoutConsentId() throws
             Exception {
 
@@ -1377,7 +1376,7 @@ public class ConsentCoreServiceImplTest {
                 ConsentMgtServiceTestData.SAMPLE_CONSENT_ATTRIBUTES_MAP);
     }
 
-    @Test(expectedExceptions = ConsentManagementException.class)
+    @Test(expectedExceptions = ConsentMgtException.class)
     public void storeConsentAttributesWithoutAttributeMap() throws
             Exception {
 
@@ -1385,7 +1384,7 @@ public class ConsentCoreServiceImplTest {
                 null);
     }
 
-    @Test(expectedExceptions = ConsentManagementException.class)
+    @Test(expectedExceptions = ConsentMgtException.class)
     public void storeConsentAttributesEmptyAttributeMap() throws
             Exception {
 
@@ -1393,7 +1392,7 @@ public class ConsentCoreServiceImplTest {
                 new HashMap<>());
     }
 
-    @Test(expectedExceptions = ConsentManagementException.class)
+    @Test(expectedExceptions = ConsentMgtException.class)
     public void storeConsentAttributesDataInsertError() throws
             Exception {
 
@@ -1420,7 +1419,7 @@ public class ConsentCoreServiceImplTest {
         Assert.assertNotNull(consentAttributes);
     }
 
-    @Test(expectedExceptions = ConsentManagementException.class)
+    @Test(expectedExceptions = ConsentMgtException.class)
     public void testGetConsentAttributesWithoutConsentID() throws
             Exception {
 
@@ -1428,7 +1427,7 @@ public class ConsentCoreServiceImplTest {
                 ConsentMgtServiceTestData.SAMPLE_CONSENT_ATTRIBUTES_KEYS);
     }
 
-    @Test(expectedExceptions = ConsentManagementException.class)
+    @Test(expectedExceptions = ConsentMgtException.class)
     public void testGetConsentAttributesWithEmptyAttributeKeys() throws
             Exception {
 
@@ -1438,7 +1437,7 @@ public class ConsentCoreServiceImplTest {
                 new ArrayList<>());
     }
 
-    @Test(expectedExceptions = ConsentManagementException.class)
+    @Test(expectedExceptions = ConsentMgtException.class)
     public void testGetConsentAttributesConsentResourceReteivealError() throws
             Exception {
 
@@ -1448,7 +1447,7 @@ public class ConsentCoreServiceImplTest {
                 ConsentMgtServiceTestData.SAMPLE_CONSENT_ATTRIBUTES_KEYS);
     }
 
-    @Test(expectedExceptions = ConsentManagementException.class)
+    @Test(expectedExceptions = ConsentMgtException.class)
     public void testGetConsentAttributesDataRetrieveError() throws
             Exception {
 
@@ -1474,7 +1473,7 @@ public class ConsentCoreServiceImplTest {
         Assert.assertNotNull(consentAttributes);
     }
 
-    @Test(expectedExceptions = ConsentManagementException.class)
+    @Test(expectedExceptions = ConsentMgtException.class)
     public void testGetConsentAttributesWithoutAttributeKeys() throws
             Exception {
 
@@ -1483,14 +1482,14 @@ public class ConsentCoreServiceImplTest {
         consentCoreServiceImpl.getConsentAttributes(ConsentMgtServiceTestData.UNMATCHED_CONSENT_ID);
     }
 
-    @Test(expectedExceptions = ConsentManagementException.class)
+    @Test(expectedExceptions = ConsentMgtException.class)
     public void testGetConsentAttributesWithoutAttributesWithoutConsentID() throws
             Exception {
 
         consentCoreServiceImpl.getConsentAttributes(null);
     }
 
-    @Test(expectedExceptions = ConsentManagementException.class)
+    @Test(expectedExceptions = ConsentMgtException.class)
     public void testGetConsentAttributesConsentResourceRetrieveError() throws
             Exception {
 
@@ -1504,7 +1503,7 @@ public class ConsentCoreServiceImplTest {
         Assert.assertNotNull(consentAttributes);
     }
 
-    @Test(expectedExceptions = ConsentManagementException.class)
+    @Test(expectedExceptions = ConsentMgtException.class)
     public void testGetConsentAttributesWithDataRetrieveError() throws
             Exception {
 
@@ -1528,14 +1527,14 @@ public class ConsentCoreServiceImplTest {
         Assert.assertTrue(retrievedAttributesMap.containsKey("x-request-id"));
     }
 
-    @Test(expectedExceptions = ConsentManagementException.class)
+    @Test(expectedExceptions = ConsentMgtException.class)
     public void testGetConsentAttributesByNameWithoutAttributeName() throws
             Exception {
 
         consentCoreServiceImpl.getConsentAttributesByName(null);
     }
 
-    @Test(expectedExceptions = ConsentManagementException.class)
+    @Test(expectedExceptions = ConsentMgtException.class)
     public void testGetConsentAttributesByNameDataRetrieveError() throws
             Exception {
 
@@ -1544,7 +1543,7 @@ public class ConsentCoreServiceImplTest {
         consentCoreServiceImpl.getConsentAttributesByName("x-request-id");
     }
 
-    @Test(expectedExceptions = ConsentManagementException.class)
+    @Test(expectedExceptions = ConsentMgtException.class)
     public void testGetConsentIdByConsentAttributeNameAndValueWithoutAttributeName() throws
             Exception {
 
@@ -1552,7 +1551,7 @@ public class ConsentCoreServiceImplTest {
                 "domestic-payments");
     }
 
-    @Test(expectedExceptions = ConsentManagementException.class)
+    @Test(expectedExceptions = ConsentMgtException.class)
     public void testGetConsentIdByConsentAttributeNameAndValueWithoutAttributeValues() throws
             Exception {
 
@@ -1560,7 +1559,7 @@ public class ConsentCoreServiceImplTest {
                 null);
     }
 
-    @Test(expectedExceptions = ConsentManagementException.class)
+    @Test(expectedExceptions = ConsentMgtException.class)
     public void testGetConsentIdByConsentAttributeNameAndValueDataRetrieveError() throws
             Exception {
 
@@ -1596,7 +1595,7 @@ public class ConsentCoreServiceImplTest {
                 ConsentMgtServiceTestData.SAMPLE_CONSENT_ATTRIBUTES_MAP);
     }
 
-    @Test(expectedExceptions = ConsentManagementException.class)
+    @Test(expectedExceptions = ConsentMgtException.class)
     public void testUpdateConsentAttributesWithoutConsentId() throws
             Exception {
 
@@ -1604,14 +1603,14 @@ public class ConsentCoreServiceImplTest {
                 ConsentMgtServiceTestData.SAMPLE_CONSENT_ATTRIBUTES_MAP);
     }
 
-    @Test(expectedExceptions = ConsentManagementException.class)
+    @Test(expectedExceptions = ConsentMgtException.class)
     public void testUpdateConsentAttributesWithoutAttributes() throws
             Exception {
 
         consentCoreServiceImpl.updateConsentAttributes(ConsentMgtServiceTestData.UNMATCHED_CONSENT_ID, null);
     }
 
-    @Test(expectedExceptions = ConsentManagementException.class)
+    @Test(expectedExceptions = ConsentMgtException.class)
     public void testUpdateConsentAttributesWithEmptyAttributes() throws
             Exception {
 
@@ -1619,7 +1618,7 @@ public class ConsentCoreServiceImplTest {
                 new HashMap<>());
     }
 
-    @Test(expectedExceptions = ConsentManagementException.class)
+    @Test(expectedExceptions = ConsentMgtException.class)
     public void testUpdateConsentAttributesWithDataUpdateError() throws
             Exception {
 
@@ -1632,7 +1631,7 @@ public class ConsentCoreServiceImplTest {
                 ConsentMgtServiceTestData.SAMPLE_CONSENT_ATTRIBUTES_MAP);
     }
 
-    @Test(expectedExceptions = ConsentManagementException.class)
+    @Test(expectedExceptions = ConsentMgtException.class)
     public void testUpdateConsentAttributesWithDataRetrieveError() throws
             Exception {
 
@@ -1654,7 +1653,7 @@ public class ConsentCoreServiceImplTest {
                 ConsentMgtServiceTestData.SAMPLE_CONSENT_ATTRIBUTES_KEYS);
     }
 
-    @Test(expectedExceptions = ConsentManagementException.class)
+    @Test(expectedExceptions = ConsentMgtException.class)
     public void testDeleteConsentAttributesDeleteError() throws
             Exception {
 
@@ -1665,7 +1664,7 @@ public class ConsentCoreServiceImplTest {
                 ConsentMgtServiceTestData.SAMPLE_CONSENT_ATTRIBUTES_KEYS);
     }
 
-    @Test(expectedExceptions = ConsentManagementException.class)
+    @Test(expectedExceptions = ConsentMgtException.class)
     public void testDeleteConsentAttributesWithoutConsentID() throws
             Exception {
 
@@ -1675,7 +1674,7 @@ public class ConsentCoreServiceImplTest {
                 ConsentMgtServiceTestData.SAMPLE_CONSENT_ATTRIBUTES_KEYS);
     }
 
-    @Test(expectedExceptions = ConsentManagementException.class)
+    @Test(expectedExceptions = ConsentMgtException.class)
     public void testDeleteConsentAttributesWithoutAttributeKeysList() throws
             Exception {
 
@@ -1702,7 +1701,7 @@ public class ConsentCoreServiceImplTest {
         Assert.assertNotNull(statusAuditRecords);
     }
 
-    @Test(expectedExceptions = ConsentManagementException.class)
+    @Test(expectedExceptions = ConsentMgtException.class)
     public void testSearchConsentStatusAuditRecordsWithDataRetrievalError() throws
             Exception {
 
@@ -1732,7 +1731,7 @@ public class ConsentCoreServiceImplTest {
         Assert.assertNotNull(statusAuditRecords);
     }
 
-    @Test(expectedExceptions = ConsentManagementException.class)
+    @Test(expectedExceptions = ConsentMgtException.class)
     public void testGetConsentStatusAuditRecordsWithDataRetrievalError() throws
             Exception {
         ArrayList<String> consentIds = new ArrayList<>();
@@ -1776,7 +1775,7 @@ public class ConsentCoreServiceImplTest {
         Assert.assertTrue(result);
     }
 
-    @Test(expectedExceptions = ConsentManagementException.class)
+    @Test(expectedExceptions = ConsentMgtException.class)
     public void testStoreConsentAmendmentHistoryWithoutConsentID() throws
             Exception {
 
@@ -1785,7 +1784,7 @@ public class ConsentCoreServiceImplTest {
                 ConsentMgtServiceTestData.getSampleDetailedStoredTestCurrentConsentResource());
     }
 
-    @Test(expectedExceptions = ConsentManagementException.class)
+    @Test(expectedExceptions = ConsentMgtException.class)
     public void testStoreConsentAmendmentHistoryWithoutConsentHistoryResource() throws
             Exception {
 
@@ -1794,7 +1793,7 @@ public class ConsentCoreServiceImplTest {
                 ConsentMgtServiceTestData.getSampleDetailedStoredTestCurrentConsentResource());
     }
 
-    @Test(expectedExceptions = ConsentManagementException.class)
+    @Test(expectedExceptions = ConsentMgtException.class)
     public void testStoreConsentAmendmentHistoryWithZeroAsConsentAmendedTimestamp() throws
             Exception {
 
@@ -1805,7 +1804,7 @@ public class ConsentCoreServiceImplTest {
                 ConsentMgtServiceTestData.getSampleDetailedStoredTestCurrentConsentResource());
     }
 
-    @Test(expectedExceptions = ConsentManagementException.class)
+    @Test(expectedExceptions = ConsentMgtException.class)
     public void testStoreConsentAmendmentHistoryWithoutConsentAmendedReason() throws
             Exception {
 
@@ -1817,7 +1816,7 @@ public class ConsentCoreServiceImplTest {
                 ConsentMgtServiceTestData.getSampleDetailedStoredTestCurrentConsentResource());
     }
 
-    @Test(expectedExceptions = ConsentManagementException.class)
+    @Test(expectedExceptions = ConsentMgtException.class)
     public void testStoreConsentAmendmentHistoryDataInsertError() throws
             Exception {
 
@@ -1851,7 +1850,7 @@ public class ConsentCoreServiceImplTest {
         Assert.assertNotNull(detailedConsentResource);
     }
 
-    @Test(expectedExceptions = ConsentManagementException.class)
+    @Test(expectedExceptions = ConsentMgtException.class)
     public void testAmendDetailedConsentDataWithoutConsentID() throws
             Exception {
 
@@ -1883,7 +1882,7 @@ public class ConsentCoreServiceImplTest {
         Assert.assertNotNull(detailedConsentResource);
     }
 
-    @Test(expectedExceptions = ConsentManagementException.class)
+    @Test(expectedExceptions = ConsentMgtException.class)
     public void testAmendDetailedConsentDataWithoutReceiptAndValidityTime() throws
             Exception {
 
@@ -1896,7 +1895,7 @@ public class ConsentCoreServiceImplTest {
                 new HashMap<>());
     }
 
-    @Test(expectedExceptions = ConsentManagementException.class)
+    @Test(expectedExceptions = ConsentMgtException.class)
     public void testAmendDetailedConsentDataWithoutUserId() throws
             Exception {
 
@@ -1909,7 +1908,7 @@ public class ConsentCoreServiceImplTest {
                 new HashMap<>());
     }
 
-    @Test(expectedExceptions = ConsentManagementException.class)
+    @Test(expectedExceptions = ConsentMgtException.class)
     public void testAmendDetailedConsentDataWithoutAuthId() throws
             Exception {
 
@@ -1921,7 +1920,7 @@ public class ConsentCoreServiceImplTest {
                 new HashMap<>());
     }
 
-    @Test(expectedExceptions = ConsentManagementException.class)
+    @Test(expectedExceptions = ConsentMgtException.class)
     public void testAmendDetailedConsentDataWithoutNewConsentStatus() throws
             Exception {
 
@@ -1933,7 +1932,7 @@ public class ConsentCoreServiceImplTest {
                 new HashMap<>());
     }
 
-    @Test(expectedExceptions = ConsentManagementException.class)
+    @Test(expectedExceptions = ConsentMgtException.class)
     public void testAmendDetailedConsentDataWithoutNewConsentAttributes() throws
             Exception {
 
@@ -1946,7 +1945,7 @@ public class ConsentCoreServiceImplTest {
                 new HashMap<>());
     }
 
-    @Test(expectedExceptions = ConsentManagementException.class)
+    @Test(expectedExceptions = ConsentMgtException.class)
     public void testAmendDetailedConsentDataWithoutAccountIdMapWithPermissions() throws
             Exception {
 
@@ -2050,7 +2049,7 @@ public class ConsentCoreServiceImplTest {
         Assert.assertNotNull(detailedConsentResource);
     }
 
-    @Test(expectedExceptions = ConsentManagementRuntimeException.class)
+    @Test(expectedExceptions = ConsentMgtException.class)
     public void testAmendDetailedConsentWithBulkAuthResourceWithoutConsentID() throws
             Exception {
 
@@ -2137,7 +2136,7 @@ public class ConsentCoreServiceImplTest {
     }
 
     // empty consetId
-    @Test(expectedExceptions = ConsentManagementException.class)
+    @Test(expectedExceptions = ConsentMgtException.class)
     public void testGetConsentAmendmentHistoryDataWithEmptyConsentId() throws
             Exception {
 
@@ -2165,7 +2164,7 @@ public class ConsentCoreServiceImplTest {
                 12345L, 23456L, null, null);
     }
 
-    @Test(expectedExceptions = ConsentManagementRuntimeException.class)
+    @Test(expectedExceptions = ConsentMgtException.class)
     public void testSearchConsentsRetrieveError() throws
             Exception {
 
@@ -2180,7 +2179,7 @@ public class ConsentCoreServiceImplTest {
                 12345L, 23456L, null, null);
     }
 
-    @Test(expectedExceptions = ConsentManagementRuntimeException.class)
+    @Test(expectedExceptions = ConsentMgtException.class)
     public void testSearchConsentsWithLimits() throws
             Exception {
 

@@ -32,7 +32,7 @@ import org.wso2.financial.services.accelerator.consent.mgt.dao.exceptions.Consen
 import org.wso2.financial.services.accelerator.consent.mgt.dao.exceptions.ConsentDataInsertionException;
 import org.wso2.financial.services.accelerator.consent.mgt.dao.exceptions.ConsentDataRetrievalException;
 import org.wso2.financial.services.accelerator.consent.mgt.dao.exceptions.ConsentDataUpdationException;
-import org.wso2.financial.services.accelerator.consent.mgt.dao.exceptions.ConsentManagementException;
+import org.wso2.financial.services.accelerator.consent.mgt.dao.exceptions.ConsentMgtException;
 import org.wso2.financial.services.accelerator.consent.mgt.dao.models.AuthorizationResource;
 import org.wso2.financial.services.accelerator.consent.mgt.dao.models.ConsentAttributes;
 import org.wso2.financial.services.accelerator.consent.mgt.dao.models.ConsentHistoryResource;
@@ -51,6 +51,9 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+
+import javax.ws.rs.core.Response;
+
 
 /**
  * Consent Core Service Util.
@@ -71,7 +74,7 @@ public class ConsentCoreServiceUtil {
      * @param isImplicitAuthorization Is implicit authorization
      * @return DetailedConsentResource
      * @throws ConsentDataInsertionException Consent data insertion exception
-     * @throws ConsentManagementException    Consent management exception
+     * @throws ConsentMgtException           Consent management exception
      */
     public static DetailedConsentResource createAuthorizableConsentWithAuditRecordWithBulkAuthResources(
             Connection connection,
@@ -81,7 +84,7 @@ public class ConsentCoreServiceUtil {
             boolean isImplicitAuthorization)
             throws
             ConsentDataInsertionException,
-            ConsentManagementException,
+            ConsentMgtException,
             ConsentDataRetrievalException {
 
         boolean isConsentAttributesStored = false;
@@ -198,7 +201,7 @@ public class ConsentCoreServiceUtil {
      * @param isImplicitAuthorization Is implicit authorization
      * @return DetailedConsentResource
      * @throws ConsentDataInsertionException Consent data insertion exception
-     * @throws ConsentManagementException    Consent management exception
+     * @throws ConsentMgtException           Consent management exception
      */
     public static DetailedConsentResource createAuthorizableConsentWithAuditRecord(Connection connection,
                                                                                    ConsentCoreDAO consentCoreDAO,
@@ -208,7 +211,7 @@ public class ConsentCoreServiceUtil {
                                                                                    boolean isImplicitAuthorization)
             throws
             ConsentDataInsertionException,
-            ConsentManagementException,
+            ConsentMgtException,
             ConsentDataRetrievalException {
 
         boolean isConsentAttributesStored = false;
@@ -233,7 +236,6 @@ public class ConsentCoreServiceUtil {
             }
             isConsentAttributesStored = consentCoreDAO.storeConsentAttributes(connection, consentAttributes);
         }
-
 
 
         // Create an authorization resource if isImplicitAuth parameter is true
@@ -299,7 +301,7 @@ public class ConsentCoreServiceUtil {
      * @throws ConsentDataRetrievalException If an error occurs when retrieving existing consents
      * @throws ConsentDataUpdationException  If an error occurs when updating existing consents
      * @throws ConsentDataInsertionException If an error occurs when inserting data
-     * @throws ConsentManagementException    Consent management exception
+     * @throws ConsentMgtException           Consent management exception
      */
     public static void updateExistingConsentStatusesAndRevokeAccountMappings(Connection connection,
                                                                              ConsentCoreDAO consentCoreDAO,
@@ -311,7 +313,7 @@ public class ConsentCoreServiceUtil {
             ConsentDataRetrievalException,
             ConsentDataUpdationException,
             ConsentDataInsertionException,
-            ConsentManagementException {
+            ConsentMgtException {
 
         ArrayList<String> accountMappingIDsList = new ArrayList<>();
 
@@ -379,14 +381,14 @@ public class ConsentCoreServiceUtil {
      * @param clientId              Client ID
      * @param consentDataMap        Consent data map
      * @throws ConsentDataInsertionException If an error occurs when storing the audit record
-     * @throws ConsentManagementException    Consent management exception
+     * @throws ConsentMgtException           Consent management exception
      */
     public static void postStateChange(Connection connection, ConsentCoreDAO consentCoreDAO, String consentID,
                                        String userID, String newConsentStatus, String previousConsentStatus,
                                        String reason, String clientId, Map<String, Object> consentDataMap)
             throws
             ConsentDataInsertionException,
-            ConsentManagementException,
+            ConsentMgtException,
             ConsentDataRetrievalException {
 
         ConsentStatusAuditRecord consentStatusAuditRecord = createAuditRecord(connection, consentCoreDAO, consentID,
@@ -394,7 +396,6 @@ public class ConsentCoreServiceUtil {
                 newConsentStatus,
                 previousConsentStatus,
                 reason);
-        // TODO: Uncomment and test when ConsentStateChangeListenerImpl is implemented
 
         DetailedConsentResource detailedCurrentConsent = (DetailedConsentResource)
                 consentDataMap.get(ConsentCoreServiceConstants.DETAILED_CONSENT_RESOURCE);
@@ -462,7 +463,6 @@ public class ConsentCoreServiceUtil {
         }
         return consentCoreDAO.storeConsentStatusAuditRecord(connection, consentStatusAuditRecord);
     }
-
 
 
     /**
@@ -539,7 +539,7 @@ public class ConsentCoreServiceUtil {
                             authID, accountID, permission, ConsentCoreServiceConstants.ACTIVE_MAPPING_STATUS);
                     ConsentMappingResource storedConsentMappingResource =
                             consentCoreDAO.storeConsentMappingResource(connection,
-                            consentMappingResource);
+                                    consentMappingResource);
                     existingAccountMappings.add(storedConsentMappingResource);
                 }
             }
@@ -746,12 +746,12 @@ public class ConsentCoreServiceUtil {
      * @param consentAmendmentHistoryRetrievalResult Consent amendment history retrieval result
      * @param currentConsentResource                 Current consent resource
      * @return Consent amendment history data map
-     * @throws ConsentManagementException Consent management exception
+     * @throws ConsentMgtException Consent management exception
      */
     public static Map<String, ConsentHistoryResource> processConsentAmendmentHistoryData(
             Map<String, ConsentHistoryResource> consentAmendmentHistoryRetrievalResult,
             DetailedConsentResource currentConsentResource) throws
-            ConsentManagementException {
+            ConsentMgtException {
 
         Gson gson = new Gson();
         Map<String, ConsentHistoryResource> consentAmendmentHistoryDataMap = new LinkedHashMap<>();
@@ -848,23 +848,23 @@ public class ConsentCoreServiceUtil {
     }
 
 
-
     /**
      * Method to parse the changed attribute JSON string to a JSON Object.
      *
      * @param changedAttributes Changed attribute JSON string
      * @return JSON object with the changed attributes
-     * @throws ConsentManagementException If there is an error while parsing the JSON String
+     * @throws ConsentMgtException If there is an error while parsing the JSON String
      */
     static JSONObject parseChangedAttributeJsonString(String changedAttributes)
             throws
-            ConsentManagementException {
+            ConsentMgtException {
 
         Object changedValues;
         try {
             changedValues = new JSONParser(JSONParser.MODE_PERMISSIVE).parse(changedAttributes);
         } catch (ParseException e) {
-            throw new ConsentManagementException("Changed Values is not a valid JSON object", e);
+            throw new ConsentMgtException(Response.Status.INTERNAL_SERVER_ERROR,
+                    "Changed Values is not a valid JSON object", e);
         }
         if (changedValues == null) {
             return new JSONObject();
@@ -879,13 +879,13 @@ public class ConsentCoreServiceUtil {
      * @param connection                Database connection
      * @param consentCoreDAO            Consent core DAO
      * @param newAuthorizationResources new Authorization resources
-     * @throws ConsentManagementException    If an error occurs when processing the additional amendment data
+     * @throws ConsentMgtException           If an error occurs when processing the additional amendment data
      * @throws ConsentDataInsertionException If an error occurs when inserting data
      */
     public static void processAdditionalConsentAmendmentData(Connection connection, ConsentCoreDAO consentCoreDAO,
                                                              ArrayList<AuthorizationResource> newAuthorizationResources)
             throws
-            ConsentManagementException,
+            ConsentMgtException,
             ConsentDataInsertionException {
         for (AuthorizationResource authResource : newAuthorizationResources) {
 
@@ -894,8 +894,9 @@ public class ConsentCoreServiceUtil {
                     StringUtils.isBlank(authResource.getAuthorizationType()) ||
                     StringUtils.isBlank(authResource.getAuthorizationStatus())) {
                 log.error("Consent ID, authorization type or authorization status is missing, cannot proceed");
-                throw new ConsentManagementException("Cannot proceed since consent ID, authorization type or " +
-                        "authorization status is missing");
+                throw new ConsentMgtException(Response.Status.INTERNAL_SERVER_ERROR,
+                        "Cannot proceed since consent ID, authorization type or " +
+                                "authorization status is missing");
             }
             // create authorization resource
             AuthorizationResource authorizationResource =
@@ -906,7 +907,7 @@ public class ConsentCoreServiceUtil {
                 if (StringUtils.isBlank(mappingResource.getAccountID()) ||
                         StringUtils.isBlank(mappingResource.getMappingStatus())) {
                     log.error("Account ID or Mapping Status is not found, cannot proceed");
-                    throw new ConsentManagementException("Account ID or Mapping Status is not found, " +
+                    throw new ConsentMgtException("Account ID or Mapping Status is not found, " +
                             "cannot proceed");
                 }
                 mappingResource.setAuthorizationID(authorizationResource.getAuthorizationID());

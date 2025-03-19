@@ -175,4 +175,6 @@ public class ConsentConstant {
     public static final String ADDITIONAL_CONSENT_INFO = "additionalConsentInfo";
     public static final String CONSENT_INFO = "consentInformation";
     public static final String CREATED_TIMESTAMP = "createdTimestamp";
+
+    public static final String ORG_MISMATCH = "OrgInfo does not match, please provide the correct OrgInfo";
 }

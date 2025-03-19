@@ -19,7 +19,7 @@
 package  org.wso2.financial.services.accelerator.consent.mgt.dao.persistence;
 
 import org.wso2.financial.services.accelerator.consent.mgt.dao.ConsentCoreDAO;
-import org.wso2.financial.services.accelerator.consent.mgt.dao.exceptions.ConsentManagementException;
+import org.wso2.financial.services.accelerator.consent.mgt.dao.exceptions.ConsentMgtException;
 import org.wso2.financial.services.accelerator.consent.mgt.dao.impl.ConsentCoreDAOImpl;
 import org.wso2.financial.services.accelerator.consent.mgt.dao.impl.MssqlConsentCoreDAOImpl;
 import org.wso2.financial.services.accelerator.consent.mgt.dao.impl.OracleConsentCoreDAOImpl;
@@ -48,9 +48,10 @@ public class ConsentStoreInitializer {
      * Return the DAO implementation initialized for the relevant database type.
      *
      * @return the dao implementation
-     * @throws ConsentManagementException thrown if an error occurs when getting the database connection
+     * @throws ConsentMgtException thrown if an error occurs when getting the database connection
      */
-    public static synchronized ConsentCoreDAO getInitializedConsentCoreDAOImpl() throws ConsentManagementException {
+    public static synchronized ConsentCoreDAO getInitializedConsentCoreDAOImpl() throws
+            ConsentMgtException {
 
         if (consentCoreDAO == null) {
             consentCoreDAO = getDaoInstance();
@@ -59,7 +60,8 @@ public class ConsentStoreInitializer {
     }
 
     private static ConsentCoreDAO getDaoInstance()
-            throws ConsentManagementException {
+            throws
+            ConsentMgtException {
 
         try {
             Connection connection = JDBCPersistenceManager.getInstance().getDBConnection();
@@ -77,11 +79,11 @@ public class ConsentStoreInitializer {
             } else if (driverName.contains(ORACLE)) {
                 dao = new OracleConsentCoreDAOImpl(new ConsentMgtOracleDBQueries());
             } else {
-                throw new ConsentManagementException("Unhandled DB driver: " + driverName + " detected : ");
+                throw new ConsentMgtException("Unhandled DB driver: " + driverName + " detected : ");
             }
             return dao;
         } catch (SQLException e) {
-            throw new ConsentManagementException("Error while getting the database connection : ", e);
+            throw new ConsentMgtException("Error while getting the database connection : ", e);
         }
     }
 }

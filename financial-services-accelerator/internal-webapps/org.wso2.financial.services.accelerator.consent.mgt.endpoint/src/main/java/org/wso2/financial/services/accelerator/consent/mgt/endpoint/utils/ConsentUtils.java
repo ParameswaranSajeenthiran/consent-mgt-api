@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.cxf.helpers.IOUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.wso2.financial.services.accelerator.consent.mgt.dao.exceptions.ConsentManagementException;
+import org.wso2.financial.services.accelerator.consent.mgt.dao.exceptions.ConsentMgtException;
 import org.wso2.financial.services.accelerator.consent.mgt.dao.models.AuthorizationResource;
 import org.wso2.financial.services.accelerator.consent.mgt.dao.models.ConsentMappingResource;
 import org.wso2.financial.services.accelerator.consent.mgt.dao.models.ConsentResource;
@@ -20,11 +20,13 @@ import org.wso2.financial.services.accelerator.consent.mgt.endpoint.model.Resour
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.core.Response;
 
 
 /**
@@ -39,12 +41,12 @@ public class ConsentUtils {
      * @return String payload
      */
     public static String getStringPayload(HttpServletRequest request) throws
-            ConsentManagementException {
+            ConsentMgtException {
         try {
             return IOUtils.toString(request.getInputStream());
         } catch (IOException e) {
 //            log.error(ConsentConstant.ERROR_PAYLOAD_READ, e);
-            throw new ConsentManagementException(e.getMessage());
+            throw new ConsentMgtException(e.getMessage());
         }
 
     }
@@ -124,11 +126,20 @@ public class ConsentUtils {
         return queryParam != null ? Integer.parseInt(queryParam) : 0;
     }
 
-    public static Map<String, String> convertToMap(Object obj) {
-        ObjectMapper objectMapper = new ObjectMapper();
-        Map<String, Object> map = objectMapper.convertValue(obj, Map.class);
-        return map.entrySet().stream()
-                .collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().toString()));
+    public static Map<String, String> convertToMap(Object obj) throws
+            ConsentMgtException {
+
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            Map<String, Object> map = objectMapper.convertValue(obj, Map.class);
+            if (map == null) {
+                return new HashMap<>();
+            }
+            return map.entrySet().stream()
+                    .collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().toString()));
+        } catch (IllegalArgumentException e){
+            throw new ConsentMgtException(Response.Status.BAD_REQUEST, "Invalid consent attributes");
+        }
     }
 
     /**
@@ -138,7 +149,7 @@ public class ConsentUtils {
      */
     public static void copyPropertiesToConsentResource(ConsentResource consentResource,
                                                        ConsentResourceDTO consentResourceDTO) throws
-            ConsentManagementException {
+            ConsentMgtException {
         consentResource.setConsentType(consentResourceDTO.getConsentType());
         consentResource.setClientID(consentResourceDTO.getClientID());
         consentResource.setRecurringIndicator(consentResourceDTO.getRecurringIndicator());
@@ -173,6 +184,7 @@ public class ConsentUtils {
             consentMappingResource.setAccountID(resource.getAccountID());
             consentMappingResource.setPermission(resource.getPermission());
             consentMappingResource.setMappingStatus(resource.getResourceMappingStatus());
+            consentMappingResource.setMappingID(resource.getResourceMappingId());
             consentMappingResources.add(consentMappingResource);
 
         }
@@ -364,5 +376,6 @@ public class ConsentUtils {
                 consentResource.getCreatedTime());
         return consentResourceJSON;
     }
+
 
 }

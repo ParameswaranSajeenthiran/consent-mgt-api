@@ -1393,6 +1393,7 @@ public class ConsentCoreDAOImpl implements ConsentCoreDAO {
 
         String tableID = ConsentManagementDAOUtil.generateConsentTableId(consentDataType.replaceAll("[\r\n]", ""));
 
+
         int result;
         String insertConsentHistoryPrepStatement = sqlStatements.getInsertConsentHistoryPreparedStatement();
 

@@ -20,7 +20,7 @@ package org.wso2.financial.services.accelerator.consent.mgt.dao.util;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.wso2.financial.services.accelerator.consent.mgt.dao.exceptions.ConsentManagementRuntimeException;
+import org.wso2.financial.services.accelerator.consent.mgt.dao.exceptions.ConsentMgtException;
 import org.wso2.financial.services.accelerator.consent.mgt.dao.persistence.JDBCPersistenceManager;
 
 import java.sql.Connection;
@@ -36,10 +36,10 @@ public class DatabaseUtils {
     /**
      * Get a database connection instance from the Consent Management Persistence Manager.
      * @return Database Connection
-     * @throws ConsentManagementRuntimeException Error when getting a database connection to Consent Management database
+     * @throws ConsentMgtException Error when getting a database connection to Consent Management database
      */
     public static Connection getDBConnection() throws
-            ConsentManagementRuntimeException {
+            ConsentMgtException {
 
         return JDBCPersistenceManager.getInstance().getDBConnection();
     }
@@ -56,12 +56,14 @@ public class DatabaseUtils {
         }
     }
 
-    public static void rollbackTransaction(Connection dbConnection) {
+    public static void rollbackTransaction(Connection dbConnection) throws
+            ConsentMgtException {
 
         JDBCPersistenceManager.getInstance().rollbackTransaction(dbConnection);
     }
 
-    public static void commitTransaction(Connection dbConnection) {
+    public static void commitTransaction(Connection dbConnection) throws
+            ConsentMgtException {
 
         JDBCPersistenceManager.getInstance().commitTransaction(dbConnection);
     }

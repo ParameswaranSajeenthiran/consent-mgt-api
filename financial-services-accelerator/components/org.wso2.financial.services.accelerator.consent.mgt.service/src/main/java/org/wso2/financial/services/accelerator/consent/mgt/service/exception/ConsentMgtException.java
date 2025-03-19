@@ -23,25 +23,25 @@ import javax.ws.rs.core.Response;
 /**
  * Used for creating runtime exceptions for financial services modules.
  */
-public class ConsentManagementRuntimeException extends RuntimeException {
+public class ConsentMgtException extends Exception {
 
     private static final long serialVersionUID = -5686395831712095972L;
     private Response.Status errorCode;
 
-    public ConsentManagementRuntimeException(Response.Status errorCode, Throwable cause) {
+    public ConsentMgtException(Response.Status errorCode, Throwable cause) {
 
         super(cause);
         this.errorCode = errorCode;
     }
 
-    public ConsentManagementRuntimeException(Response.Status errorCode, String message) {
+    public ConsentMgtException(Response.Status errorCode, String message) {
 
         super(message);
         this.errorCode = errorCode;
     }
 
 
-    public ConsentManagementRuntimeException(Response.Status status, String message, Throwable cause) {
+    public ConsentMgtException(Response.Status status, String message, Throwable cause) {
         super(message, cause);
         this.errorCode = status;
 
