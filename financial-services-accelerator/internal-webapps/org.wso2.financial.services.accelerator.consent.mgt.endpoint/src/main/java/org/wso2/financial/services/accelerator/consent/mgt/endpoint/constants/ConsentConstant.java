@@ -11,6 +11,9 @@ public class ConsentConstant {
     public static final String WITH_ATTRIBUTES = "withAttributes";
 
     //Common Constants
+    public static final String
+            UUID_REGEX = "[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}";
+
     public static final String ACCOUNTS = "accounts";
     public static final String PAYMENTS = "payments";
     public static final String FUNDS_CONFIRMATIONS = "fundsconfirmations";
@@ -172,4 +175,6 @@ public class ConsentConstant {
     public static final String ADDITIONAL_CONSENT_INFO = "additionalConsentInfo";
     public static final String CONSENT_INFO = "consentInformation";
     public static final String CREATED_TIMESTAMP = "createdTimestamp";
+
+    public static final String ORG_MISMATCH = "OrgInfo does not match, please provide the correct OrgInfo";
 }

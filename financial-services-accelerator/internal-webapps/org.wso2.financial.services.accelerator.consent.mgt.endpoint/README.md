@@ -2,7 +2,7 @@
 
 ConsentAPI
 - API version: v1.0
-  - Build date: 2024-05-02T11:51:05.356873+05:30[Asia/Colombo]
+  - Build date: 2025-05-02T11:51:05.356873+05:30[Asia/Colombo]
 
 This specifies a RESTful API for making interactions with the consent module
 

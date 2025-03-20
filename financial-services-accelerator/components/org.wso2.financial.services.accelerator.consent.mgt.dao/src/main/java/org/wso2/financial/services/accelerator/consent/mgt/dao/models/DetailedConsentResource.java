@@ -1,12 +1,12 @@
 /**
- * Copyright (c) 2024, WSO2 LLC. (https://www.wso2.com).
+ * Copyright (c) 2025, WSO2 LLC. (https://www.wso2.com).
  * <p>
  * WSO2 LLC. licenses this file to you under the Apache License,
  * Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License.
  * You may obtain a copy of the License at
  * <p>
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  * <p>
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -26,6 +26,7 @@ import java.util.Map;
  */
 public class DetailedConsentResource {
 
+    private String orgID;
     private String consentID;
     private String clientID;
     private String receipt;
@@ -44,12 +45,37 @@ public class DetailedConsentResource {
 
     }
 
-    public DetailedConsentResource(String consentID, String clientID, String receipt, String consentType,
+    public DetailedConsentResource(String consentID, String clientID, String receipt,
+                                   String consentType,
                                    String currentStatus, int consentFrequency, long validityPeriod, long createdTime,
                                    long updatedTime, boolean recurringIndicator,
                                    Map<String, String> consentAttributes,
                                    ArrayList<AuthorizationResource> authorizationResources,
                                    ArrayList<ConsentMappingResource> consentMappingResources) {
+        this.consentID = consentID;
+        this.clientID = clientID;
+        this.receipt = receipt;
+        this.consentType = consentType;
+        this.currentStatus = currentStatus;
+        this.consentFrequency = consentFrequency;
+        this.validityPeriod = validityPeriod;
+        this.createdTime = createdTime;
+        this.updatedTime = updatedTime;
+        this.recurringIndicator = recurringIndicator;
+        this.consentAttributes = consentAttributes;
+        this.authorizationResources = authorizationResources;
+        this.consentMappingResources = consentMappingResources;
+
+    }
+
+    public DetailedConsentResource(String orgID, String consentID, String clientID, String receipt,
+                                   String consentType,
+                                   String currentStatus, int consentFrequency, long validityPeriod, long createdTime,
+                                   long updatedTime, boolean recurringIndicator,
+                                   Map<String, String> consentAttributes,
+                                   ArrayList<AuthorizationResource> authorizationResources,
+                                   ArrayList<ConsentMappingResource> consentMappingResources) {
+        this.orgID = orgID;
         this.consentID = consentID;
         this.clientID = clientID;
         this.receipt = receipt;
@@ -81,6 +107,14 @@ public class DetailedConsentResource {
         return consentID;
     }
 
+    public String getOrgID() {
+        return orgID;
+    }
+
+    public void setOrgID(String orgInfo) {
+        this.orgID = orgInfo;
+    }
+
     public void setConsentID(String consentID) {
 
         this.consentID = consentID;
@@ -90,6 +124,7 @@ public class DetailedConsentResource {
 
         return clientID;
     }
+
 
     public void setClientID(String clientID) {
 
@@ -146,6 +181,11 @@ public class DetailedConsentResource {
         this.recurringIndicator = recurringIndicator;
     }
 
+    public boolean getRecurringIndicator() {
+
+        return recurringIndicator;
+    }
+
     public String getCurrentStatus() {
 
         return currentStatus;
@@ -194,5 +234,14 @@ public class DetailedConsentResource {
     public void setConsentMappingResources(ArrayList<ConsentMappingResource> consentMappingResources) {
 
         this.consentMappingResources = consentMappingResources;
+    }
+
+    public DetailedConsentResource clone() {
+        return new DetailedConsentResource(this.orgID, this.consentID, this.clientID, this.receipt, this.consentType,
+                this.currentStatus, this.consentFrequency, this.validityPeriod, this.createdTime, this.updatedTime,
+                this.recurringIndicator, this.consentAttributes, this.authorizationResources,
+                this.consentMappingResources);
+
+
     }
 }

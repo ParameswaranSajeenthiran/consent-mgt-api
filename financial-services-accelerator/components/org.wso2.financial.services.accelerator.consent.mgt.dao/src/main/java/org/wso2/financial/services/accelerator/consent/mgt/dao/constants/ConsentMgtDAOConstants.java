@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2024, WSO2 LLC. (https://www.wso2.com).
+ * Copyright (c) 2025, WSO2 LLC. (https://www.wso2.com).
  * <p>
  * WSO2 LLC. licenses this file to you under the Apache License,
  * Version 2.0 (the "License"); you may not use this file except
@@ -18,8 +18,9 @@
 
 package org.wso2.financial.services.accelerator.consent.mgt.dao.constants;
 
-import java.util.Map;
 import java.util.HashMap;
+import java.util.Map;
+
 
 
 /**
@@ -28,6 +29,8 @@ import java.util.HashMap;
 public class ConsentMgtDAOConstants {
 
     public static final String CONSENT_ID = "CONSENT_ID";
+    public static final String ORG_ID = "ORG_ID";
+    public static final String DEFAULT_ORG = "DEFAULT_ORG";
     public static final String RECEIPT = "RECEIPT";
     public static final String CREATED_TIME = "CREATED_TIME";
     public static final String UPDATED_TIME = "UPDATED_TIME";
@@ -48,6 +51,7 @@ public class ConsentMgtDAOConstants {
     public static final String ACCOUNT_ID = "ACCOUNT_ID";
     public static final String PERMISSION = "PERMISSION";
     public static final String MAPPING_STATUS = "MAPPING_STATUS";
+    public static final String RESOURCE = "resource";
     public static final String ATT_KEY = "ATT_KEY";
     public static final String ATT_VALUE = "ATT_VALUE";
     public static final String SESSION_DATA_KEY = "sessionDataKey";
@@ -103,6 +107,7 @@ static {
     COLUMNS_MAP.put(CONSENT_IDS, "CONSENT_ID");
     COLUMNS_MAP.put(CLIENT_IDS, "CLIENT_ID");
     COLUMNS_MAP.put(CONSENT_TYPES, "CONSENT_TYPE");
+    COLUMNS_MAP.put(ORG_ID, "ORG_ID");
     COLUMNS_MAP.put(CONSENT_STATUSES, "CURRENT_STATUS");
     COLUMNS_MAP.put(USER_IDS, "OCAR.USER_ID");
 }

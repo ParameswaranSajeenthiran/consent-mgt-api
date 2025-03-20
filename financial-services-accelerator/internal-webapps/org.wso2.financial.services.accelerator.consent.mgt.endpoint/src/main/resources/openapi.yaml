@@ -1,0 +1,644 @@
+openapi: 3.0.3
+info:
+  title: Consent Management API
+  description: |-
+    This specifies a RESTful API for consent management service
+  contact:
+    name: WSO2
+    url: http://wso2.com/solutions/financial/open-banking/
+    email: openbankingdemo@wso2.com
+  license:
+    name: WSO2 Commercial License
+    url: https://wso2.com
+  version: 0.0.1
+externalDocs:
+  description: Find out more about Swagger
+  url: https://ob.docs.wso2.com/
+servers:
+  - url: https://localhost/openbanking
+paths:
+  /consent:
+    post:
+      tags:
+        - consent
+      summary: Consent initiation
+      parameters:
+        - $ref: '#/components/parameters/OrgInfoHeader'
+        - in: query
+          name: isImplicitAuth
+          schema:
+            type: boolean
+            example: true,false
+        - in: query
+          name: isExclusiveConsent
+          schema:
+            type: boolean
+            example: true, false
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ConsentResourceDTO'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConsentResponse'
+        '400':
+          description: Invalid request body
+    get:
+      tags:
+        - consent
+      summary: consent search
+      parameters:
+        - $ref: '#/components/parameters/OrgInfoHeader'
+        - in: query
+          name: consentTypes
+          schema:
+            type: string
+            example: accounts
+        - in: query
+          name: consentStatuses
+          schema:
+            type: string
+            example: authorized, revoked
+        - in: query
+          name: userIds
+          schema:
+            type: string
+            example: psu@wso2.com
+        - in: query
+          name: fromTime
+          schema:
+            type: integer
+        - in: query
+          name: toTime
+          schema:
+            type: integer
+        - in: query
+          name: limit
+          schema:
+            type: integer
+        - in: query
+          name: offset
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/DetailedConsentResource'
+        '400':
+          description: Invalid consent id
+  /consent/{consentId}:
+    get:
+      tags:
+        - consent
+      summary: Consent retrieval
+      parameters:
+        - $ref: '#/components/parameters/OrgInfoHeader'
+        - $ref: '#/components/parameters/ConsentId'
+        - $ref: '#/components/parameters/DetailedConsent'
+        - $ref: '#/components/parameters/UserId'
+        - $ref: '#/components/parameters/WithAttributes'
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DetailedConsentResource'
+        '404':
+          description: Invalid consent id
+    put:
+      tags:
+        - consent
+      summary: Consent amendment
+      parameters:
+        - $ref: '#/components/parameters/OrgInfoHeader'
+        - $ref: '#/components/parameters/ConsentId'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AmendmentResource'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AmendmentResponse'
+        '400':
+          description: Invalid request body
+    delete:
+      tags:
+        - consent
+      summary: Consent purging
+      parameters:
+        - $ref: '#/components/parameters/OrgInfoHeader'
+        - $ref: '#/components/parameters/ConsentId'
+        - name: userId
+          in: query
+          schema:
+            type: string
+            example: psu@wso2.com
+      responses:
+        '204':
+          description: Successful operation
+        '404':
+          description: Invalid consent id
+  /consent/status:
+    put:
+      tags:
+        - consent
+      summary: Bulk consent status change
+      parameters:
+        - $ref: '#/components/parameters/OrgInfoHeader'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BulkConsentStatusUpdateResource'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: string
+                example: Successfully updated
+        '400':
+          description: Invalid consent id
+  /consent/{consentId}/status:
+    put:
+      tags:
+        - consent
+      summary: Consent status update
+      parameters:
+        - $ref: '#/components/parameters/OrgInfoHeader'
+        - $ref: '#/components/parameters/ConsentId'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ConsentStatusUpdateResource'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: string
+                example: Status updated
+        '400':
+          description: Invalid consent id
+  /consent/{consentId}/history:
+    get:
+      tags:
+        - consent
+      summary: get consent history
+      parameters:
+        - $ref: '#/components/parameters/OrgInfoHeader'
+        - $ref: '#/components/parameters/ConsentId'
+        - in: query
+          name: detailed
+          schema:
+            type: boolean
+        - name: status
+          in: query
+          description: status
+          schema:
+            type: string
+        - name: actionBy
+          in: query
+          description: actionBy
+          schema:
+            type: string
+        - name: fromTime
+          in: query
+          description: fromTime
+          schema:
+            type: string
+        - name: toTime
+          in: query
+          description: toTime
+          schema:
+            type: string
+        - name: statusAuditId
+          in: query
+          description: statusAuditId
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ConsentHistory'
+        '400':
+          description: Invalid consent id
+components:
+  schemas:
+    ConsentResourceDTO:
+      type: object
+      required:
+        - clientID
+        - consentType
+        - currentStatus
+        - receipt
+        - validityPeriod
+        - recurringIndicator
+      properties:
+        clientID:
+          type: string
+          example: TUwYBlObBMmu7zvDnnhs96rZHxka
+        consentType:
+          type: string
+          example: Accounts
+        currentStatus:
+          type: string
+          example: awaitingAuthorisation
+        receipt:
+          type: string
+        validityPeriod:
+          type: integer
+          example: 3600
+        recurringIndicator:
+          type: boolean
+        consentAttributes:
+          type: object
+        authorizationResources:
+          type: array
+          items:
+            $ref: '#/components/schemas/AuthorizationResourceDTO'
+    ConsentResponse:
+      type: object
+      required:
+        - clientID
+        - consentType
+        - currentStatus
+        - receipt
+        - validityPeriod
+        - recurringIndicator
+        - consentID
+      properties:
+        consentID:
+          type: string
+          example: 604d9278-4c3b-45d5-b3bb-1e428acdf1ec
+        clientID:
+          type: string
+          example: TUwYBlObBMmu7zvDnnhs96rZHxka
+        consentType:
+          type: string
+          example: Accounts
+        currentStatus:
+          type: string
+          example: awaitingAuthorisation
+        receipt:
+          type: string
+        validityPeriod:
+          type: integer
+          example: 3600
+        recurringIndicator:
+          type: boolean
+        consentAttributes:
+          type: object
+        authorizationResources:
+          type: array
+          items:
+            $ref: '#/components/schemas/AuthResponse'
+        createdTime:
+          type: integer
+        updatedTime:
+          type: integer
+    DetailedConsentResource:
+      type: object
+      required:
+        - clientID
+        - consentType
+        - currentStatus
+        - receipt
+        - validityPeriod
+        - recurringIndicator
+      properties:
+        consentID:
+          type: string
+          example: 604d9278-4c3b-45d5-b3bb-1e428acdf1ec
+        clientID:
+          type: string
+          example: TUwYBlObBMmu7zvDnnhs96rZHxka
+        consentType:
+          type: string
+          example: Accounts
+        currentStatus:
+          type: string
+          example: awaitingAuthorisation
+        receipt:
+          type: string
+        validityPeriod:
+          type: integer
+          example: 3600
+        recurringIndicator:
+          type: boolean
+        consentAttributes:
+          type: object
+        authorizationResources:
+          type: array
+          items:
+            $ref: '#/components/schemas/AuthResponse'
+        createdTime:
+          type: integer
+        updatedTime:
+          type: integer
+    AuthorizationResourceDTO:
+      type: object
+      required:
+        - authorizationStatus
+        - authorizationType
+        - userID
+      properties:
+        authorizationStatus:
+          type: string
+          example: created
+        authorizationType:
+          type: string
+          example: authorization
+        userID:
+          type: string
+          example: psu@wso2.com
+        resources:
+          type: array
+          items:
+            $ref: '#/components/schemas/ResourcePermission'
+    AuthResponse:
+      type: object
+      required:
+        - authorizationId
+        - authorizationStatus
+        - authorizationType
+        - userID
+      properties:
+        authId:
+          type: string
+          example: 5162ab67-b4e1-4e88-b429-f0bf34fae343
+        authorizationStatus:
+          type: string
+          example: created
+        authorizationType:
+          type: string
+          example: authorization
+        userID:
+          type: string
+          example: psu@wso2.com
+        resources:
+          type: array
+          items:
+            $ref: '#/components/schemas/Resource'
+    ReauthorizeResource:
+      type: object
+      properties:
+        authorizationId:
+          type: string
+          example: 5162ab67-b4e1-4e88-b429-f0bf34fae343
+        userID:
+          type: string
+          example: psu@wso2.com
+        authorizationStatus:
+          type: string
+          example: created
+        authorizationType:
+          type: string
+          example: authorization
+        resources:
+          type: array
+          items:
+            $ref: '#/components/schemas/Resource'
+    Resource:
+      type: object
+      properties:
+        accountID:
+          type: string
+          example: account1234
+        permission:
+          type: string
+          example: read
+        resourceMappingId:
+          type: string
+          example: 1242334
+        resourceMappingStatus:
+          type: string
+          example: active
+    ResourcePermission:
+      type: object
+      properties:
+        accountID:
+          type: string
+          example: account1234
+        permission:
+          type: string
+          example: read
+    AmendmentResource:
+      type: object
+      properties:
+        receipt:
+          type: string
+        validityPeriod:
+          type: integer
+          example: 3600
+        consentAttributes:
+          type: object
+          example: { key1: value1 }
+        authorizationResources:
+          type: array
+          items:
+            $ref: '#/components/schemas/ReauthorizeResource'
+        currentStatus:
+          type: string
+          example: awaitingAuthorization
+    AmendmentResponse:
+      type: object
+      required:
+        - clientID
+        - consentType
+        - status
+        - receipt
+        - validityPeriod
+        - recurringIndicator
+        - metadata
+      properties:
+        clientID:
+          type: string
+          example: TUwYBlObBMmu7zvDnnhs96rZHxka
+        consentType:
+          type: string
+          example: Accounts
+        currentStatus:
+          type: string
+          example: awaitingAuthorization
+        receipt:
+          type: string
+        validityPeriod:
+          type: integer
+          example: 3600
+        recurringIndicator:
+          type: boolean
+        consentAttributes:
+          type: object
+        authorizationResources:
+          type: array
+          items:
+            $ref: '#/components/schemas/ReauthorizeResource'
+    BulkConsentStatusUpdateResource:
+      type: object
+      properties:
+        clientID:
+          type: string
+          example: TUwYBlObBMmu7zvDnnhs96rZHxka
+        userID:
+          type: string
+          example: psu@wso2.com
+        consentType:
+          type: string
+          example: Accounts
+        applicableStatusesForStateChange:
+          type: array
+          items:
+            type: string
+            example: "Active"
+        status:
+          type: string
+          example: revoked
+        reason:
+          type: string
+          example: Revoked by ...
+    ConsentStatusUpdateResource:
+      type: object
+      properties:
+        userID:
+          type: string
+          example: psu@wso2.com
+        status:
+          type: string
+          example: revoked
+        reason:
+          type: string
+          example: Revoked by ...
+    ConsentUserMapping:
+      type: object
+      properties:
+        consentID:
+          type: string
+          example: 604d9278-4c3b-45d5-b3bb-1e428acdf1ec
+        newConsentStatus:
+          type: string
+          example: created
+        authorizationResource:
+          $ref: '#/components/schemas/AuthResponse'
+        resources:
+          type: array
+          items:
+            $ref: '#/components/schemas/ResourcePermission'
+    ConsentUserMappingResponse:
+      type: object
+      properties:
+        consentID:
+          type: string
+          example: 604d9278-4c3b-45d5-b3bb-1e428acdf1ec
+        authorizationResource:
+          $ref: '#/components/schemas/AuthResponse'
+        updatedTime:
+          type: integer
+    ConsentFile:
+      type: object
+      properties:
+        consentID:
+          type: string
+          example: 604d9278-4c3b-45d5-b3bb-1e428acdf1ec
+        consentFile:
+          type: string
+        clientID:
+          type: string
+          example: TUwYBlObBMmu7zvDnnhs96rZHxka
+        userID:
+          type: string
+          example: psu@wso2.com
+        applicableStatus:
+          type: string
+          example: awaitingAuthorization
+    ConsentHistory:
+      type: object
+      properties:
+        historyId:
+          type: string
+          example: 604d9278-4c3b-45d5-b3bb-1e428acdf1ec
+        consentID:
+          type: string
+          example: 604d9278-4c3b-45d5-b3bb-1e428acdf1ec
+        timestamp:
+          type: integer
+        reason:
+          type: string
+          example: amended due to ...
+        detailedConsent:
+          $ref: '#/components/schemas/DetailedConsentResource'
+        changedMetadata:
+          type: object
+  parameters:
+    OrgInfoHeader:
+      name: OrgInfo
+      in: header
+      description: jwt header containing tenant related information
+      schema:
+        type: string
+        format: jwt
+        default: "DEFAULT_ORG"
+    isImplicitAuth:
+      name: IsImplicitAuth
+      in: header
+      description: Flag to determine whether authorization is implicit or not
+      schema:
+        type: boolean
+    ExclusiveConsent:
+      name: ExclusiveConsent
+      in: header
+      description: Flag to determine whether this is an exclusive consent
+      schema:
+        type: boolean
+    ConsentId:
+      name: consentId
+      in: path
+      description: consent id
+      required: true
+      schema:
+        type: string
+        example: 604d9278-4c3b-45d5-b3bb-1e428acdf1ec
+    DetailedConsent:
+      name: detailedConsent
+      in: query
+      schema:
+        type: boolean
+    UserId:
+      name: UserId
+      in: query
+      schema:
+        type: string
+        example: psu@wso2.com
+    WithAttributes:
+      name: WithAttributes
+      in: query
+      schema:
+        type: boolean

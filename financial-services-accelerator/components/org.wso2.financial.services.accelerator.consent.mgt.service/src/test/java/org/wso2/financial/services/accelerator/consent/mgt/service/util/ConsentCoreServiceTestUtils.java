@@ -1,12 +1,12 @@
 /**
- * Copyright (c) 2024, WSO2 LLC. (https://www.wso2.com).
+ * Copyright (c) 2025, WSO2 LLC. (https://www.wso2.com).
  * <p>
  * WSO2 LLC. licenses this file to you under the Apache License,
  * Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License.
  * You may obtain a copy of the License at
  * <p>
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  * <p>
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -24,7 +24,8 @@ import java.util.Map;
 public class ConsentCoreServiceTestUtils {
 
     public static void injectEnvironmentVariable(String key, String value)
-            throws ReflectiveOperationException {
+            throws
+            ReflectiveOperationException {
 
         Class<?> processEnvironment = Class.forName("java.lang.ProcessEnvironment");
 
@@ -38,7 +39,8 @@ public class ConsentCoreServiceTestUtils {
     }
 
     private static Field getAccessibleField(Class<?> clazz, String fieldName)
-            throws NoSuchFieldException {
+            throws
+            NoSuchFieldException {
 
         Field field = clazz.getDeclaredField(fieldName);
         field.setAccessible(true);
@@ -46,7 +48,8 @@ public class ConsentCoreServiceTestUtils {
     }
 
     private static void injectIntoUnmodifiableMap(String key, String value, Object map)
-            throws ReflectiveOperationException {
+            throws
+            ReflectiveOperationException {
 
         Class unmodifiableMap = Class.forName("java.util.Collections$UnmodifiableMap");
         Field field = getAccessibleField(unmodifiableMap, "m");

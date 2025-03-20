@@ -1,12 +1,12 @@
 /**
- * Copyright (c) 2024, WSO2 LLC. (https://www.wso2.com).
+ * Copyright (c) 2025, WSO2 LLC. (https://www.wso2.com).
  * <p>
  * WSO2 LLC. licenses this file to you under the Apache License,
  * Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License.
  * You may obtain a copy of the License at
  * <p>
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  * <p>
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -19,6 +19,7 @@
 package org.wso2.financial.services.accelerator.consent.mgt.service.util;
 
 import com.google.gson.Gson;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import net.minidev.json.JSONObject;
 import net.minidev.json.parser.JSONParser;
 import net.minidev.json.parser.ParseException;
@@ -26,12 +27,12 @@ import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.wso2.financial.services.accelerator.common.exception.ConsentManagementException;
 import org.wso2.financial.services.accelerator.consent.mgt.dao.ConsentCoreDAO;
 import org.wso2.financial.services.accelerator.consent.mgt.dao.exceptions.ConsentDataDeletionException;
 import org.wso2.financial.services.accelerator.consent.mgt.dao.exceptions.ConsentDataInsertionException;
 import org.wso2.financial.services.accelerator.consent.mgt.dao.exceptions.ConsentDataRetrievalException;
 import org.wso2.financial.services.accelerator.consent.mgt.dao.exceptions.ConsentDataUpdationException;
+import org.wso2.financial.services.accelerator.consent.mgt.dao.exceptions.ConsentMgtException;
 import org.wso2.financial.services.accelerator.consent.mgt.dao.models.AuthorizationResource;
 import org.wso2.financial.services.accelerator.consent.mgt.dao.models.ConsentAttributes;
 import org.wso2.financial.services.accelerator.consent.mgt.dao.models.ConsentHistoryResource;
@@ -40,6 +41,7 @@ import org.wso2.financial.services.accelerator.consent.mgt.dao.models.ConsentRes
 import org.wso2.financial.services.accelerator.consent.mgt.dao.models.ConsentStatusAuditRecord;
 import org.wso2.financial.services.accelerator.consent.mgt.dao.models.DetailedConsentResource;
 import org.wso2.financial.services.accelerator.consent.mgt.service.constants.ConsentCoreServiceConstants;
+import org.wso2.financial.services.accelerator.consent.mgt.service.impl.ConsentCoreServiceImpl;
 
 import java.sql.Connection;
 import java.util.ArrayList;
@@ -48,35 +50,42 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
+
+import javax.ws.rs.core.Response;
+
 
 /**
  * Consent Core Service Util.
  */
+@SuppressFBWarnings("CRLF_INJECTION_LOGS")
 public class ConsentCoreServiceUtil {
 
     private static final Log log = LogFactory.getLog(ConsentCoreServiceUtil.class);
 
+
     /**
      * Create an authorizable consent with audit record.
      *
-     * @param connection               Database connection
-     * @param consentCoreDAO           Consent core DAO
-     * @param consentResource          Consent resource
-     * @param userID                   User ID
-     * @param authStatus               Auth Status
-     * @param authType                 Auth Type
-     * @param isImplicitAuthorization  Is implicit authorization
+     * @param connection              Database connection
+     * @param consentCoreDAO          Consent core DAO
+     * @param consentResource         Consent resource
+     * @param authorizationResources  auth resources
+     * @param isImplicitAuthorization Is implicit authorization
      * @return DetailedConsentResource
      * @throws ConsentDataInsertionException Consent data insertion exception
-     * @throws ConsentManagementException Consent management exception
+     * @throws ConsentMgtException           Consent management exception
      */
-    public static DetailedConsentResource createAuthorizableConsentWithAuditRecord(Connection connection,
-                                                                                   ConsentCoreDAO consentCoreDAO,
-                                                                                   ConsentResource consentResource,
-                                                                                   String userID, String authStatus,
-                                                                                   String authType,
-                                                                                   boolean isImplicitAuthorization)
-            throws ConsentDataInsertionException, ConsentManagementException {
+    public static DetailedConsentResource createAuthorizableConsentWithAuditRecordWithBulkAuthResources(
+            Connection connection,
+            ConsentCoreDAO consentCoreDAO,
+            ConsentResource consentResource,
+            List<AuthorizationResource> authorizationResources,
+            boolean isImplicitAuthorization)
+            throws
+            ConsentDataInsertionException,
+            ConsentMgtException,
+            ConsentDataRetrievalException {
 
         boolean isConsentAttributesStored = false;
         AuthorizationResource storedAuthorizationResource = null;
@@ -101,13 +110,132 @@ public class ConsentCoreServiceUtil {
             isConsentAttributesStored = consentCoreDAO.storeConsentAttributes(connection, consentAttributes);
         }
 
-        /* Create audit record, setting previous consent status as null since this is the first time the
+
+        //TODO: authorizationResources.get(0).getUserID()
+        ///  authorizationResources is null and get the userId
+
+        String userId = authorizationResources != null ?
+                !authorizationResources.isEmpty() ? authorizationResources.get(0).getUserID() : null : null;
+
+
+        ArrayList<AuthorizationResource> storedAuthorizationResources = new ArrayList<>();
+        // Create an authorization resource if isImplicitAuth parameter is true
+        if (isImplicitAuthorization) {
+            /* Setting userID as null since at this point, there is no userID in this flow. User ID can be
+                   updated in authorization flow */
+
+            // loop through authorizationResources
+            assert authorizationResources != null;
+            for (AuthorizationResource authorizationResource : authorizationResources) {
+                authorizationResource.setUpdatedTime(System.currentTimeMillis());
+                authorizationResource.setConsentID(consentID);
+
+
+                if (log.isDebugEnabled()) {
+                    log.debug(("Storing authorization resource for consent of ID: " + authorizationResource
+                            .getConsentID()).replaceAll("[\r\n]", ""));
+                }
+
+                storedAuthorizationResource = consentCoreDAO.storeAuthorizationResource(connection,
+                        authorizationResource);
+                ArrayList<ConsentMappingResource> storedConsentMappingResources = new ArrayList<>();
+                for (ConsentMappingResource consentMappingResource :
+                        authorizationResource.getConsentMappingResource()) {
+                    consentMappingResource.setAuthorizationID(storedAuthorizationResource.getAuthorizationID());
+                    ConsentMappingResource storedConsentMappingResource =
+                            consentCoreDAO.storeConsentMappingResource(connection,
+                                    consentMappingResource);
+                    storedConsentMappingResources.add(storedConsentMappingResource);
+                }
+                storedAuthorizationResource.setConsentMappingResource(storedConsentMappingResources);
+
+
+                storedAuthorizationResources.add(storedAuthorizationResource);
+            }
+        }
+
+        DetailedConsentResource detailedConsentResource =
+                new DetailedConsentResource(storedConsentResource.getOrgID(), consentID,
+                        storedConsentResource.getClientID(), storedConsentResource.getReceipt(),
+                        storedConsentResource.getConsentType(), storedConsentResource.getCurrentStatus(),
+                        storedConsentResource.getConsentFrequency(), storedConsentResource.getValidityPeriod(),
+                        storedConsentResource.getCreatedTime(), storedConsentResource.getUpdatedTime(),
+                        storedConsentResource.isRecurringIndicator(), consentResource.getConsentAttributes(),
+                        new ArrayList<>(),
+                        new ArrayList<>());
+
+
+        if (isConsentAttributesStored) {
+            detailedConsentResource.setConsentAttributes(consentResource.getConsentAttributes());
+        }
+        if (isImplicitAuthorization) {
+            detailedConsentResource.setAuthorizationResources(storedAuthorizationResources);
+        }
+                /* Create audit record, setting previous consent status as null since this is the first time the
            consent is created and execute state change listener */
         HashMap<String, Object> consentDataMap = new HashMap<>();
-        consentDataMap.put(ConsentCoreServiceConstants.CONSENT_RESOURCE, consentResource);
-        postStateChange(connection, consentCoreDAO, consentID, userID, consentResource.getCurrentStatus(),
+        consentDataMap.put(ConsentCoreServiceConstants.DETAILED_CONSENT_RESOURCE, detailedConsentResource);
+        DetailedConsentResource oldDetailedConsent = new DetailedConsentResource();
+        oldDetailedConsent.setConsentAttributes(new HashMap<>());
+        oldDetailedConsent.setAuthorizationResources(new ArrayList<>());
+        oldDetailedConsent.setConsentMappingResources(new ArrayList<>());
+        consentDataMap.put(ConsentCoreServiceConstants.CONSENT_AMENDMENT_HISTORY_RESOURCE, oldDetailedConsent);
+
+        postStateChange(connection, consentCoreDAO, consentID, userId,
+                consentResource.getCurrentStatus(),
                 null, ConsentCoreServiceConstants.CREATE_CONSENT_REASON,
                 consentResource.getClientID(), consentDataMap);
+        return detailedConsentResource;
+    }
+
+    /**
+     * Create an authorizable consent with audit record.
+     *
+     * @param connection              Database connection
+     * @param consentCoreDAO          Consent core DAO
+     * @param consentResource         Consent resource
+     * @param userID                  User ID
+     * @param authStatus              Auth Status
+     * @param authType                Auth Type
+     * @param isImplicitAuthorization Is implicit authorization
+     * @return DetailedConsentResource
+     * @throws ConsentDataInsertionException Consent data insertion exception
+     * @throws ConsentMgtException           Consent management exception
+     */
+    public static DetailedConsentResource createAuthorizableConsentWithAuditRecord(Connection connection,
+                                                                                   ConsentCoreDAO consentCoreDAO,
+                                                                                   ConsentResource consentResource,
+                                                                                   String userID, String authStatus,
+                                                                                   String authType,
+                                                                                   boolean isImplicitAuthorization)
+            throws
+            ConsentDataInsertionException,
+            ConsentMgtException,
+            ConsentDataRetrievalException {
+
+        boolean isConsentAttributesStored = false;
+        AuthorizationResource storedAuthorizationResource = null;
+
+        // Create consent
+        if (log.isDebugEnabled()) {
+            log.debug(("Creating the consent for ID:" + consentResource.getConsentID())
+                    .replaceAll("[\r\n]", ""));
+        }
+        ConsentResource storedConsentResource = consentCoreDAO.storeConsentResource(connection, consentResource);
+        String consentID = storedConsentResource.getConsentID();
+
+        // Store consent attributes if available
+        if (MapUtils.isNotEmpty(consentResource.getConsentAttributes())) {
+            ConsentAttributes consentAttributes = new ConsentAttributes(consentID,
+                    consentResource.getConsentAttributes());
+
+            if (log.isDebugEnabled()) {
+                log.debug(String.format("Storing consent attributes for the consent of ID: %s", consentAttributes
+                        .getConsentID().replaceAll("[\r\n]", "")));
+            }
+            isConsentAttributesStored = consentCoreDAO.storeConsentAttributes(connection, consentAttributes);
+        }
+
 
         // Create an authorization resource if isImplicitAuth parameter is true
         if (isImplicitAuthorization) {
@@ -126,12 +254,14 @@ public class ConsentCoreServiceUtil {
             storedAuthorizationResource = consentCoreDAO.storeAuthorizationResource(connection, authorizationResource);
         }
 
-        DetailedConsentResource detailedConsentResource = new DetailedConsentResource(consentID,
-                storedConsentResource.getClientID(), storedConsentResource.getReceipt(),
-                storedConsentResource.getConsentType(), storedConsentResource.getCurrentStatus(),
-                storedConsentResource.getConsentFrequency(), storedConsentResource.getValidityPeriod(),
-                storedConsentResource.getCreatedTime(), storedConsentResource.getUpdatedTime(),
-                storedConsentResource.isRecurringIndicator(), null, null, null);
+        DetailedConsentResource detailedConsentResource =
+                new DetailedConsentResource(storedConsentResource.getOrgID(), consentID,
+                        storedConsentResource.getClientID(), storedConsentResource.getReceipt(),
+                        storedConsentResource.getConsentType(), storedConsentResource.getCurrentStatus(),
+                        storedConsentResource.getConsentFrequency(), storedConsentResource.getValidityPeriod(),
+                        storedConsentResource.getCreatedTime(), storedConsentResource.getUpdatedTime(),
+                        storedConsentResource.isRecurringIndicator(), new HashMap<>(), new ArrayList<>(),
+                        new ArrayList<>());
 
         if (isConsentAttributesStored) {
             detailedConsentResource.setConsentAttributes(consentResource.getConsentAttributes());
@@ -141,22 +271,36 @@ public class ConsentCoreServiceUtil {
             authorizationResources.add(storedAuthorizationResource);
             detailedConsentResource.setAuthorizationResources(authorizationResources);
         }
+
+        /* Create audit record, setting previous consent status as null since this is the first time the
+           consent is created and execute state change listener */
+        HashMap<String, Object> consentDataMap = new HashMap<>();
+        consentDataMap.put(ConsentCoreServiceConstants.DETAILED_CONSENT_RESOURCE, detailedConsentResource);
+        DetailedConsentResource oldDetailedConsent = new DetailedConsentResource();
+        oldDetailedConsent.setConsentAttributes(new HashMap<>());
+        oldDetailedConsent.setAuthorizationResources(new ArrayList<>());
+        oldDetailedConsent.setConsentMappingResources(new ArrayList<>());
+        consentDataMap.put(ConsentCoreServiceConstants.CONSENT_AMENDMENT_HISTORY_RESOURCE, oldDetailedConsent);
+
+        postStateChange(connection, consentCoreDAO, consentID, userID, consentResource.getCurrentStatus(),
+                null, ConsentCoreServiceConstants.CREATE_CONSENT_REASON,
+                consentResource.getClientID(), consentDataMap);
         return detailedConsentResource;
     }
 
     /**
      * Update existing consent statuses and revoke their account mappings.
      *
-     * @param connection                        Database connection
-     * @param consentCoreDAO                    Consent core DAO
-     * @param consentResource                   Consent resource
-     * @param userID                            User ID
-     * @param applicableExistingConsentsStatus  Applicable existing consents status
-     * @param newExistingConsentStatus          New existing consent status
+     * @param connection                       Database connection
+     * @param consentCoreDAO                   Consent core DAO
+     * @param consentResource                  Consent resource
+     * @param userID                           User ID
+     * @param applicableExistingConsentsStatus Applicable existing consents status
+     * @param newExistingConsentStatus         New existing consent status
      * @throws ConsentDataRetrievalException If an error occurs when retrieving existing consents
      * @throws ConsentDataUpdationException  If an error occurs when updating existing consents
      * @throws ConsentDataInsertionException If an error occurs when inserting data
-     * @throws ConsentManagementException     Consent management exception
+     * @throws ConsentMgtException           Consent management exception
      */
     public static void updateExistingConsentStatusesAndRevokeAccountMappings(Connection connection,
                                                                              ConsentCoreDAO consentCoreDAO,
@@ -164,8 +308,11 @@ public class ConsentCoreServiceUtil {
                                                                              String userID,
                                                                              String applicableExistingConsentsStatus,
                                                                              String newExistingConsentStatus)
-            throws ConsentDataRetrievalException, ConsentDataUpdationException, ConsentDataInsertionException,
-            ConsentManagementException {
+            throws
+            ConsentDataRetrievalException,
+            ConsentDataUpdationException,
+            ConsentDataInsertionException,
+            ConsentMgtException {
 
         ArrayList<String> accountMappingIDsList = new ArrayList<>();
 
@@ -177,7 +324,7 @@ public class ConsentCoreServiceUtil {
         // Get existing applicable consents
         log.debug("Retrieving existing authorized consents");
         ArrayList<DetailedConsentResource> retrievedExistingAuthorizedConsentsList =
-                consentCoreDAO.searchConsents(connection, null, clientIDsList, consentTypesList,
+                consentCoreDAO.searchConsents(connection, null, null, clientIDsList, consentTypesList,
                         consentStatusesList, userIDsList, null, null, null,
                         null);
 
@@ -223,78 +370,105 @@ public class ConsentCoreServiceUtil {
     /**
      * Method to create an audit record in post consent state change.
      *
-     * @param connection              Database connection
-     * @param consentCoreDAO          Consent core DAO
-     * @param consentID               Consent ID
-     * @param userID                  User ID
-     * @param newConsentStatus        New consent status
-     * @param previousConsentStatus   Previous consent status
-     * @param reason                  Reason for the status change
-     * @param clientId                Client ID
-     * @param consentDataMap          Consent data map
+     * @param connection            Database connection
+     * @param consentCoreDAO        Consent core DAO
+     * @param consentID             Consent ID
+     * @param userID                User ID
+     * @param newConsentStatus      New consent status
+     * @param previousConsentStatus Previous consent status
+     * @param reason                Reason for the status change
+     * @param clientId              Client ID
+     * @param consentDataMap        Consent data map
      * @throws ConsentDataInsertionException If an error occurs when storing the audit record
-     * @throws ConsentManagementException    Consent management exception
+     * @throws ConsentMgtException           Consent management exception
      */
     public static void postStateChange(Connection connection, ConsentCoreDAO consentCoreDAO, String consentID,
                                        String userID, String newConsentStatus, String previousConsentStatus,
                                        String reason, String clientId, Map<String, Object> consentDataMap)
-            throws ConsentDataInsertionException, ConsentManagementException {
+            throws
+            ConsentDataInsertionException,
+            ConsentMgtException,
+            ConsentDataRetrievalException {
 
-        createAuditRecord(connection, consentCoreDAO, consentID, userID, newConsentStatus, previousConsentStatus,
+        ConsentStatusAuditRecord consentStatusAuditRecord = createAuditRecord(connection, consentCoreDAO, consentID,
+                userID,
+                newConsentStatus,
+                previousConsentStatus,
                 reason);
-        // TODO: Uncomment and test when ConsentStateChangeListenerImpl is implemented
-//        ConsentStateChangeListenerImpl.getInstance().onStateChange(consentID, userID, newConsentStatus,
-//                previousConsentStatus, reason, clientId, consentDataMap);
+
+        DetailedConsentResource detailedCurrentConsent = (DetailedConsentResource)
+                consentDataMap.get(ConsentCoreServiceConstants.DETAILED_CONSENT_RESOURCE);
+        DetailedConsentResource detailedHistoryConsent = (DetailedConsentResource)
+                consentDataMap.get(ConsentCoreServiceConstants.CONSENT_AMENDMENT_HISTORY_RESOURCE);
+
+        if (detailedCurrentConsent == null) {
+            // get the current consent details
+            detailedCurrentConsent = consentCoreDAO.getDetailedConsentResource(connection, consentID);
+        }
+
+        ConsentHistoryResource consentHistoryResource = new ConsentHistoryResource();
+        consentHistoryResource.setDetailedConsentResource(detailedHistoryConsent);
+        consentHistoryResource.setReason(reason);
+        consentHistoryResource.setTimestamp(System.currentTimeMillis());
+
+        ConsentCoreServiceImpl consentCoreService = new ConsentCoreServiceImpl();
+        boolean result = consentCoreService.storeConsentAmendmentHistory(
+                consentStatusAuditRecord.getStatusAuditID(),
+                consentHistoryResource,
+                detailedCurrentConsent);
+
+        if (result) {
+            if (log.isDebugEnabled()) {
+                log.debug(String.format("Consent Amendment History of consentID: %s persisted successfully.",
+                        consentID));
+            }
+        } else {
+            log.error(String.format("Failed to persist Consent Amendment History of consentID : %s. ",
+                    consentID));
+        }
+
+
     }
 
     /**
      * Create an audit record for the consent status change.
      *
-     * @param connection             database connection
-     * @param consentCoreDAO         consent core DAO
-     * @param consentID              consent ID
-     * @param userID                 user ID
-     * @param newConsentStatus       new consent status
-     * @param previousConsentStatus  previous consent status
-     * @param reason                 reason for the status change
+     * @param connection            database connection
+     * @param consentCoreDAO        consent core DAO
+     * @param consentID             consent ID
+     * @param userID                user ID
+     * @param newConsentStatus      new consent status
+     * @param previousConsentStatus previous consent status
+     * @param reason                reason for the status change
+     * @return
      * @throws ConsentDataInsertionException thrown if an error occurs when storing the audit record
      */
-    public static void createAuditRecord(Connection connection, ConsentCoreDAO consentCoreDAO, String consentID,
-                                         String userID, String newConsentStatus, String previousConsentStatus,
-                                         String reason) throws ConsentDataInsertionException {
+    public static ConsentStatusAuditRecord createAuditRecord(Connection connection, ConsentCoreDAO consentCoreDAO,
+                                                             String consentID,
+                                                             String userID, String newConsentStatus,
+                                                             String previousConsentStatus,
+                                                             String reason) throws
+            ConsentDataInsertionException {
 
         // Create an audit record
         String actionBy = StringUtils.isNotEmpty(userID) ? userID : null;
         ConsentStatusAuditRecord consentStatusAuditRecord = new ConsentStatusAuditRecord(consentID, newConsentStatus,
                 0, reason, actionBy, previousConsentStatus);
 
+        consentStatusAuditRecord.setStatusAuditID(String.valueOf(UUID.randomUUID()));
         if (log.isDebugEnabled()) {
             log.debug(("Storing audit record for consent of ID: " +
                     consentStatusAuditRecord.getConsentID()).replaceAll("[\r\n]", ""));
         }
-        consentCoreDAO.storeConsentStatusAuditRecord(connection, consentStatusAuditRecord);
+        return consentCoreDAO.storeConsentStatusAuditRecord(connection, consentStatusAuditRecord);
     }
 
-    /**
-     * Method to validate whether the user ID in the request is equal to the user id stored in the consent database.
-     *
-     * @param requestUserID   User ID extracted from the Request
-     * @param consentUserID   User ID extracted from the consent
-     * @return true if the user IDs are equal, if not return false
-     */
-    public static boolean isValidUserID(String requestUserID, String consentUserID) {
-        if (StringUtils.isEmpty(requestUserID)) {
-            // userId not present in request query parameters, can use consentUserID to revoke tokens
-            return true;
-        }
-        return requestUserID.equals(consentUserID);
-    }
 
     /**
      * Construct an ArrayList with a single field.
      *
-     * @param field  Field to be added to the ArrayList
-     * @return  ArrayList with a single field
+     * @param field Field to be added to the ArrayList
+     * @return ArrayList with a single field
      */
     public static ArrayList<String> constructArrayList(String field) {
         return new ArrayList<String>() {
@@ -307,19 +481,21 @@ public class ConsentCoreServiceUtil {
     /**
      * Method to update the accounts of a consent.
      *
-     * @param connection                     Database connection
-     * @param consentCoreDAO                 Consent core DAO
-     * @param authID                         Authorization ID
-     * @param accountIDsMapWithPermissions   Account IDs map with permissions
-     * @param detailedConsentResource        Detailed consent resource
-     * @param isNewAuthResource              Is new authorization resource
+     * @param connection                   Database connection
+     * @param consentCoreDAO               Consent core DAO
+     * @param authID                       Authorization ID
+     * @param accountIDsMapWithPermissions Account IDs map with permissions
+     * @param detailedConsentResource      Detailed consent resource
+     * @param isNewAuthResource            Is new authorization resource
      * @throws ConsentDataInsertionException If an error occurs when inserting data
-     * @throws ConsentDataUpdationException If an error occurs when updating data
+     * @throws ConsentDataUpdationException  If an error occurs when updating data
      */
     public static void updateAccounts(Connection connection, ConsentCoreDAO consentCoreDAO, String authID,
                                       Map<String, ArrayList<String>> accountIDsMapWithPermissions,
                                       DetailedConsentResource detailedConsentResource, boolean isNewAuthResource)
-            throws ConsentDataInsertionException, ConsentDataUpdationException {
+            throws
+            ConsentDataInsertionException,
+            ConsentDataUpdationException {
 
         // Get existing consent account mappings
         log.debug("Retrieve existing active account mappings");
@@ -328,12 +504,14 @@ public class ConsentCoreServiceUtil {
 
         // Determine unique account IDs
         HashSet<String> existingAccountIDs = new HashSet<>();
-        existingAccountMappings.forEach(mapping -> existingAccountIDs.add(mapping.getAccountID()));
+        existingAccountMappings.forEach(mapping -> existingAccountIDs.add(
+                mapping.getAccountID()));
 
         ArrayList<String> existingAccountIDsList = new ArrayList<>(existingAccountIDs);
 
         ArrayList<String> reAuthorizedAccounts = new ArrayList<>();
-        accountIDsMapWithPermissions.forEach((accountID, permissions) -> reAuthorizedAccounts.add(accountID));
+        accountIDsMapWithPermissions.forEach((accountID, permissions) ->
+                reAuthorizedAccounts.add(accountID));
 
         // Determine whether the account should be removed or added
         ArrayList<String> accountsToRevoke = new ArrayList<>(existingAccountIDsList);
@@ -358,7 +536,10 @@ public class ConsentCoreServiceUtil {
                 for (String permission : permissions) {
                     ConsentMappingResource consentMappingResource = new ConsentMappingResource(
                             authID, accountID, permission, ConsentCoreServiceConstants.ACTIVE_MAPPING_STATUS);
-                    consentCoreDAO.storeConsentMappingResource(connection, consentMappingResource);
+                    ConsentMappingResource storedConsentMappingResource =
+                            consentCoreDAO.storeConsentMappingResource(connection,
+                                    consentMappingResource);
+                    existingAccountMappings.add(storedConsentMappingResource);
                 }
             }
         }
@@ -379,16 +560,18 @@ public class ConsentCoreServiceUtil {
     /**
      * Method to update the consent attributes.
      *
-     * @param connection         Database connection
-     * @param consentCoreDAO     Consent core DAO
-     * @param consentID          Consent ID
-     * @param consentAttributes  Consent attributes
+     * @param connection        Database connection
+     * @param consentCoreDAO    Consent core DAO
+     * @param consentID         Consent ID
+     * @param consentAttributes Consent attributes
      * @throws ConsentDataInsertionException If an error occurs when inserting data
-     * @throws ConsentDataDeletionException If an error occurs when deleting data
+     * @throws ConsentDataDeletionException  If an error occurs when deleting data
      */
     public static void updateConsentAttributes(Connection connection, ConsentCoreDAO consentCoreDAO,
                                                String consentID, Map<String, String> consentAttributes)
-            throws ConsentDataInsertionException, ConsentDataDeletionException {
+            throws
+            ConsentDataInsertionException,
+            ConsentDataDeletionException {
 
         // delete existing consent attributes
         if (log.isDebugEnabled()) {
@@ -409,12 +592,12 @@ public class ConsentCoreServiceUtil {
     /**
      * Method to get the changed values from consent amendment compared to the original consent.
      *
-     * @param newConsentResource  New Consent Resource after the amendment
-     * @param oldConsentResource  Existing Consent Resource
+     * @param newConsentResource New Consent Resource after the amendment
+     * @param oldConsentResource Existing Consent Resource
      * @return JSON object with the changed values
      */
     public static JSONObject getChangedBasicConsentDataJSON(DetailedConsentResource newConsentResource,
-                                                      DetailedConsentResource oldConsentResource) {
+                                                            DetailedConsentResource oldConsentResource) {
 
         JSONObject changedConsentDataJson = new JSONObject();
         if (!newConsentResource.getReceipt().equals(oldConsentResource.getReceipt())) {
@@ -438,22 +621,23 @@ public class ConsentCoreServiceUtil {
     /**
      * Method to get the changed consent attribute values from consent amendment compared to the original consent.
      *
-     * @param newConsentAttributes  New consent attributes after the amendment
-     * @param oldConsentAttributes  Existing consent attributes
-     * @return  JSON object with the changed consent attributes
+     * @param newConsentAttributes New consent attributes after the amendment
+     * @param oldConsentAttributes Existing consent attributes
+     * @return JSON object with the changed consent attributes
      */
     public static JSONObject getChangedConsentAttributesDataJSON(Map<String, String> newConsentAttributes,
-                                                           Map<String, String> oldConsentAttributes) {
+                                                                 Map<String, String> oldConsentAttributes) {
 
         JSONObject changedConsentAttributesJson = new JSONObject();
 
         oldConsentAttributes.entrySet().stream()
-                .filter(oldConsentAttribute -> !newConsentAttributes.containsKey(oldConsentAttribute.getKey()))
+                .filter(oldConsentAttribute -> !newConsentAttributes.containsKey(
+                        oldConsentAttribute.getKey()))
                 .forEach(oldConsentAttribute -> {
-            //store any removed consent attribute in current consent to the changedConsentAttributesJson of
-            //the immediate past consent amendment history with a null value
-            changedConsentAttributesJson.put(oldConsentAttribute.getKey(), oldConsentAttribute.getValue());
-        });
+                    //store any removed consent attribute in current consent to the changedConsentAttributesJson of
+                    //the immediate past consent amendment history with a null value
+                    changedConsentAttributesJson.put(oldConsentAttribute.getKey(), oldConsentAttribute.getValue());
+                });
 
         newConsentAttributes.entrySet().stream().filter(newConsentAttribute -> !oldConsentAttributes
                 .containsKey(newConsentAttribute.getKey())).forEach(newConsentAttribute -> {
@@ -467,12 +651,14 @@ public class ConsentCoreServiceUtil {
     /**
      * Method to get the changed consent mappings from consent amendment compared to the original consent.
      *
-     * @param newConsentMappings  New consent mappings after the amendment
-     * @param oldConsentMappings  Existing consent mappings
-     * @return  JSON object with the changed consent mappings
+     * @param newConsentMappings New consent mappings after the amendment
+     * @param oldConsentMappings Existing consent mappings
+     * @return JSON object with the changed consent mappings
      */
     public static Map<String, JSONObject> getChangedConsentMappingDataJSONMap(ArrayList<ConsentMappingResource>
-                                            newConsentMappings, ArrayList<ConsentMappingResource> oldConsentMappings) {
+                                                                                      newConsentMappings,
+                                                                              ArrayList<ConsentMappingResource>
+                                                                                      oldConsentMappings) {
 
         Map<String, JSONObject> changedConsentMappingsJsonDataMap = new HashMap<>();
         ArrayList<String> existingConsentMappingIds = new ArrayList<>();
@@ -504,12 +690,14 @@ public class ConsentCoreServiceUtil {
     /**
      * Method to get the changed consent auth resources from consent amendment compared to the original consent.
      *
-     * @param newConsentAuthResources  New consent auth resources after the amendment
-     * @param oldConsentAuthResources  Existing auth resources
-     * @return  JSON object with the changed consent mappings
+     * @param newConsentAuthResources New consent auth resources after the amendment
+     * @param oldConsentAuthResources Existing auth resources
+     * @return JSON object with the changed consent mappings
      */
     public static Map<String, JSONObject> getChangedConsentAuthResourcesDataJSONMap(ArrayList<AuthorizationResource>
-                                  newConsentAuthResources, ArrayList<AuthorizationResource> oldConsentAuthResources) {
+                                                                                            newConsentAuthResources,
+                                                                                    ArrayList<AuthorizationResource>
+                                                                                            oldConsentAuthResources) {
 
         Map<String, JSONObject> changedConsentAuthResourcesJsonDataMap = new HashMap<>();
 
@@ -533,7 +721,7 @@ public class ConsentCoreServiceUtil {
     /**
      * Method to get the consent mapping id and consent auth resource id as a list for consent history retrieval.
      *
-     * @param detailedConsentResource  Changed attribute JSON string
+     * @param detailedConsentResource Changed attribute JSON string
      * @return List of record IDs
      */
     public static List<String> getRecordIdListForConsentHistoryRetrieval(
@@ -554,14 +742,15 @@ public class ConsentCoreServiceUtil {
     /**
      * Method to process the consent amendment history data.
      *
-     * @param consentAmendmentHistoryRetrievalResult  Consent amendment history retrieval result
-     * @param currentConsentResource                  Current consent resource
+     * @param consentAmendmentHistoryRetrievalResult Consent amendment history retrieval result
+     * @param currentConsentResource                 Current consent resource
      * @return Consent amendment history data map
-     * @throws ConsentManagementException Consent management exception
+     * @throws ConsentMgtException Consent management exception
      */
     public static Map<String, ConsentHistoryResource> processConsentAmendmentHistoryData(
             Map<String, ConsentHistoryResource> consentAmendmentHistoryRetrievalResult,
-            DetailedConsentResource currentConsentResource) throws ConsentManagementException {
+            DetailedConsentResource currentConsentResource) throws
+            ConsentMgtException {
 
         Gson gson = new Gson();
         Map<String, ConsentHistoryResource> consentAmendmentHistoryDataMap = new LinkedHashMap<>();
@@ -651,27 +840,30 @@ public class ConsentCoreServiceUtil {
                     currentConsentResource.setAuthorizationResources(consentAuthResourceHistory);
                 }
             }
-            consentHistoryResource.setDetailedConsentResource(currentConsentResource);
+            consentHistoryResource.setDetailedConsentResource(currentConsentResource.clone());
             consentAmendmentHistoryDataMap.put(historyId, consentHistoryResource);
         }
         return consentAmendmentHistoryDataMap;
     }
 
+
     /**
      * Method to parse the changed attribute JSON string to a JSON Object.
      *
-     * @param changedAttributes  Changed attribute JSON string
+     * @param changedAttributes Changed attribute JSON string
      * @return JSON object with the changed attributes
-     * @throws ConsentManagementException If there is an error while parsing the JSON String
+     * @throws ConsentMgtException If there is an error while parsing the JSON String
      */
-    private static JSONObject parseChangedAttributeJsonString(String changedAttributes)
-            throws ConsentManagementException {
+    static JSONObject parseChangedAttributeJsonString(String changedAttributes)
+            throws
+            ConsentMgtException {
 
         Object changedValues;
         try {
             changedValues = new JSONParser(JSONParser.MODE_PERMISSIVE).parse(changedAttributes);
         } catch (ParseException e) {
-            throw new ConsentManagementException("Changed Values is not a valid JSON object", e);
+            throw new ConsentMgtException(Response.Status.INTERNAL_SERVER_ERROR,
+                    "Changed Values is not a valid JSON object", e);
         }
         if (changedValues == null) {
             return new JSONObject();
@@ -685,54 +877,39 @@ public class ConsentCoreServiceUtil {
      *
      * @param connection                Database connection
      * @param consentCoreDAO            Consent core DAO
-     * @param additionalAmendmentData   Additional amendment data
-     * @throws ConsentManagementException If an error occurs when processing the additional amendment data
+     * @param newAuthorizationResources new Authorization resources
+     * @throws ConsentMgtException           If an error occurs when processing the additional amendment data
      * @throws ConsentDataInsertionException If an error occurs when inserting data
      */
     public static void processAdditionalConsentAmendmentData(Connection connection, ConsentCoreDAO consentCoreDAO,
-                                                             Map<String, Object> additionalAmendmentData)
-            throws ConsentManagementException, ConsentDataInsertionException {
+                                                             ArrayList<AuthorizationResource> newAuthorizationResources)
+            throws
+            ConsentMgtException,
+            ConsentDataInsertionException {
+        for (AuthorizationResource authResource : newAuthorizationResources) {
 
-        Map<String, AuthorizationResource> newAuthResources;
-        Map<String, ArrayList<ConsentMappingResource>> newMappingResources;
 
-        if (additionalAmendmentData.containsKey(ConsentCoreServiceConstants.ADDITIONAL_AUTHORIZATION_RESOURCES) &&
-                additionalAmendmentData.containsKey(ConsentCoreServiceConstants.ADDITIONAL_MAPPING_RESOURCES)) {
+            if (StringUtils.isBlank(authResource.getConsentID()) ||
+                    StringUtils.isBlank(authResource.getAuthorizationType()) ||
+                    StringUtils.isBlank(authResource.getAuthorizationStatus())) {
+                log.error("Consent ID, authorization type or authorization status is missing, cannot proceed");
+                throw new ConsentMgtException(Response.Status.INTERNAL_SERVER_ERROR,
+                        "Cannot proceed since consent ID, authorization type or " +
+                                "authorization status is missing");
+            }
+            // create authorization resource
+            AuthorizationResource authorizationResource =
+                    consentCoreDAO.storeAuthorizationResource(connection, authResource);
 
-            newAuthResources = (Map<String, AuthorizationResource>) additionalAmendmentData
-                    .get(ConsentCoreServiceConstants.ADDITIONAL_AUTHORIZATION_RESOURCES);
-            newMappingResources = (Map<String, ArrayList<ConsentMappingResource>>) additionalAmendmentData
-                    .get(ConsentCoreServiceConstants.ADDITIONAL_MAPPING_RESOURCES);
+            for (ConsentMappingResource mappingResource : authResource.getConsentMappingResource()) {
 
-            for (Map.Entry<String, AuthorizationResource> authResourceEntry : newAuthResources.entrySet()) {
-                String userId = authResourceEntry.getKey();
-                AuthorizationResource authResource = authResourceEntry.getValue();
 
-                if (StringUtils.isBlank(authResource.getConsentID()) ||
-                        StringUtils.isBlank(authResource.getAuthorizationType()) ||
-                        StringUtils.isBlank(authResource.getAuthorizationStatus())) {
-                    log.error("Consent ID, authorization type or authorization status is missing, cannot proceed");
-                    throw new ConsentManagementException("Cannot proceed since consent ID, authorization type or " +
-                            "authorization status is missing");
-                }
-                // create authorization resource
-                AuthorizationResource authorizationResource =
-                        consentCoreDAO.storeAuthorizationResource(connection, authResource);
-                ArrayList<ConsentMappingResource> mappingResources = newMappingResources.get(userId);
-
-                for (ConsentMappingResource mappingResource : mappingResources) {
-
-                    if (StringUtils.isBlank(mappingResource.getAccountID()) ||
-                            StringUtils.isBlank(mappingResource.getMappingStatus())) {
-                        log.error("Account ID or Mapping Status is not found, cannot proceed");
-                        throw new ConsentManagementException("Account ID or Mapping Status is not found, " +
-                                "cannot proceed");
-                    }
-                    mappingResource.setAuthorizationID(authorizationResource.getAuthorizationID());
-                    // create mapping resource
-                    consentCoreDAO.storeConsentMappingResource(connection, mappingResource);
-                }
+                mappingResource.setAuthorizationID(authorizationResource.getAuthorizationID());
+                mappingResource.setMappingStatus("active");
+                // create mapping resource
+                consentCoreDAO.storeConsentMappingResource(connection, mappingResource);
             }
         }
     }
+
 }

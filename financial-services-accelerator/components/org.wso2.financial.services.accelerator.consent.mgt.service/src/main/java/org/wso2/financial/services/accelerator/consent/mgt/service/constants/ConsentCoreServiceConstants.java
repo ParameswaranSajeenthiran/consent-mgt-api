@@ -1,12 +1,12 @@
 /**
- * Copyright (c) 2024, WSO2 LLC. (https://www.wso2.com).
+ * Copyright (c) 2025, WSO2 LLC. (https://www.wso2.com).
  * <p>
  * WSO2 LLC. licenses this file to you under the Apache License,
  * Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License.
  * You may obtain a copy of the License at
  * <p>
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  * <p>
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -23,7 +23,7 @@ package org.wso2.financial.services.accelerator.consent.mgt.service.constants;
  */
 public class ConsentCoreServiceConstants {
 
-    public static final String TEST = "test123v2";
+    public static final String TEST = "test123v3";
     public static final String CONSENT_RESOURCE = "ConsentResource";
     public static final String DETAILED_CONSENT_RESOURCE = "DetailedConsentResource";
     public static final String CONSENT_AMENDMENT_HISTORY_RESOURCE = "ConsentAmendmentHistory";
@@ -48,10 +48,14 @@ public class ConsentCoreServiceConstants {
     public static final String CONSENT_REAUTHORIZE_REASON = "Reauthorize consent";
     public static final String CONSENT_AMEND_REASON = "Amend consent";
     public static final String DEFAULT_PERMISSION_VALUE = "n/a";
-    public static final String ADDITIONAL_AUTHORIZATION_RESOURCES =  "AdditionalAuthorizationResources";
+    public static final String ADDITIONAL_AUTHORIZATION_RESOURCES = "AdditionalAuthorizationResources";
     public static final String ADDITIONAL_MAPPING_RESOURCES = "AdditionalMappingResources";
+    public static final String AMENDMENT_REASON_CONSENT_AMENDMENT_FLOW = "ConsentAmendmentFlow";
+    public static final String AMENDMENT_REASON_CONSENT_REVOCATION = "ConsentRevocation";
 
     // Error Constants
+    public static final String ORGANIZATION_MISMATCH_ERROR_MSG =
+            "OrgInfo does not match, please provide the correct OrgInfo";
     public static final String DATA_INSERTION_ROLLBACK_ERROR_MSG = "Error occurred while inserting data. Rolling" +
             " back the transaction";
     public static final String DATABASE_CONNECTION_CLOSE_LOG_MSG = "Closing database connection";
@@ -59,7 +63,7 @@ public class ConsentCoreServiceConstants {
     public static final String CANNOT_PROCEED_WITH_CONSENT_CREATION = "Cannot proceed since client ID, receipt, " +
             "consent type or consent status is missing.";
     public static final String CANNOT_PROCEED_WITH_IMPLICIT_AUTH = "Cannot proceed with implicit authorization" +
-            " creation without Authorization Status and Authorization Type provided";
+            " creation without authorizationStatus or authorizationType provided";
     public static final String CREATE_EXCLUSIVE_CONSENT_MANDATORY_PARAMETER_MISSING_ERROR = "One or more of following" +
             " data are missing (Client ID, receipt, consent type, consent status, auth status, auth type, applicable " +
             "existing consent status, new existing consent status, new current consent status), cannot proceed";
@@ -99,8 +103,9 @@ public class ConsentCoreServiceConstants {
             " is not found, cannot proceed";
     public static final String ACC_MAPPING_ID_MISSING_ERROR_MSG = "Account mapping IDs are not provided, " +
             "cannot proceed";
-    public static final String CONSENT_STATUS_MISSING_ERROR_MSG = "Consent ID or new consent status is missing," +
+    public static final String CONSENT_STATUS_MISSING_ERROR_MSG = "New consent status is missing," +
             " cannot proceed";
+
     public static final String USER_ID_MISSING_ERROR_MSG = "User ID is required for token revocation, cannot proceed";
     public static final String USER_ID_MISMATCH_ERROR_MSG = "Requested UserID %s and Consent UserID  %s do not match," +
             " cannot proceed.";

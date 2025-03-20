@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2024, WSO2 LLC. (https://www.wso2.com).
+ * Copyright (c) 2025, WSO2 LLC. (https://www.wso2.com).
  * <p>
  * WSO2 LLC. licenses this file to you under the Apache License,
  * Version 2.0 (the "License"); you may not use this file except
@@ -33,6 +33,17 @@ public class ConsentStatusAuditRecord {
 
     public ConsentStatusAuditRecord() {
 
+    }
+
+    public ConsentStatusAuditRecord(String statusAuditID, String consentID, String currentStatus, long actionTime,
+                                    String reason, String actionBy, String previousStatus) {
+        this.statusAuditID = statusAuditID;
+        this.consentID = consentID;
+        this.currentStatus = currentStatus;
+        this.actionTime = actionTime;
+        this.reason = reason;
+        this.actionBy = actionBy;
+        this.previousStatus = previousStatus;
     }
 
     public ConsentStatusAuditRecord(String consentID, String currentStatus, long actionTime,

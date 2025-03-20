@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2024, WSO2 LLC. (https://www.wso2.com).
+ * Copyright (c) 2025, WSO2 LLC. (https://www.wso2.com).
  * <p>
  * WSO2 LLC. licenses this file to you under the Apache License,
  * Version 2.0 (the "License"); you may not use this file except
@@ -18,6 +18,8 @@
 
 package org.wso2.financial.services.accelerator.consent.mgt.dao.models;
 
+import java.util.ArrayList;
+
 /**
  * Model for the Authorization resource.
  */
@@ -29,6 +31,8 @@ public class AuthorizationResource {
     private String authorizationStatus;
     private String authorizationType;
     private long updatedTime;
+    private ArrayList<ConsentMappingResource> consentMappingResource;
+    private ArrayList<String> resources;
 
     public AuthorizationResource() {
 
@@ -101,5 +105,22 @@ public class AuthorizationResource {
     public void setUpdatedTime(long updatedTime) {
 
         this.updatedTime = updatedTime;
+    }
+
+    public ArrayList<ConsentMappingResource> getConsentMappingResource() {
+        return consentMappingResource;
+    }
+
+    public void setConsentMappingResource(
+            ArrayList<ConsentMappingResource> consentMappingResource) {
+        this.consentMappingResource = consentMappingResource;
+    }
+
+    public ArrayList<String> getResources() {
+        return resources;
+    }
+
+    public void setResources(ArrayList<String> resources) {
+        this.resources = resources;
     }
 }

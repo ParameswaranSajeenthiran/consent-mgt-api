@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2024, WSO2 LLC. (https://www.wso2.com).
+ * Copyright (c) 2025, WSO2 LLC. (https://www.wso2.com).
  * <p>
  * WSO2 LLC. licenses this file to you under the Apache License,
  * Version 2.0 (the "License"); you may not use this file except
@@ -73,7 +73,8 @@ public class OracleConsentCoreDAOImpl extends ConsentCoreDAOImpl {
     //                  ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE)
     // Suppression reason - False Positive : Cannot bind variables separately as the query is complex
     // Suppressed warning count - 1
-    public ArrayList<DetailedConsentResource> searchConsents(Connection connection, ArrayList<String> consentIDs,
+    public ArrayList<DetailedConsentResource> searchConsents(Connection connection,
+                                                             String orgID, ArrayList<String> consentIDs,
                                                              ArrayList<String> clientIDs,
                                                              ArrayList<String> consentTypes,
                                                              ArrayList<String> consentStatuses,

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
- ~ Copyright (c) 2024, WSO2 LLC. (https://www.wso2.com).
+ ~ Copyright (c) 2025, WSO2 LLC. (https://www.wso2.com).
  ~
  ~ WSO2 LLC. licenses this file to you under the Apache License,
  ~ Version 2.0 (the "License"); you may not use this file except
@@ -36,79 +36,37 @@
         <dependency>
             <groupId>commons-logging</groupId>
             <artifactId>commons-logging</artifactId>
-            <version>${commons.logging.version}</version>
 
         </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-dbcp2</artifactId>
-            <version>2.9.0</version>  <!-- Make sure this is the latest stable version -->
+            <version>2.9.0</version>
         </dependency>
 
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
-            <version>${commons-lang3.version}</version>
         </dependency>
         <dependency>
             <groupId>commons-beanutils</groupId>
             <artifactId>commons-beanutils</artifactId>
-            <version>${commons.bean.utils.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-collections4</artifactId>
             <version>${commons-collections.version}</version>
         </dependency>
-
-<!--        <dependency>-->
-<!--            <groupId>javax.ws.rs</groupId>-->
-<!--            <artifactId>jsr311-api</artifactId>-->
-<!--                            <version>${javax.ws.rs.version}</version>-->
-
-<!--        </dependency>-->
-
-        <!-- https://mvnrepository.com/artifact/javax.servlet/servlet-api -->
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>servlet-api</artifactId>
             <version>2.5</version>
             <scope>provided</scope>
         </dependency>
-
-
-
-
-        <!-- Jersey Core -->
-
-<!--        <dependency>-->
-<!--            <groupId>io.swagger</groupId>-->
-<!--            <artifactId>swagger-jaxrs</artifactId>-->
-<!--            <scope>provided</scope>-->
-<!--            <exclusions>-->
-<!--                <exclusion>-->
-<!--                    <groupId>javax.ws.rs</groupId>-->
-<!--                    <artifactId>jsr311-api</artifactId>-->
-<!--                </exclusion>-->
-<!--                <exclusion>-->
-<!--                    <groupId>com.google.guava</groupId>-->
-<!--                    <artifactId>guava</artifactId>-->
-<!--                </exclusion>-->
-<!--                <exclusion>-->
-<!--                    <groupId>org.yaml</groupId>-->
-<!--                    <artifactId>snakeyaml</artifactId>-->
-<!--                </exclusion>-->
-<!--            </exclusions>-->
-<!--        </dependency>-->
-<!--        <dependency>-->
-<!--            <groupId>javax.ws.rs</groupId>-->
-<!--            <artifactId>javax.ws.rs-api</artifactId>-->
-<!--&lt;!&ndash;            <scope>provided</scope>&ndash;&gt;-->
-<!--        </dependency>-->
         <dependency>
             <groupId>org.json.wso2</groupId>
             <artifactId>json</artifactId>
-                            <version>${org.json.version}</version>
+            <version>${org.json.version}</version>
 
         </dependency>
         <!--Mysql-Connector-->
@@ -118,98 +76,171 @@
             <artifactId>mysql-connector-j</artifactId>
             <version>9.2.0</version>
         </dependency>
-<!--            <groupId>org.springframework</groupId>-->
-<!--            <artifactId>spring-context</artifactId>-->
-<!--        </dependency>-->
-<!--        <dependency>-->
-<!--            <groupId>org.springframework</groupId>-->
-<!--            <artifactId>spring-web</artifactId>-->
-<!--        </dependency>-->
         <dependency>
             <groupId>org.apache.cxf</groupId>
             <artifactId>cxf-core</artifactId>
-            <version>${org.apache.cxf.version}</version>
-
         </dependency>
         <dependency>
             <groupId>org.apache.cxf</groupId>
             <artifactId>cxf-rt-frontend-jaxrs</artifactId>
-                            <version>${org.apache.cxf.version}</version>
-
+        </dependency>
+        <dependency>
+            <groupId>io.swagger</groupId>
+            <artifactId>swagger-annotations</artifactId>
+            <version>1.5.3</version>
+        </dependency>
+        <dependency>
+            <groupId>org.webjars</groupId>
+            <artifactId>swagger-ui</artifactId>
+            <version>5.12.0</version>  <!-- Use latest version -->
+        </dependency>
+        <dependency>
+        <groupId>io.swagger.core.v3</groupId>
+        <artifactId>swagger-jaxrs2</artifactId>
+        <version>2.2.20</version>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
         </dependency>
-<!--        <dependency>-->
-<!--            <groupId>org.wso2.carbon.identity.inbound.auth.oauth2</groupId>-->
-<!--            <artifactId>org.wso2.carbon.identity.oauth</artifactId>-->
-<!--        </dependency>-->
-<!--        <dependency>-->
-<!--            <groupId>org.wso2.carbon.identity.local.auth.api</groupId>-->
-<!--            <artifactId>org.wso2.carbon.identity.local.auth.api.core</artifactId>-->
-<!--            <exclusions>-->
-<!--                <exclusion>-->
-<!--                    <groupId>org.slf4j</groupId>-->
-<!--                    <artifactId>slf4j-api</artifactId>-->
-<!--                </exclusion>-->
-<!--            </exclusions>-->
-<!--        </dependency>-->
-
-
-<!--        <dependency>-->
-<!--            <groupId>org.wso2.financial.services.accelerator</groupId>-->
-<!--            <artifactId>org.wso2.financial.services.accelerator.common</artifactId>-->
-<!--            <version>4.0.0-SNAPSHOT</version>-->
-<!--        </dependency>-->
-<!--        <dependency>-->
-<!--            <groupId>com.github.spotbugs</groupId>-->
-<!--            <artifactId>spotbugs-maven-plugin</artifactId>-->
-<!--            <version>${maven.spotbugsplugin.version}</version>-->
-<!--        </dependency>-->
-
-<!--&lt;!&ndash;        <dependency>&ndash;&gt;-->
-<!--&lt;!&ndash;            <groupId>org.wso2.financial.services.accelerator</groupId>&ndash;&gt;-->
-<!--&lt;!&ndash;            <artifactId>org.wso2.financial.services.accelerator.consent.mgt.extensions</artifactId>&ndash;&gt;-->
-<!--&lt;!&ndash;        </dependency>&ndash;&gt;-->
-
-
-<!--        <dependency>-->
-<!--            <groupId>org.wso2.financial.services.accelerator</groupId>-->
-<!--            <artifactId>org.wso2.financial.services.accelerator.consent.mgt.service</artifactId>-->
-<!--        </dependency>-->
-<!--        <dependency>-->
-<!--            <groupId>org.wso2.financial.services.accelerator</groupId>-->
-<!--            <artifactId>org.wso2.financial.services.accelerator.consent.mgt.dao</artifactId>-->
-<!--        </dependency>-->
-
-
+        <dependency>
+            <groupId>com.fasterxml.jackson.jaxrs</groupId>
+            <artifactId>jackson-jaxrs-json-provider</artifactId>
+            <version>${jackson-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.cxf</groupId>
+            <artifactId>cxf-rt-rs-extension-providers</artifactId>
+            <version>4.0.3</version>  <!-- Use the correct version for your CXF -->
+        </dependency>
+        <dependency>
+            <groupId>net.minidev</groupId>
+            <artifactId>json-smart</artifactId>
+            <version>${json-smart.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.github.spotbugs</groupId>
+            <artifactId>spotbugs-maven-plugin</artifactId>
+            <version>${maven.spotbugsplugin.version}</version>
+        </dependency>
         <dependency>
             <groupId>org.wso2.financial.services.accelerator</groupId>
             <artifactId>org.wso2.financial.services.accelerator.consent.mgt.service</artifactId>
             <version>4.0.0-SNAPSHOT</version>
             <scope>system</scope>
-            <systemPath>${project.basedir}/lib/org.wso2.financial.services.accelerator.consent.mgt.service-4.0.0-SNAPSHOT.jar</systemPath>
+            <systemPath>
+                ${project.basedir}/lib/org.wso2.financial.services.accelerator.consent.mgt.service-4.0.0-SNAPSHOT.jar
+            </systemPath>
         </dependency>
         <dependency>
             <groupId>org.wso2.financial.services.accelerator</groupId>
             <artifactId>org.wso2.financial.services.accelerator.consent.mgt.dao</artifactId>
             <version>4.0.0-SNAPSHOT</version>
             <scope>system</scope>
-            <systemPath>${project.basedir}/lib/org.wso2.financial.services.accelerator.consent.mgt.dao-4.0.0-SNAPSHOT.jar</systemPath>
+            <systemPath>
+                ${project.basedir}/lib/org.wso2.financial.services.accelerator.consent.mgt.dao-4.0.0-SNAPSHOT.jar
+            </systemPath>
+        </dependency>
+
+        <dependency>
+            <groupId>javax.validation</groupId>
+            <artifactId>validation-api</artifactId>
+            <version>2.0.1.Final</version>
+            <scope>compile</scope>
+        </dependency>
+        <!-- OpenAPI Annotations for Swagger -->
+        <dependency>
+            <groupId>io.swagger.core.v3</groupId>
+            <artifactId>swagger-jaxrs2</artifactId>
+            <version>2.2.20</version>
+        </dependency>
+
+        <!-- Swagger UI Integration -->
+        <dependency>
+            <groupId>org.webjars</groupId>
+            <artifactId>swagger-ui</artifactId>
+            <version>4.15.5</version>
         </dependency>
         <dependency>
-            <groupId>org.wso2.financial.services.accelerator</groupId>
-            <artifactId>org.wso2.financial.services.accelerator.common</artifactId>
-            <version>4.0.0-SNAPSHOT</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/lib/org.wso2.financial.services.accelerator.common-4.0.0-SNAPSHOT.jar</systemPath>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${org.slf4j.version}</version>
+
         </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <version>${org.slf4j.version}</version>
+
+        </dependency>
+        <dependency>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-testng</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+
+
     </dependencies>
 
     <build>
         <plugins>
 
+<!--                        <plugin>-->
+<!--                            <groupId>org.openapitools</groupId>-->
+<!--                            <artifactId>openapi-generator-maven-plugin</artifactId>-->
+<!--                            &lt;!&ndash; RELEASE_VERSION &ndash;&gt;-->
+<!--                            <version>7.12.0</version>-->
+<!--                            &lt;!&ndash; /RELEASE_VERSION &ndash;&gt;-->
+<!--                            <executions>-->
+<!--                                <execution>-->
+<!--                                    <phase>generate-sources</phase>-->
+<!--                                    <goals>-->
+<!--                                        <goal>generate</goal>-->
+<!--                                    </goals>-->
+<!--                                    <configuration>-->
+<!--                                        <inputSpec>${project.basedir}/src/main/resources/openapi.yaml</inputSpec>-->
+<!--                                        <generatorName>jaxrs-spec</generatorName>-->
+<!--                                        <output>${project.basedir}</output>-->
+
+<!--                                        <configOptions>-->
+<!--                                            <serializableModel>true</serializableModel>-->
+<!--                                            <artifactId>${project.artifactId}</artifactId>-->
+<!--                                            <groupId>${project.groupId}</groupId>-->
+<!--                                            <version>${project.version}</version>-->
+<!--                                            <skipOverwrite>true</skipOverwrite>-->
+<!--                                            <sourceFolder>src/main/java</sourceFolder>-->
+<!--                                            <basePackage>org.wso2.financial.services.accelerator.consent.mgt.endpoint</basePackage>-->
+<!--                                            &lt;!&ndash;                <invokerPackage>com.redhat.todo</invokerPackage>&ndash;&gt;-->
+<!--                                            &lt;!&ndash;                <configPackage>com.redhat.todo.config</configPackage>&ndash;&gt;-->
+<!--                                            <modelPackage>org.wso2.financial.services.accelerator.consent.mgt.endpoint.model-->
+<!--                                            </modelPackage>-->
+<!--                                            <apiPackage>org.wso2.financial.services.accelerator.consent.mgt.endpoint.api-->
+<!--                                            </apiPackage>-->
+<!--                                        </configOptions>-->
+<!--                                        <generateApis>true</generateApis>-->
+<!--                                        <generateModels>true</generateModels>-->
+<!--                                        <generateSupportingFiles>false</generateSupportingFiles>-->
+<!--                                        <generateApiTests>false</generateApiTests>-->
+<!--                                        <generateModelTests>false</generateModelTests>-->
+<!--                                        <templateDirectory>-->
+<!--                                            ${project.basedir}/src/main/resources/template-for-openapi-code-generation-->
+<!--                                        </templateDirectory>-->
+
+<!--                                    </configuration>-->
+<!--                                </execution>-->
+<!--                            </executions>-->
+<!--                        </plugin>-->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-dependency-plugin</artifactId>
@@ -240,39 +271,129 @@
                         </resource>
                     </webResources>
                     <warName>consent</warName>
-                    <packagingExcludes>WEB-INF/lib/slf4j-api-*.jar</packagingExcludes>
+<!--                    <packagingExcludes>WEB-INF/lib/slf4j-api-*.jar</packagingExcludes>-->
                 </configuration>
             </plugin>
 
-<!--            <plugin>-->
-<!--                <groupId>com.github.spotbugs</groupId>-->
-<!--                <artifactId>spotbugs-maven-plugin</artifactId>-->
-<!--                <configuration>-->
-<!--                    <effort>Max</effort>-->
-<!--                    <threshold>Low</threshold>-->
-<!--                    <xmlOutput>true</xmlOutput>-->
-<!--                    <failOnError>true</failOnError>-->
-<!--                    <spotbugsXmlOutputDirectory>${project.build.directory}/spotbugs</spotbugsXmlOutputDirectory>-->
-<!--                    <excludeFilterFile>${project.basedir}/src/main/resources/findbugs-exclude.xml</excludeFilterFile>-->
-<!--                    <includeFilterFile>${project.basedir}/src/main/resources/findbugs-include.xml</includeFilterFile>-->
-<!--                    <plugins>-->
-<!--                        <plugin>-->
-<!--                            <groupId>com.h3xstream.findsecbugs</groupId>-->
-<!--                            <artifactId>findsecbugs-plugin</artifactId>-->
-<!--                            <version>${com.h3xstream.findsecbugs.version}</version>-->
-<!--                        </plugin>-->
-<!--                    </plugins>-->
-<!--                </configuration>-->
-<!--                <executions>-->
-<!--                    <execution>-->
-<!--                        <id>analyze-compile</id>-->
-<!--                        <phase>compile</phase>-->
-<!--                        <goals>-->
-<!--                            <goal>check</goal>-->
-<!--                        </goals>-->
-<!--                    </execution>-->
-<!--                </executions>-->
-<!--            </plugin>-->
+            <plugin>
+                <groupId>com.github.spotbugs</groupId>
+                <artifactId>spotbugs-maven-plugin</artifactId>
+                <configuration>
+                    <effort>Max</effort>
+                    <threshold>Low</threshold>
+                    <xmlOutput>true</xmlOutput>
+                    <failOnError>true</failOnError>
+                    <spotbugsXmlOutputDirectory>${project.build.directory}/spotbugs</spotbugsXmlOutputDirectory>
+                    <excludeFilterFile>${project.basedir}/src/main/resources/findbugs-exclude.xml</excludeFilterFile>
+                    <includeFilterFile>${project.basedir}/src/main/resources/findbugs-include.xml</includeFilterFile>
+                    <plugins>
+                        <plugin>
+                            <groupId>com.h3xstream.findsecbugs</groupId>
+                            <artifactId>findsecbugs-plugin</artifactId>
+                            <version>${com.h3xstream.findsecbugs.version}</version>
+                        </plugin>
+                    </plugins>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>analyze-compile</id>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <suiteXmlFiles>
+                        <suiteXmlFile>src/test/resources/testng.xml</suiteXmlFile>
+                    </suiteXmlFiles>
+                    <systemPropertyVariables>
+                        <jacoco-agent.destfile>target/jacoco.exec</jacoco-agent.destfile>
+                    </systemPropertyVariables>
+                    <reuseForks>true</reuseForks>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>${jacoco.version}</version>
+                <configuration>
+                    <excludes>
+                        <!--Excluding them in coverage reports-->
+                        <exclude>**/*Constant.class</exclude>
+                        <exclude>**/*Component.class</exclude>
+                        <exclude>**/*DataHolder.class</exclude>
+                        <exclude>**/*Exception.class</exclude>
+
+
+                        <!-- Excluding the generated classes in org/wso2/financial/services/accelerator/consent/mgt/endpoint/model-->
+                        <exclude>org/wso2/financial/services/accelerator/consent/mgt/endpoint/model/**</exclude>
+                        <exclude>**/*SwaggerApplication.class</exclude>
+                        <exclude>**/*DatabaseInitializer.class</exclude>
+                        <exclude>**/*ConsentApi.class</exclude>
+                        <exclude>**/*ConsentUtils.class</exclude>
+
+
+
+
+
+
+
+
+
+                    </excludes>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>default-prepare-agent</id>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>default-prepare-agent-integration</id>
+                        <goals>
+                            <goal>prepare-agent-integration</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>default-report</id>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>default-report-integration</id>
+                        <goals>
+                            <goal>report-integration</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>default-check</id>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                        <configuration>
+                            <rules>
+                                <rule implementation="org.jacoco.maven.RuleConfiguration">
+                                    <element>BUNDLE</element>
+                                    <limits>
+                                        <limit implementation="org.jacoco.report.check.Limit">
+                                            <counter>INSTRUCTION</counter>
+                                            <value>COVEREDRATIO</value>
+                                            <minimum>0.6</minimum>
+                                        </limit>
+                                    </limits>
+                                </rule>
+                            </rules>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>

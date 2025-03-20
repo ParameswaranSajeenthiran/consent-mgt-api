@@ -1,12 +1,12 @@
 /**
- * Copyright (c) 2024, WSO2 LLC. (https://www.wso2.com).
+ * Copyright (c) 2025, WSO2 LLC. (https://www.wso2.com).
  * <p>
  * WSO2 LLC. licenses this file to you under the Apache License,
  * Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License.
  * You may obtain a copy of the License at
  * <p>
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  * <p>
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -55,26 +55,36 @@ public class ConsentManagementDAOUtil {
     private static final String LEFT_PARENTHESIS = "(";
     private static final String RIGHT_PARENTHESIS = ")";
 
-   private static final Map<String, String> DB_OPERATORS_MAP = new HashMap<>();
+    private static final Map<String, String> DB_OPERATORS_MAP = new HashMap<>();
+
     static {
-        DB_OPERATORS_MAP.put(ConsentMgtDAOConstants.IN, "IN");
-        DB_OPERATORS_MAP.put(ConsentMgtDAOConstants.AND, "AND");
-        DB_OPERATORS_MAP.put(ConsentMgtDAOConstants.OR, "OR");
-        DB_OPERATORS_MAP.put(ConsentMgtDAOConstants.WHERE, "WHERE");
-        DB_OPERATORS_MAP.put(ConsentMgtDAOConstants.PLACEHOLDER, "?,");
-        DB_OPERATORS_MAP.put(ConsentMgtDAOConstants.PLAIN_PLACEHOLDER, "?");
-        DB_OPERATORS_MAP.put(ConsentMgtDAOConstants.EQUALS, "=");
+        DB_OPERATORS_MAP.put(ConsentMgtDAOConstants.IN,
+                "IN");
+        DB_OPERATORS_MAP.put(ConsentMgtDAOConstants.AND,
+                "AND");
+        DB_OPERATORS_MAP.put(ConsentMgtDAOConstants.OR,
+                "OR");
+        DB_OPERATORS_MAP.put(ConsentMgtDAOConstants.WHERE,
+                "WHERE");
+        DB_OPERATORS_MAP.put(ConsentMgtDAOConstants.PLACEHOLDER,
+                "?,");
+        DB_OPERATORS_MAP.put(ConsentMgtDAOConstants.PLAIN_PLACEHOLDER,
+                "?");
+        DB_OPERATORS_MAP.put(ConsentMgtDAOConstants.EQUALS,
+                "=");
     }
 
     /**
      * Set data from the result set to ConsentResource object.
      *
-     * @param resultSet       result set
+     * @param resultSet result set
      * @return ConsentResource constructed using the result set
      */
-    public static ConsentResource setDataToConsentResource(ResultSet resultSet) throws SQLException {
+    public static ConsentResource setDataToConsentResource(ResultSet resultSet) throws
+            SQLException {
 
         return new ConsentResource(
+                resultSet.getString(ConsentMgtDAOConstants.ORG_ID),
                 resultSet.getString(ConsentMgtDAOConstants.CONSENT_ID),
                 resultSet.getString(ConsentMgtDAOConstants.CLIENT_ID),
                 resultSet.getString(ConsentMgtDAOConstants.RECEIPT),
@@ -91,11 +101,12 @@ public class ConsentManagementDAOUtil {
     /**
      * Set data from the result set to ConsentResource object with consent attributes.
      *
-     * @param resultSet       result set
+     * @param resultSet result set
      * @return ConsentResource with attributes constructed using the result set
      */
     public static ConsentResource setDataToConsentResourceWithAttributes(ResultSet resultSet)
-            throws SQLException {
+            throws
+            SQLException {
         ConsentResource consentResource = setDataToConsentResource(resultSet);
         Map<String, String> retrievedConsentAttributeMap = new HashMap<>();
         // Point the cursor to the beginning of the result set to read attributes
@@ -112,11 +123,12 @@ public class ConsentManagementDAOUtil {
     /**
      * Set data from the result set to DetailedConsentResource object.
      *
-     * @param resultSet               result set
-     * @return  detailedConsentResource consent resource
+     * @param resultSet result set
+     * @return detailedConsentResource consent resource
      * @throws SQLException thrown if an error occurs when getting data from the result set
      */
-    public static DetailedConsentResource setDataToDetailedConsentResource(ResultSet resultSet) throws SQLException {
+    public static DetailedConsentResource setDataToDetailedConsentResource(ResultSet resultSet) throws
+            SQLException {
 
         Map<String, String> consentAttributesMap = new HashMap<>();
         ArrayList<AuthorizationResource> authorizationResources = new ArrayList<>();
@@ -138,6 +150,89 @@ public class ConsentManagementDAOUtil {
                             attributeValue);
                 }
             }
+
+            // Set data related to authorization resources
+            if (authIds.isEmpty()) {
+                if (resultSet.getString(ConsentMgtDAOConstants.AUTH_ID) != null) {
+                    AuthorizationResource authorizationResource = setAuthorizationData(resultSet,
+                            ConsentMgtDAOConstants.AUTH_UPDATED_TIME);
+
+                    authorizationResources.add(authorizationResource);
+                    authIds.add(authorizationResource.getAuthorizationID());
+                }
+
+            } else {
+                if (!authIds.contains(resultSet.getString(ConsentMgtDAOConstants.AUTH_ID))) {
+                    if (resultSet.getString(ConsentMgtDAOConstants.AUTH_ID) != null) {
+
+                        AuthorizationResource authorizationResource = setAuthorizationData(resultSet,
+                                ConsentMgtDAOConstants.AUTH_UPDATED_TIME);
+
+                        authorizationResources.add(authorizationResource);
+                        authIds.add(authorizationResource.getAuthorizationID());
+                    }
+                }
+            }
+
+            // Set data related to consent account mappings
+            // Check whether consentMappingIds is empty and result set consists a mapping id since at this moment
+            //  there can be a situation where an auth resource is created and mapping resource is not created
+            if (consentMappingIds.isEmpty() && resultSet.getString(ConsentMgtDAOConstants.MAPPING_ID) != null) {
+                ConsentMappingResource consentMappingResource = getConsentMappingResourceWithData(resultSet);
+
+                consentMappingResources.add(consentMappingResource);
+                consentMappingIds.add(consentMappingResource.getMappingID());
+            } else {
+                // Check whether result set consists a mapping id since at this moment, there can be a situation
+                //  where an auth resource is created and mapping resource is not created
+                if (!consentMappingIds.contains(resultSet.getString(ConsentMgtDAOConstants.MAPPING_ID)) &&
+                        resultSet.getString(ConsentMgtDAOConstants.MAPPING_ID) != null) {
+                    ConsentMappingResource consentMappingResource = getConsentMappingResourceWithData(resultSet);
+
+                    consentMappingResources.add(consentMappingResource);
+                    consentMappingIds.add(consentMappingResource.getMappingID());
+                }
+            }
+        }
+
+        // Set consent attributes, auth resources and account mappings to detailed consent resource
+        detailedConsentResource.setConsentAttributes(consentAttributesMap);
+        detailedConsentResource.setAuthorizationResources(authorizationResources);
+        detailedConsentResource.setConsentMappingResources(consentMappingResources);
+        return detailedConsentResource;
+    }
+
+
+    /**
+     * Set data from the result set to DetailedConsentResource object.
+     *
+     * @param resultSet result set
+     * @return detailedConsentResource consent resource
+     * @throws SQLException thrown if an error occurs when getting data from the result set
+     */
+    public static DetailedConsentResource setDataToConsentResourceWithAuthorizationResource(ResultSet resultSet) throws
+            SQLException {
+
+        Map<String, String> consentAttributesMap = new HashMap<>();
+        ArrayList<AuthorizationResource> authorizationResources = new ArrayList<>();
+        ArrayList<ConsentMappingResource> consentMappingResources = new ArrayList<>();
+        ArrayList<String> authIds = new ArrayList<>();
+        ArrayList<String> consentMappingIds = new ArrayList<>();
+        DetailedConsentResource detailedConsentResource = new DetailedConsentResource();
+
+        while (resultSet.next()) {
+            detailedConsentResource = setConsentDataToDetailedConsentResource(resultSet);
+            // Set data related to consent attributes
+//            if (StringUtils.isNotBlank(resultSet.getString(ConsentMgtDAOConstants.ATT_KEY))) {
+//                String attributeValue = resultSet.getString(ConsentMgtDAOConstants.ATT_VALUE);
+//
+//                // skip adding all temporary session data to consent attributes
+//                if (!(JSONValue.isValidJson(attributeValue) &&
+//                        attributeValue.contains(ConsentMgtDAOConstants.SESSION_DATA_KEY))) {
+//                    consentAttributesMap.put(resultSet.getString(ConsentMgtDAOConstants.ATT_KEY),
+//                            attributeValue);
+//                }
+//            }
 
             // Set data related to authorization resources
             if (authIds.isEmpty()) {
@@ -186,14 +281,17 @@ public class ConsentManagementDAOUtil {
 
     /**
      * Set consent data from the result set to DetailedConsentResource object.
-     * @param resultSet           result set
+     *
+     * @param resultSet result set
      * @return detailedConsentResource consent resource
      * @throws SQLException thrown if an error occurs when getting data from the result set
      */
     public static DetailedConsentResource setConsentDataToDetailedConsentResource(ResultSet resultSet)
-            throws SQLException {
+            throws
+            SQLException {
 
         return new DetailedConsentResource(
+                resultSet.getString(ConsentMgtDAOConstants.ORG_ID),
                 resultSet.getString(ConsentMgtDAOConstants.CONSENT_ID),
                 resultSet.getString(ConsentMgtDAOConstants.CLIENT_ID),
                 resultSet.getString(ConsentMgtDAOConstants.RECEIPT),
@@ -204,20 +302,25 @@ public class ConsentManagementDAOUtil {
                 resultSet.getLong(ConsentMgtDAOConstants.CONSENT_CREATED_TIME),
                 resultSet.getLong(ConsentMgtDAOConstants.CONSENT_UPDATED_TIME),
                 resultSet.getBoolean(ConsentMgtDAOConstants.RECURRING_INDICATOR),
-                new HashMap<>(), new ArrayList<>(), new ArrayList<>()
+                new HashMap<>(),
+                new ArrayList<>(),
+                new ArrayList<>()
         );
     }
 
     /**
      * Set data from the result set to AuthorizationResource object.
      *
-     * @param resultSet               result set
-     * @param updateTimeParamName     update time parameter name
-     * @return  authorizationResource authorization resource
+     * @param resultSet           result set
+     * @param updateTimeParamName update time parameter name
+     * @return authorizationResource authorization resource
      * @throws SQLException thrown if an error occurs when getting data from the result set
      */
-    public static AuthorizationResource setAuthorizationData(ResultSet resultSet, String updateTimeParamName)
-            throws SQLException {
+    public static AuthorizationResource setAuthorizationDataWithConsentMapping(ResultSet resultSet,
+                                                                               String updateTimeParamName)
+            throws
+            SQLException {
+
 
         AuthorizationResource authorizationResource = new AuthorizationResource(
                 resultSet.getString(ConsentMgtDAOConstants.CONSENT_ID),
@@ -226,8 +329,50 @@ public class ConsentManagementDAOUtil {
                 resultSet.getString(ConsentMgtDAOConstants.AUTH_TYPE),
                 resultSet.getLong(updateTimeParamName)
         );
-
         authorizationResource.setAuthorizationID(resultSet.getString(ConsentMgtDAOConstants.AUTH_ID));
+
+        ArrayList<ConsentMappingResource> consentMappingResources = new ArrayList<>();
+        ConsentMappingResource consentMappingResource = new ConsentMappingResource();
+        consentMappingResource.setMappingStatus(resultSet.getString(ConsentMgtDAOConstants.MAPPING_STATUS));
+        consentMappingResource.setMappingID(resultSet.getString(ConsentMgtDAOConstants.MAPPING_ID));
+        consentMappingResource.setResource(resultSet.getString(ConsentMgtDAOConstants.RESOURCE));
+        consentMappingResources.add(consentMappingResource);
+
+        while (resultSet.next()) {
+            consentMappingResource.setMappingStatus(resultSet.getString(ConsentMgtDAOConstants.MAPPING_STATUS));
+            consentMappingResource.setMappingID(resultSet.getString(ConsentMgtDAOConstants.MAPPING_ID));
+            consentMappingResource.setResource(resultSet.getString(ConsentMgtDAOConstants.RESOURCE));
+            consentMappingResources.add(consentMappingResource);
+
+
+        }
+        authorizationResource.setConsentMappingResource(consentMappingResources);
+        return authorizationResource;
+    }
+
+    /**
+     * Set data from the result set to AuthorizationResource object.
+     *
+     * @param resultSet           result set
+     * @param updateTimeParamName update time parameter name
+     * @return authorizationResource authorization resource
+     * @throws SQLException thrown if an error occurs when getting data from the result set
+     */
+    public static AuthorizationResource setAuthorizationData(ResultSet resultSet,
+                                                             String updateTimeParamName)
+            throws
+            SQLException {
+
+        AuthorizationResource authorizationResource = new AuthorizationResource(
+                resultSet.getString(ConsentMgtDAOConstants.CONSENT_ID),
+                resultSet.getString(ConsentMgtDAOConstants.USER_ID),
+                resultSet.getString(ConsentMgtDAOConstants.AUTH_STATUS),
+                resultSet.getString(ConsentMgtDAOConstants.AUTH_TYPE),
+                resultSet.getLong(updateTimeParamName)
+        );
+        authorizationResource.setAuthorizationID(resultSet.getString(ConsentMgtDAOConstants.AUTH_ID));
+
+
         return authorizationResource;
     }
 
@@ -238,12 +383,12 @@ public class ConsentManagementDAOUtil {
      * @return a consent mapping resource
      * @throws SQLException thrown if an error occurs when getting data from the result set
      */
-    public static ConsentMappingResource getConsentMappingResourceWithData(ResultSet resultSet) throws SQLException {
+    public static ConsentMappingResource getConsentMappingResourceWithData(ResultSet resultSet) throws
+            SQLException {
 
         ConsentMappingResource consentMappingResource = new ConsentMappingResource(
                 resultSet.getString(ConsentMgtDAOConstants.AUTH_ID),
-                resultSet.getString(ConsentMgtDAOConstants.ACCOUNT_ID),
-                resultSet.getString(ConsentMgtDAOConstants.PERMISSION),
+                resultSet.getString(ConsentMgtDAOConstants.RESOURCE),
                 resultSet.getString(ConsentMgtDAOConstants.MAPPING_STATUS)
         );
         consentMappingResource.setMappingID(resultSet.getString(ConsentMgtDAOConstants.MAPPING_ID));
@@ -254,7 +399,7 @@ public class ConsentManagementDAOUtil {
     /**
      * Construct the where clause of thr prepared statement for consent search.
      *
-     * @param applicableConditions   map of applicable conditions
+     * @param applicableConditions map of applicable conditions
      * @return where clause of the prepared statement
      */
     public static String constructConsentSearchPreparedStatement(Map<String, ArrayList<String>> applicableConditions) {
@@ -283,12 +428,14 @@ public class ConsentManagementDAOUtil {
                 }
                 // Delete last OR from the statement
                 whereClauseBuilder.replace(whereClauseBuilder.length() - 2,
-                        whereClauseBuilder.length(), DB_OPERATORS_MAP.get(ConsentMgtDAOConstants.AND));
+                        whereClauseBuilder.length(),
+                        DB_OPERATORS_MAP.get(ConsentMgtDAOConstants.AND));
             } else {
                 for (int i = 0; i < entry.getValue().size(); i++) {
                     placeHoldersBuilder.append(DB_OPERATORS_MAP.get(ConsentMgtDAOConstants.PLACEHOLDER));
                 }
-                String placeHolders = StringUtils.removeEnd(placeHoldersBuilder.toString(), COMMA);
+                String placeHolders = StringUtils.removeEnd(placeHoldersBuilder.toString(),
+                        COMMA);
                 whereClauseBuilder
                         .append(SPACE)
                         .append(entry.getKey())
@@ -300,19 +447,23 @@ public class ConsentManagementDAOUtil {
                         .append(SPACE)
                         .append(DB_OPERATORS_MAP.get(ConsentMgtDAOConstants.AND));
                 // Delete all content from old string builder except the starting left parenthesis
-                placeHoldersBuilder.delete(0, placeHoldersBuilder.length());
+                placeHoldersBuilder.delete(0,
+                        placeHoldersBuilder.length());
             }
         }
         int size = whereClauseBuilder.length();
         //removing the last AND in the statement
-        whereClauseBuilder.replace(size - 3, size, "");
+        whereClauseBuilder.replace(size - 3,
+                size,
+                "");
         return whereClauseBuilder.toString();
     }
 
     /**
      * Construct the filter condition of the prepared statement for consent search.
-     * @param userIds  map of user IDs
-     * @return  filter condition of the prepared statement
+     *
+     * @param userIds map of user IDs
+     * @return filter condition of the prepared statement
      */
     public static String constructUserIdListFilterCondition(Map<String, ArrayList<String>> userIds) {
 
@@ -323,7 +474,8 @@ public class ConsentManagementDAOUtil {
             for (int i = 0; i < entry.getValue().size(); i++) {
                 placeHoldersBuilder.append(DB_OPERATORS_MAP.get(ConsentMgtDAOConstants.PLACEHOLDER));
             }
-            String placeHolders = StringUtils.removeEnd(placeHoldersBuilder.toString(), COMMA);
+            String placeHolders = StringUtils.removeEnd(placeHoldersBuilder.toString(),
+                    COMMA);
             userIdFilterBuilder
                     .append(SPACE)
                     .append(entry.getKey())
@@ -334,20 +486,24 @@ public class ConsentManagementDAOUtil {
                     .append(RIGHT_PARENTHESIS)
                     .append(SPACE);
             // Delete all content from old string builder except the starting left parenthesis
-            placeHoldersBuilder.delete(0, placeHoldersBuilder.length());
+            placeHoldersBuilder.delete(0,
+                    placeHoldersBuilder.length());
         }
         return userIdFilterBuilder.toString();
     }
 
     /**
      * Determine the order of parameters to set in the prepared statement.
-     * @param preparedStatement         dynamically constructed prepared statement
-     * @param applicableConditionsMap   map of applicable conditions
-     * @param columnsMap                map of columns
+     *
+     * @param preparedStatement       dynamically constructed prepared statement
+     * @param applicableConditionsMap map of applicable conditions
+     * @param columnsMap              map of columns
      * @return ordered parameters map
      */
     public static TreeMap<Integer, ArrayList<String>> determineOrderOfParamsToSet(String preparedStatement,
-                            Map<String, ArrayList<String>> applicableConditionsMap, Map<String, String> columnsMap) {
+                                                                                  Map<String, ArrayList<String>>
+                                                                                          applicableConditionsMap,
+                                                                                  Map<String, String> columnsMap) {
 
         int indexOfConsentIDsList;
         int indexOfClientIdsList;
@@ -381,6 +537,12 @@ public class ConsentManagementDAOUtil {
             sortedIndexesMap.put(indexOfConsentStatusesList,
                     applicableConditionsMap.get(columnsMap.get(ConsentMgtDAOConstants.CONSENT_STATUSES)));
         }
+        if (preparedStatement.contains(columnsMap.get(ConsentMgtDAOConstants.ORG_ID))) {
+            indexOfConsentStatusesList = preparedStatement
+                    .indexOf(columnsMap.get(ConsentMgtDAOConstants.ORG_ID));
+            sortedIndexesMap.put(indexOfConsentStatusesList,
+                    applicableConditionsMap.get(columnsMap.get(ConsentMgtDAOConstants.ORG_ID)));
+        }
         if (preparedStatement.contains(columnsMap.get(ConsentMgtDAOConstants.USER_IDS))) {
             indexOfUserIDsList = preparedStatement.indexOf(columnsMap.get(ConsentMgtDAOConstants.USER_IDS));
             sortedIndexesMap.put(indexOfUserIDsList,
@@ -400,11 +562,13 @@ public class ConsentManagementDAOUtil {
      * @throws SQLException thrown if an error occurs in the process
      */
     public static int setDynamicConsentSearchParameters(PreparedStatement preparedStatement, Map<Integer,
-            ArrayList<String>> orderedParamsMap, int parameterIndex) throws SQLException {
+            ArrayList<String>> orderedParamsMap, int parameterIndex) throws
+            SQLException {
 
         for (Map.Entry<Integer, ArrayList<String>> entry : orderedParamsMap.entrySet()) {
             for (int valueIndex = 0; valueIndex < entry.getValue().size(); valueIndex++) {
-                preparedStatement.setString(parameterIndex, ((String) entry.getValue().get(valueIndex)).trim());
+                preparedStatement.setString(parameterIndex,
+                        entry.getValue().get(valueIndex).trim());
                 parameterIndex++;
             }
         }
@@ -414,11 +578,12 @@ public class ConsentManagementDAOUtil {
     /**
      * Get the size of the result set.
      *
-     * @param resultSet  result set
-     * @return  size of the result set
+     * @param resultSet result set
+     * @return size of the result set
      * @throws SQLException thrown if an error occurs when getting data from the result set
      */
-    public static int getResultSetSize(ResultSet resultSet) throws SQLException {
+    public static int getResultSetSize(ResultSet resultSet) throws
+            SQLException {
 
         resultSet.last();
         int resultSetSize = resultSet.getRow();
@@ -431,7 +596,7 @@ public class ConsentManagementDAOUtil {
     /**
      * Construct the where clause of the prepared statement for consent auth search.
      *
-     * @param applicableConditions   map of applicable conditions
+     * @param applicableConditions map of applicable conditions
      * @return where clause of the prepared statement
      */
     public static String constructAuthSearchPreparedStatement(Map<String, String> applicableConditions) {
@@ -469,7 +634,8 @@ public class ConsentManagementDAOUtil {
      * @param consentDataType A predefined consent data category based on each consent database table
      * @return A identifier assigned for the relevant consent database table
      */
-    public static String generateConsentTableId(String consentDataType) throws ConsentDataInsertionException {
+    public static String generateConsentTableId(String consentDataType) throws
+            ConsentDataInsertionException {
 
         String tableId;
         if (ConsentMgtDAOConstants.TYPE_CONSENT_BASIC_DATA.equals(consentDataType)) {
@@ -482,7 +648,8 @@ public class ConsentManagementDAOUtil {
             tableId = ConsentMgtDAOConstants.TABLES_MAP.get(ConsentMgtDAOConstants.TABLE_FS_CONSENT_MAPPING);
         } else {
             log.error(String.format("Can not find a table matching to the provided consentDataType : %s",
-                    consentDataType.replaceAll("[\r\n]", "")));
+                    consentDataType.replaceAll("[\r\n]",
+                            "")));
             throw new ConsentDataInsertionException("Error occurred while preparing to store consent amendment " +
                     "history data. Invalid consentDataType provided");
         }
@@ -491,8 +658,9 @@ public class ConsentManagementDAOUtil {
 
     /**
      * Method to construct where clause for consent status audit search condition.
-     * @param consentIDs   List of consent IDs
-     * @return  Filter condition for consent status audit
+     *
+     * @param consentIDs List of consent IDs
+     * @return Filter condition for consent status audit
      */
     public static String constructConsentAuditRecordSearchPreparedStatement(ArrayList<String> consentIDs) {
 
@@ -512,7 +680,8 @@ public class ConsentManagementDAOUtil {
             }
             // Delete last OR from the statement
             whereClauseBuilder.replace(whereClauseBuilder.length() - 2,
-                    whereClauseBuilder.length(), StringUtils.SPACE);
+                    whereClauseBuilder.length(),
+                    StringUtils.SPACE);
         }
         return whereClauseBuilder.toString();
     }
@@ -520,7 +689,7 @@ public class ConsentManagementDAOUtil {
     /**
      * Construct the where clause of the prepared statement for consent history search.
      *
-     * @param recordIdCount  count of record IDs
+     * @param recordIdCount count of record IDs
      * @return where clause of the prepared statement
      */
     public static String constructConsentHistoryPreparedStatement(int recordIdCount) {
@@ -538,6 +707,7 @@ public class ConsentManagementDAOUtil {
             if (count < recordIdCount - 1) {
                 whereClauseBuilder.append(SPACE).append(DB_OPERATORS_MAP.get(ConsentMgtDAOConstants.OR));
             }
+
         }
         return whereClauseBuilder.toString();
     }
@@ -548,12 +718,13 @@ public class ConsentManagementDAOUtil {
      *
      * @param consentId consent Id
      * @param resultSet result set
-     * @return  a map of ConsentHistoryResources
+     * @return a map of ConsentHistoryResources
      * @throws SQLException thrown if an error occurs when getting data from the result set
      */
     public static Map<String, ConsentHistoryResource> constructConsentHistoryRetrievalResult(String consentId,
                                                                                              ResultSet resultSet)
-            throws SQLException {
+            throws
+            SQLException {
 
         Map<String, ConsentHistoryResource> consentAmendmentHistoryDataMap = new LinkedHashMap<>();
 
@@ -570,7 +741,8 @@ public class ConsentManagementDAOUtil {
             if (consentAmendmentHistoryDataMap.containsKey(historyId)) {
                 consentHistoryResource = consentAmendmentHistoryDataMap.get(historyId);
             } else {
-                consentHistoryResource = new ConsentHistoryResource(consentId, historyId);
+                consentHistoryResource = new ConsentHistoryResource(consentId,
+                        historyId);
                 consentHistoryResource.setTimestamp(timestamp);
                 consentHistoryResource.setReason(amendmentReason);
             }
@@ -594,7 +766,8 @@ public class ConsentManagementDAOUtil {
                 } else {
                     consentAuthResources = new HashMap<>();
                 }
-                consentAuthResources.put(recordID, changedAttributesString);
+                consentAuthResources.put(recordID,
+                        changedAttributesString);
                 changedAttributesJsonDataMap.put(ConsentMgtDAOConstants.TYPE_CONSENT_AUTH_RESOURCE_DATA,
                         consentAuthResources);
             } else if (ConsentMgtDAOConstants.TABLES_MAP.get(ConsentMgtDAOConstants.TABLE_FS_CONSENT_MAPPING)
@@ -606,15 +779,19 @@ public class ConsentManagementDAOUtil {
                 } else {
                     consentMappingResources = new HashMap<>();
                 }
-                consentMappingResources.put(recordID, changedAttributesString);
+                consentMappingResources.put(recordID,
+                        changedAttributesString);
                 changedAttributesJsonDataMap.put(ConsentMgtDAOConstants.TYPE_CONSENT_MAPPING_DATA,
                         consentMappingResources);
             } else {
                 log.error(String.format("The retrieved tableId : %s has no corresponding consent data type to be" +
-                        " matched", tableID.replaceAll("[\r\n]", "")));
+                                " matched",
+                        tableID.replaceAll("[\r\n]",
+                                "")));
             }
             consentHistoryResource.setChangedAttributesJsonDataMap(changedAttributesJsonDataMap);
-            consentAmendmentHistoryDataMap.put(historyId, consentHistoryResource);
+            consentAmendmentHistoryDataMap.put(historyId,
+                    consentHistoryResource);
         }
         return consentAmendmentHistoryDataMap;
     }
@@ -622,8 +799,8 @@ public class ConsentManagementDAOUtil {
     /**
      * Method to construct excluded statuses search condition.
      *
-     * @param statusesEligibleForExpiration  List of statuses eligible for expiration
-     * @return  Filter condition for excluded statuses
+     * @param statusesEligibleForExpiration List of statuses eligible for expiration
+     * @return Filter condition for excluded statuses
      */
     public static String constructStatusesEligibleForExpirationCondition(List<String> statusesEligibleForExpiration) {
 
@@ -633,7 +810,8 @@ public class ConsentManagementDAOUtil {
         for (int i = 0; i < statusesEligibleForExpiration.size(); i++) {
             placeHoldersBuilder.append(DB_OPERATORS_MAP.get(ConsentMgtDAOConstants.PLACEHOLDER));
         }
-        String placeHolders = StringUtils.removeEnd(placeHoldersBuilder.toString(), COMMA);
+        String placeHolders = StringUtils.removeEnd(placeHoldersBuilder.toString(),
+                COMMA);
         statusesEligibleForExpirationFilterBuilder
                 .append(SPACE)
                 .append(LEFT_PARENTHESIS)
@@ -641,7 +819,8 @@ public class ConsentManagementDAOUtil {
                 .append(RIGHT_PARENTHESIS)
                 .append(SPACE);
         // Delete all content from old string builder except the starting left parenthesis
-        placeHoldersBuilder.delete(0, placeHoldersBuilder.length());
+        placeHoldersBuilder.delete(0,
+                placeHoldersBuilder.length());
         return statusesEligibleForExpirationFilterBuilder.toString();
     }
 }
