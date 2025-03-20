@@ -153,6 +153,89 @@ public class ConsentManagementDAOUtil {
 
             // Set data related to authorization resources
             if (authIds.isEmpty()) {
+                if(resultSet.getString(ConsentMgtDAOConstants.AUTH_ID) != null){
+                    AuthorizationResource authorizationResource = setAuthorizationData(resultSet,
+                            ConsentMgtDAOConstants.AUTH_UPDATED_TIME);
+
+                    authorizationResources.add(authorizationResource);
+                    authIds.add(authorizationResource.getAuthorizationID());
+                }
+
+            } else {
+                if (!authIds.contains(resultSet.getString(ConsentMgtDAOConstants.AUTH_ID))) {
+                    if(resultSet.getString(ConsentMgtDAOConstants.AUTH_ID) != null) {
+
+                        AuthorizationResource authorizationResource = setAuthorizationData(resultSet,
+                                ConsentMgtDAOConstants.AUTH_UPDATED_TIME);
+
+                        authorizationResources.add(authorizationResource);
+                        authIds.add(authorizationResource.getAuthorizationID());
+                    }
+                }
+            }
+
+            // Set data related to consent account mappings
+            // Check whether consentMappingIds is empty and result set consists a mapping id since at this moment
+            //  there can be a situation where an auth resource is created and mapping resource is not created
+            if (consentMappingIds.isEmpty() && resultSet.getString(ConsentMgtDAOConstants.MAPPING_ID) != null) {
+                ConsentMappingResource consentMappingResource = getConsentMappingResourceWithData(resultSet);
+
+                consentMappingResources.add(consentMappingResource);
+                consentMappingIds.add(consentMappingResource.getMappingID());
+            } else {
+                // Check whether result set consists a mapping id since at this moment, there can be a situation
+                //  where an auth resource is created and mapping resource is not created
+                if (!consentMappingIds.contains(resultSet.getString(ConsentMgtDAOConstants.MAPPING_ID)) &&
+                        resultSet.getString(ConsentMgtDAOConstants.MAPPING_ID) != null) {
+                    ConsentMappingResource consentMappingResource = getConsentMappingResourceWithData(resultSet);
+
+                    consentMappingResources.add(consentMappingResource);
+                    consentMappingIds.add(consentMappingResource.getMappingID());
+                }
+            }
+        }
+
+        // Set consent attributes, auth resources and account mappings to detailed consent resource
+        detailedConsentResource.setConsentAttributes(consentAttributesMap);
+        detailedConsentResource.setAuthorizationResources(authorizationResources);
+        detailedConsentResource.setConsentMappingResources(consentMappingResources);
+        return detailedConsentResource;
+    }
+
+
+    /**
+     * Set data from the result set to DetailedConsentResource object.
+     *
+     * @param resultSet               result set
+     * @return detailedConsentResource consent resource
+     * @throws SQLException thrown if an error occurs when getting data from the result set
+     */
+    public static DetailedConsentResource setDataToConsentResourceWithAuthorizationResource(ResultSet resultSet) throws
+            SQLException {
+
+        Map<String, String> consentAttributesMap = new HashMap<>();
+        ArrayList<AuthorizationResource> authorizationResources = new ArrayList<>();
+        ArrayList<ConsentMappingResource> consentMappingResources = new ArrayList<>();
+        ArrayList<String> authIds = new ArrayList<>();
+        ArrayList<String> consentMappingIds = new ArrayList<>();
+        DetailedConsentResource detailedConsentResource = new DetailedConsentResource();
+
+        while (resultSet.next()) {
+            detailedConsentResource = setConsentDataToDetailedConsentResource(resultSet);
+            // Set data related to consent attributes
+//            if (StringUtils.isNotBlank(resultSet.getString(ConsentMgtDAOConstants.ATT_KEY))) {
+//                String attributeValue = resultSet.getString(ConsentMgtDAOConstants.ATT_VALUE);
+//
+//                // skip adding all temporary session data to consent attributes
+//                if (!(JSONValue.isValidJson(attributeValue) &&
+//                        attributeValue.contains(ConsentMgtDAOConstants.SESSION_DATA_KEY))) {
+//                    consentAttributesMap.put(resultSet.getString(ConsentMgtDAOConstants.ATT_KEY),
+//                            attributeValue);
+//                }
+//            }
+
+            // Set data related to authorization resources
+            if (authIds.isEmpty()) {
                 AuthorizationResource authorizationResource = setAuthorizationData(resultSet,
                         ConsentMgtDAOConstants.AUTH_UPDATED_TIME);
 
@@ -232,7 +315,50 @@ public class ConsentManagementDAOUtil {
      * @return authorizationResource authorization resource
      * @throws SQLException thrown if an error occurs when getting data from the result set
      */
-    public static AuthorizationResource setAuthorizationData(ResultSet resultSet, String updateTimeParamName)
+    public static AuthorizationResource setAuthorizationDataWithConsentMapping(ResultSet resultSet,
+                                                                               String updateTimeParamName)
+            throws
+            SQLException {
+
+
+        AuthorizationResource authorizationResource = new AuthorizationResource(
+                resultSet.getString(ConsentMgtDAOConstants.CONSENT_ID),
+                resultSet.getString(ConsentMgtDAOConstants.USER_ID),
+                resultSet.getString(ConsentMgtDAOConstants.AUTH_STATUS),
+                resultSet.getString(ConsentMgtDAOConstants.AUTH_TYPE),
+                resultSet.getLong(updateTimeParamName)
+        );
+        authorizationResource.setAuthorizationID(resultSet.getString(ConsentMgtDAOConstants.AUTH_ID));
+
+        ArrayList<ConsentMappingResource> consentMappingResources = new ArrayList<>();
+        ConsentMappingResource consentMappingResource = new ConsentMappingResource();
+        consentMappingResource.setMappingStatus(resultSet.getString(ConsentMgtDAOConstants.MAPPING_STATUS));
+        consentMappingResource.setMappingID(resultSet.getString(ConsentMgtDAOConstants.MAPPING_ID));
+        consentMappingResource.setResource(resultSet.getString(ConsentMgtDAOConstants.RESOURCE));
+        consentMappingResources.add(consentMappingResource);
+
+        while (resultSet.next()){
+            consentMappingResource.setMappingStatus(resultSet.getString(ConsentMgtDAOConstants.MAPPING_STATUS));
+            consentMappingResource.setMappingID(resultSet.getString(ConsentMgtDAOConstants.MAPPING_ID));
+            consentMappingResource.setResource(resultSet.getString(ConsentMgtDAOConstants.RESOURCE));
+            consentMappingResources.add(consentMappingResource);
+
+
+        }
+        authorizationResource.setConsentMappingResource(consentMappingResources);
+        return authorizationResource;
+    }
+
+    /**
+     * Set data from the result set to AuthorizationResource object.
+     *
+     * @param resultSet               result set
+     * @param updateTimeParamName     update time parameter name
+     * @return authorizationResource authorization resource
+     * @throws SQLException thrown if an error occurs when getting data from the result set
+     */
+    public static AuthorizationResource setAuthorizationData(ResultSet resultSet,
+                                                                         String updateTimeParamName)
             throws
             SQLException {
 
@@ -243,8 +369,9 @@ public class ConsentManagementDAOUtil {
                 resultSet.getString(ConsentMgtDAOConstants.AUTH_TYPE),
                 resultSet.getLong(updateTimeParamName)
         );
-
         authorizationResource.setAuthorizationID(resultSet.getString(ConsentMgtDAOConstants.AUTH_ID));
+
+
         return authorizationResource;
     }
 
@@ -260,8 +387,7 @@ public class ConsentManagementDAOUtil {
 
         ConsentMappingResource consentMappingResource = new ConsentMappingResource(
                 resultSet.getString(ConsentMgtDAOConstants.AUTH_ID),
-                resultSet.getString(ConsentMgtDAOConstants.ACCOUNT_ID),
-                resultSet.getString(ConsentMgtDAOConstants.PERMISSION),
+                resultSet.getString(ConsentMgtDAOConstants.RESOURCE),
                 resultSet.getString(ConsentMgtDAOConstants.MAPPING_STATUS)
         );
         consentMappingResource.setMappingID(resultSet.getString(ConsentMgtDAOConstants.MAPPING_ID));

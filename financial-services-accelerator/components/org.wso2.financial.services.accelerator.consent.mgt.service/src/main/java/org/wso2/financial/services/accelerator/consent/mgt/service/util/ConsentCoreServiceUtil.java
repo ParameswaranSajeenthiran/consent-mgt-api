@@ -142,7 +142,6 @@ public class ConsentCoreServiceUtil {
                 for (ConsentMappingResource consentMappingResource :
                         authorizationResource.getConsentMappingResource()) {
                     consentMappingResource.setAuthorizationID(storedAuthorizationResource.getAuthorizationID());
-                    consentMappingResource.setMappingStatus(ConsentCoreServiceConstants.ACTIVE_MAPPING_STATUS);
                     ConsentMappingResource storedConsentMappingResource =
                             consentCoreDAO.storeConsentMappingResource(connection,
                                     consentMappingResource);
@@ -904,13 +903,9 @@ public class ConsentCoreServiceUtil {
 
             for (ConsentMappingResource mappingResource : authResource.getConsentMappingResource()) {
 
-                if (StringUtils.isBlank(mappingResource.getAccountID()) ||
-                        StringUtils.isBlank(mappingResource.getMappingStatus())) {
-                    log.error("Account ID or Mapping Status is not found, cannot proceed");
-                    throw new ConsentMgtException("Account ID or Mapping Status is not found, " +
-                            "cannot proceed");
-                }
+
                 mappingResource.setAuthorizationID(authorizationResource.getAuthorizationID());
+                mappingResource.setMappingStatus("active");
                 // create mapping resource
                 consentCoreDAO.storeConsentMappingResource(connection, mappingResource);
             }

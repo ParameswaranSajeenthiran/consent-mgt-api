@@ -1993,7 +1993,7 @@ public class ConsentCoreServiceImplTest {
         // return authResource
         doReturn(ConsentMgtServiceTestData.getSampleTestAuthorizationResource(sampleID, null))
                 .when(mockedConsentCoreDAO).getAuthorizationResource(any(),
-                       any());
+                       any(),any());
         doNothing().when(mockedConsentCoreDAO).updateConsentReceipt(any(),
                 anyString(), anyString());
         doNothing().when(mockedConsentCoreDAO).updateConsentValidityTime(any(),

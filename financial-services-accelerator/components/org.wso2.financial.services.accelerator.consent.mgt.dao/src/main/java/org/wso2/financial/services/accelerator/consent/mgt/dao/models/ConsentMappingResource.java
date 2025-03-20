@@ -28,12 +28,19 @@ public class ConsentMappingResource {
     private String accountID;
     private String permission;
     private String mappingStatus;
+    private String resource;
 
     public ConsentMappingResource() {
 
     }
 
-    public ConsentMappingResource(String authorizationID, String accountID, String permission,
+    public ConsentMappingResource(String authorizationID,  String resource, String mappingStatus) {
+        this.authorizationID = authorizationID;
+        this.resource = resource;
+        this.mappingStatus = mappingStatus;
+    }
+
+    public ConsentMappingResource( String authorizationID, String accountID, String permission,
                                   String mappingStatus) {
         this.authorizationID = authorizationID;
         this.accountID = accountID;
@@ -89,5 +96,13 @@ public class ConsentMappingResource {
     public void setMappingStatus(String mappingStatus) {
 
         this.mappingStatus = mappingStatus;
+    }
+
+    public String getResource() {
+        return resource;
+    }
+
+    public void setResource(String resource) {
+        this.resource = resource;
     }
 }

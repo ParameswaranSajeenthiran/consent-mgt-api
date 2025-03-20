@@ -135,6 +135,21 @@ public interface ConsentCoreService {
             ConsentMgtException;
 
     /**
+     * This method is used to get a detailed consent for the provided consent ID. The detailed consent includes
+     * following data if exist in addition to consent resource specific data.
+     *
+     * 1. Relative consent authorization data
+     * 2. Relative consent account mapping data
+     * 3. Relative consent attributes
+     *
+     * @param consentID      ID of the consent
+     * @return a detailed consent resource
+     * @throws ConsentMgtException thrown if any error occur in the process
+     */
+    DetailedConsentResource getConsentWithAuthorizationResources(String consentID) throws
+            ConsentMgtException;
+
+    /**
      * This method is used to create a consent file. The following functionality contains in this method.
      *
      * 1. Get the existing consent to validate the status according to the attribute "applicableStatusToFileUpload"
@@ -182,7 +197,7 @@ public interface ConsentCoreService {
      * @return an authorization resource
      * @throws ConsentMgtException thrown if an error occurs in the process
      */
-    AuthorizationResource getAuthorizationResource(String authorizationID) throws
+    AuthorizationResource getAuthorizationResource(String authorizationID, String orgID) throws
             ConsentMgtException;
 
     /**
@@ -229,7 +244,7 @@ public interface ConsentCoreService {
      * @return the updated authorization resource
      * @throws ConsentMgtException thrown if any error occur while updating
      */
-    AuthorizationResource updateAuthorizationStatus(String authorizationId, String newAuthorizationStatus)
+    AuthorizationResource updateAuthorizationStatus(String authorizationId, String newAuthorizationStatus, String orgID)
             throws
             ConsentMgtException;
 
@@ -242,7 +257,7 @@ public interface ConsentCoreService {
      * @return the updated authorization resource
      * @throws ConsentMgtException thrown if any error occurs while updating
      */
-    AuthorizationResource updateAuthorizationUser(String authorizationID, String userID)
+    AuthorizationResource updateAuthorizationUser(String authorizationID, String userID, String orgID)
             throws
             ConsentMgtException;
 

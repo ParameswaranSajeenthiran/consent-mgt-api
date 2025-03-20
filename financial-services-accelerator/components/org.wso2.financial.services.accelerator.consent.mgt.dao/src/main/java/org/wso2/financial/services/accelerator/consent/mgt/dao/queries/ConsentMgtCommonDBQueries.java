@@ -71,12 +71,39 @@ public class ConsentMgtCommonDBQueries {
                 "ocar.AUTH_TYPE, " +
                 "ocar.UPDATED_TIME AS AUTH_UPDATED_TIME, " +
                 "ocar.USER_ID, " +
-                "cm.ACCOUNT_ID, " +
                 "cm.MAPPING_ID, " +
                 "cm.MAPPING_STATUS, " +
-                "cm.PERMISSION " +
+                "cm.RESOURCE " +
                 "FROM FS_CONSENT obc " +
                 "LEFT JOIN FS_CONSENT_ATTRIBUTE ca ON obc.CONSENT_ID=ca.CONSENT_ID " +
+                "LEFT JOIN FS_CONSENT_AUTH_RESOURCE ocar ON obc.CONSENT_ID=ocar.CONSENT_ID " +
+                "LEFT JOIN FS_CONSENT_MAPPING cm ON ocar.AUTH_ID=cm.AUTH_ID " +
+                "WHERE obc.CONSENT_ID = ?";
+    }
+
+    public String getGetConsentResourceWithAuthorizationResourcesPreparedStatement() {
+
+        return "SELECT obc.CONSENT_ID," +
+                "ORG_ID, " +
+                "RECEIPT, " +
+                "CLIENT_ID, " +
+                "ORG_ID, " +
+                "CONSENT_TYPE, " +
+                "CURRENT_STATUS, " +
+                "CONSENT_FREQUENCY, " +
+                "VALIDITY_TIME, " +
+                "RECURRING_INDICATOR, " +
+                "CREATED_TIME AS CONSENT_CREATED_TIME, " +
+                "obc.UPDATED_TIME AS CONSENT_UPDATED_TIME, " +
+                "ocar.AUTH_ID, " +
+                "ocar.AUTH_STATUS, " +
+                "ocar.AUTH_TYPE, " +
+                "ocar.UPDATED_TIME AS AUTH_UPDATED_TIME, " +
+                "ocar.USER_ID, " +
+                "cm.MAPPING_ID, " +
+                "cm.MAPPING_STATUS, " +
+                "cm.RESOURCE " +
+                "FROM FS_CONSENT obc " +
                 "LEFT JOIN FS_CONSENT_AUTH_RESOURCE ocar ON obc.CONSENT_ID=ocar.CONSENT_ID " +
                 "LEFT JOIN FS_CONSENT_MAPPING cm ON ocar.AUTH_ID=cm.AUTH_ID " +
                 "WHERE obc.CONSENT_ID = ?";
@@ -105,7 +132,12 @@ public class ConsentMgtCommonDBQueries {
 
     public String getGetAuthorizationResourcePreparedStatement() {
 
-        return "SELECT * FROM FS_CONSENT_AUTH_RESOURCE WHERE AUTH_ID = ?";
+        return "SELECT ACR.*, OCM.*\n" +
+                "FROM FS_CONSENT_AUTH_RESOURCE ACR  \n" +
+                "LEFT JOIN FS_CONSENT_MAPPING OCM ON OCM.AUTH_ID = ACR.AUTH_ID  \n" +
+                "LEFT JOIN FS_CONSENT C ON ACR.CONSENT_ID = C.CONSENT_ID  \n" +
+                "WHERE ACR.AUTH_ID = ? \n" +
+                "AND (C.ORG_ID = ?)";
     }
 
     public String getUpdateAuthorizationStatusPreparedStatement() {
@@ -120,8 +152,8 @@ public class ConsentMgtCommonDBQueries {
 
     public String getStoreConsentMappingPreparedStatement() {
 
-        return "INSERT INTO FS_CONSENT_MAPPING (MAPPING_ID, AUTH_ID, ACCOUNT_ID, PERMISSION, MAPPING_STATUS) VALUES " +
-                "(?, ?, ?, ?, ?)";
+        return "INSERT INTO FS_CONSENT_MAPPING (MAPPING_ID, AUTH_ID, RESOURCE, MAPPING_STATUS) VALUES " +
+                "(?, ?, ?, ? )";
     }
 
     public String getGetConsentMappingResourcesPreparedStatement() {
@@ -229,10 +261,7 @@ public class ConsentMgtCommonDBQueries {
                 "           JOIN FS_CONSENT_AUTH_RESOURCE OCAR2 ON OCAR2.auth_id = OCM2.auth_id " +
                 "           WHERE OCAR2.consent_id = OBC.consent_id) AS AUTH_MAPPING_ID  , " +
 
-                "( SELECT   Group_concat(OCM2.account_id order by OCM2.mapping_id SEPARATOR '||') " +
-                "           FROM FS_CONSENT_MAPPING OCM2 " +
-                "           JOIN FS_CONSENT_AUTH_RESOURCE OCAR2 ON OCAR2.auth_id = OCM2.auth_id " +
-                "           WHERE OCAR2.consent_id = OBC.consent_id) AS ACCOUNT_ID  , " +
+
 
                 "( SELECT   Group_concat(OCM2.mapping_id order by OCM2.mapping_id SEPARATOR '||')  " +
                 "           FROM FS_CONSENT_MAPPING OCM2 " +
@@ -244,10 +273,10 @@ public class ConsentMgtCommonDBQueries {
                 "           JOIN FS_CONSENT_AUTH_RESOURCE OCAR2 ON OCAR2.auth_id = OCM2.auth_id " +
                 "           WHERE OCAR2.consent_id = OBC.consent_id) AS MAPPING_STATUS , " +
 
-                "( SELECT   Group_concat(OCM2.permission order by OCM2.mapping_id SEPARATOR '||') " +
+                "( SELECT   Group_concat(OCM2.resource order by OCM2.mapping_id SEPARATOR '||') " +
                 "           FROM FS_CONSENT_MAPPING OCM2 " +
                 "           JOIN FS_CONSENT_AUTH_RESOURCE OCAR2 ON OCAR2.auth_id = OCM2.auth_id " +
-                "           WHERE OCAR2.consent_id = OBC.consent_id) AS PERMISSION " +
+                "           WHERE OCAR2.consent_id = OBC.consent_id) AS RESOURCE " +
 
                 "FROM " +
                 selectClause +

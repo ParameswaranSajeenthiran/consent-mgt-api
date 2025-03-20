@@ -3,10 +3,10 @@ package org.wso2.financial.services.accelerator.consent.mgt.endpoint.impl;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import net.minidev.json.JSONObject;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.json.JSONException;
-import org.json.JSONObject;
 import org.wso2.financial.services.accelerator.consent.mgt.dao.exceptions.ConsentMgtException;
 import org.wso2.financial.services.accelerator.consent.mgt.dao.models.AuthorizationResource;
 import org.wso2.financial.services.accelerator.consent.mgt.dao.models.ConsentHistoryResource;
@@ -121,7 +121,7 @@ public class ConsentAPIImpl {
             for (DetailedConsentResource result : results) {
                 ConsentResponse consentResponse = new ConsentResponse();
                 ConsentUtils.copyPropertiesToConsentResourceResponse(consentResponse, result,
-                        false, false);
+                        false, false ,true);
 
                 // build AuthorizationResource objects
                 ArrayList<AuthResponse> authResponses = new ArrayList<>();
@@ -209,10 +209,10 @@ public class ConsentAPIImpl {
                     AuthorizationResource authorizationResource = new AuthorizationResource();
                     ConsentUtils.copyPropertiesToAuthorizationResource(authorizationResource, authorizationResourceDTO);
                     ArrayList<ConsentMappingResource> consentMappingResources = new ArrayList<>();
-                    for (ResourcePermission resource : authorizationResourceDTO.getResources()) {
+                    for (String resource : authorizationResourceDTO.getResources()) {
                         ConsentMappingResource res = new ConsentMappingResource();
-                        res.setPermission(resource.getPermission());
-                        res.setAccountID(resource.getAccountID());
+                        res.setResource(resource);
+                        res.setMappingStatus("active");
                         consentMappingResources.add(res);
                     }
                     authorizationResource.setConsentMappingResource(consentMappingResources);
@@ -238,7 +238,7 @@ public class ConsentAPIImpl {
             //////////////  build response //////////////
             ConsentResponse consentResponse = new ConsentResponse();
             ConsentUtils.copyPropertiesToConsentResourceResponse(consentResponse, result, isImplicitAuth,
-                    isImplicitAuth);
+                    isImplicitAuth, true);
 
             return Response.status(Response.Status.CREATED).entity(consentResponse).build();
         } catch (ConsentMgtException e) {
@@ -297,6 +297,7 @@ public class ConsentAPIImpl {
 
             // iterate through authorization resources and build new and existing auth and resource objects
             for (ReauthorizeResource authResourceDTO : amendmentResource.getAuthorizationResources()) {
+                //existing auth
                 if (authResourceDTO.getAuthorizationId() != null) {
                     AuthorizationResource auth = new AuthorizationResource();
                     ConsentUtils.copyPropertiesToAuthorizationResource(auth, authResourceDTO);
@@ -304,6 +305,7 @@ public class ConsentAPIImpl {
                     reAuthorization.add(auth);
 
                 } else {
+                    // new auth
                     AuthorizationResource auth = new AuthorizationResource();
                     ConsentUtils.copyPropertiesToAuthorizationResource(auth, authResourceDTO);
                     auth.setConsentID(consentID);
@@ -335,7 +337,7 @@ public class ConsentAPIImpl {
             ////////////// build response //////////////
             ConsentResponse consentResponse = new ConsentResponse();
             ConsentUtils.copyPropertiesToConsentResourceResponse(consentResponse, amendmentResponse,
-                    false, false);
+                    false, false, true);
 
             // build authorization resources
             ArrayList<AuthResponse> authResponses = new ArrayList<>();
@@ -386,7 +388,7 @@ public class ConsentAPIImpl {
     //
 //
     public Response consentConsentIdGet(
-            String consentID, String orgInfo, boolean isDetailedConsent, String userId,
+            String consentID, String orgInfo, boolean withAuthorizationResources, String userId,
             boolean isWithAttributes) throws
             ConsentMgtException {
 
@@ -396,7 +398,7 @@ public class ConsentAPIImpl {
             if (ConsentUtils.isConsentIdValid(consentID)) {
 
                 try {
-                    if (isDetailedConsent) {
+                    if (withAuthorizationResources & isWithAttributes) {
                         ////////////// Service call //////////////
                         DetailedConsentResource detailedConsentResource =
                                 consentCoreService.getDetailedConsent(consentID);
@@ -409,8 +411,9 @@ public class ConsentAPIImpl {
 
                         //////////////  build Response  //////////////
                         ConsentResponse consentResponse = new ConsentResponse();
-                        ConsentUtils.copyPropertiesToConsentResourceResponse(consentResponse, detailedConsentResource,
-                                false, false);
+                        ConsentUtils.copyPropertiesToConsentResourceResponse(consentResponse,
+                                detailedConsentResource,
+                                false, false, true);
                         ArrayList<AuthResponse> authResponses = new ArrayList<>();
 
                         // response should contain resources within each AuthorizationResource object
@@ -452,7 +455,68 @@ public class ConsentAPIImpl {
                         return Response.ok().entity(consentResponse).build();
 
 
-                    } else {
+                    }else if (withAuthorizationResources & !isWithAttributes)
+
+                    {
+
+                        ////////////// Service call //////////////
+                        DetailedConsentResource consentResourceWithAuthorizationResources =
+                                consentCoreService.getConsentWithAuthorizationResources(consentID);
+
+                        if (!consentResourceWithAuthorizationResources.getOrgID().equals(orgInfo)) {
+                            log.error("OrgInfo does not match");
+                            throw new ConsentMgtException(Response.Status.BAD_REQUEST,
+                                    "OrgInfo does not match, please provide the correct OrgInfo");
+                        }
+
+                        //////////////  build Response  //////////////
+                        ConsentResponse consentResponse = new ConsentResponse();
+                        ConsentUtils.copyPropertiesToConsentResourceResponse(consentResponse, consentResourceWithAuthorizationResources,
+                                false, false , false);
+                        ArrayList<AuthResponse> authResponses = new ArrayList<>();
+
+                        // response should contain resources within each AuthorizationResource object
+
+                        // get consent mapping resources for each AuthorizationResource in a Map
+                        Map<String, ArrayList<ConsentMappingResource>> consentMappingResources = new HashMap<>();
+                        for (ConsentMappingResource consentMappingResource :
+                                consentResourceWithAuthorizationResources.getConsentMappingResources()) {
+                            if (!consentMappingResources.containsKey(consentMappingResource.getAuthorizationID())) {
+                                consentMappingResources.put(consentMappingResource.getAuthorizationID(),
+                                        new ArrayList<>());
+                            }
+                            consentMappingResources.get(consentMappingResource.getAuthorizationID())
+                                    .add(consentMappingResource);
+                        }
+
+                        for (AuthorizationResource authorizationResource :
+                                consentResourceWithAuthorizationResources.getAuthorizationResources()) {
+                            AuthResponse authorizationResourceResponse = new AuthResponse();
+                            ConsentUtils.copyPropertiesToAuthorizationResourceResponse(authorizationResourceResponse,
+                                    authorizationResource);
+                            ArrayList<Resource> resources = new ArrayList<>();
+                            //add the consent mapping resources to the resources
+                            if (consentMappingResources.containsKey(authorizationResource.getAuthorizationID())) {
+                                for (ConsentMappingResource consentMappingResource : consentMappingResources.get(
+                                        authorizationResource.getAuthorizationID())) {
+                                    Resource resource = new Resource();
+                                    ConsentUtils.copyPropertiesToConsentMappingResourceResponse(resource,
+                                            consentMappingResource);
+                                    resources.add(resource);
+                                }
+                            }
+                            authorizationResourceResponse.setResources(resources);
+                            authResponses.add(authorizationResourceResponse);
+                        }
+                        consentResponse.setAuthorizationResources(authResponses);
+
+
+                        return Response.ok().entity(consentResponse).build();
+
+
+                    }
+
+                    else {
 
                         ConsentResource consent;
                         //////////////  Service Call  //////////////
@@ -495,6 +559,34 @@ public class ConsentAPIImpl {
         } catch (ConsentMgtException e) {
             return handleConsentMgtException(e);
         }
+    }
+
+    public Response consentAuthorizationAuthorizationIdGet(String authorizationId, String orgInfo){
+        AuthResponse authResponse = new AuthResponse();
+
+        try{
+            AuthorizationResource authorizationResource = consentCoreService.getAuthorizationResource(authorizationId,
+                    orgInfo);
+
+            ConsentUtils.copyPropertiesToAuthorizationResourceResponse(authResponse, authorizationResource );
+            ArrayList<Resource> resources = new ArrayList<>();
+            for (ConsentMappingResource consentMappingResource : authorizationResource.getConsentMappingResource()){
+                Resource resource = new Resource();
+                resource.setConsentMappingStatus(consentMappingResource.getMappingStatus());
+                resource.setResourceMappingId(consentMappingResource.getMappingID());
+                resource.setResource(consentMappingResource.getResource());
+                resources.add(resource);
+            }
+
+            authResponse.setResources(resources);
+            return  Response.ok().entity(authResponse).build();
+
+        } catch (ConsentMgtException e){
+
+            return handleConsentMgtException(e);
+        }
+
+
     }
 
     public Response consentConsentIdDelete(String consentID, String orgInfo, String userID) throws
@@ -671,11 +763,6 @@ public class ConsentAPIImpl {
         return Response.status(e.getErrorCode()).entity(error).build();
     }
 
-    private boolean validateOrgInfo(String orgInfo, String consentId) throws
-            ConsentMgtException {
-        ConsentResource consent = consentCoreService.getConsent(orgInfo, false);
-        return consent.getOrgID().equals(orgInfo);
-    }
 
 
 }

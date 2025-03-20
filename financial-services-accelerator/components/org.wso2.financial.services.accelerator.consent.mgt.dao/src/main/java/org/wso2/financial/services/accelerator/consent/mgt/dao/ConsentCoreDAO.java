@@ -95,6 +95,19 @@ public interface ConsentCoreDAO {
             ConsentDataRetrievalException;
 
     /**
+     * This method is used to retrieve a detailed consent resource for the provided consent ID (includes
+     * authorization resources, account mapping resources and consent attributes).
+     *
+     * @param connection                connection object
+     * @param consentID                 consent ID
+     * @return returns a detailed consent resource related to the provided consent ID
+     * @throws ConsentDataRetrievalException thrown if a database error occurs
+     */
+    DetailedConsentResource getConsentResourceWithAuthorizationResources(Connection connection, String consentID)
+            throws
+            ConsentDataRetrievalException;
+
+    /**
      * This method is used to update the status of a consent resource. The request consent resource object must be
      * set with a consent ID and the new consent status.
      *
@@ -153,7 +166,7 @@ public interface ConsentCoreDAO {
      * @return the relevant authorization resource
      * @throws ConsentDataRetrievalException thrown if a database error occurs
      */
-    AuthorizationResource getAuthorizationResource(Connection connection, String authorizationID)
+    AuthorizationResource getAuthorizationResource(Connection connection, String authorizationID, String orgID)
             throws
             ConsentDataRetrievalException;
 

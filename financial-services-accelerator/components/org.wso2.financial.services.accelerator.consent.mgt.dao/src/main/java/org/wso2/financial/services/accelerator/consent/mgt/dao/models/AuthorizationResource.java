@@ -32,6 +32,7 @@ public class AuthorizationResource {
     private String authorizationType;
     private long updatedTime;
     private ArrayList<ConsentMappingResource> consentMappingResource;
+    private ArrayList<String> resources;
 
     public AuthorizationResource() {
 
@@ -113,5 +114,13 @@ public class AuthorizationResource {
     public void setConsentMappingResource(
             ArrayList<ConsentMappingResource> consentMappingResource) {
         this.consentMappingResource = consentMappingResource;
+    }
+
+    public ArrayList<String> getResources() {
+        return resources;
+    }
+
+    public void setResources(ArrayList<String> resources) {
+        this.resources = resources;
     }
 }

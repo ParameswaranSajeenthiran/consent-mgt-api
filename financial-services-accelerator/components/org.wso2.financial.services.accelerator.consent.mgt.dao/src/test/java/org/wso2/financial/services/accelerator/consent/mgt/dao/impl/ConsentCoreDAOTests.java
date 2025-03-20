@@ -585,7 +585,7 @@ public class ConsentCoreDAOTests {
                     authorizationResource);
 
             retrievedAuthorizationResource = consentCoreDAO.getAuthorizationResource(connection,
-                    storedAuthorizationResource.getAuthorizationID());
+                    storedAuthorizationResource.getAuthorizationID(), storedConsentResource.getOrgID());
         }
         Assert.assertTrue(retrievedAuthorizationResource.getUpdatedTime() > 0L);
         Assert.assertNotNull(retrievedAuthorizationResource.getAuthorizationID());
@@ -603,7 +603,8 @@ public class ConsentCoreDAOTests {
         Mockito.doReturn(mockedPreparedStatement).when(mockedConnection)
                 .prepareStatement(Mockito.anyString());
         Mockito.doThrow(SQLException.class).when(mockedPreparedStatement).executeQuery();
-        consentCoreDAO.getAuthorizationResource(mockedConnection, ConsentMgtDAOTestData.SAMPLE_AUTHORIZATION_ID);
+        consentCoreDAO.getAuthorizationResource(mockedConnection, ConsentMgtDAOTestData.SAMPLE_AUTHORIZATION_ID,
+                ConsentMgtDAOTestData.SAMPLE_ORG_ID);
     }
 
     @Test(expectedExceptions = ConsentDataRetrievalException.class)
@@ -611,7 +612,8 @@ public class ConsentCoreDAOTests {
             Exception {
 
         Mockito.doThrow(SQLException.class).when(mockedConnection).prepareStatement(Mockito.anyString());
-        consentCoreDAO.getAuthorizationResource(mockedConnection, ConsentMgtDAOTestData.SAMPLE_AUTHORIZATION_ID);
+        consentCoreDAO.getAuthorizationResource(mockedConnection, ConsentMgtDAOTestData.SAMPLE_AUTHORIZATION_ID,
+                ConsentMgtDAOTestData.SAMPLE_ORG_ID);
     }
 
     @Test(expectedExceptions = ConsentDataRetrievalException.class)
@@ -620,7 +622,7 @@ public class ConsentCoreDAOTests {
 
         try (Connection connection = DAOUtils.getConnection(DB_NAME)) {
             consentCoreDAO.getAuthorizationResource(connection,
-                    ConsentMgtDAOTestData.SAMPLE_AUTHORIZATION_ID);
+                    ConsentMgtDAOTestData.SAMPLE_AUTHORIZATION_ID, ConsentMgtDAOTestData.SAMPLE_ORG_ID);
         }
     }
 

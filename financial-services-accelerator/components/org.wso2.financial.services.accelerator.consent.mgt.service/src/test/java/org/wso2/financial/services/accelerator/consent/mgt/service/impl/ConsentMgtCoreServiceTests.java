@@ -1222,10 +1222,10 @@ public class ConsentMgtCoreServiceTests {
             Exception {
 
         doReturn(ConsentMgtServiceTestData.getSampleStoredTestAuthorizationResource())
-                .when(mockedConsentCoreDAO).getAuthorizationResource(any(), anyString());
+                .when(mockedConsentCoreDAO).getAuthorizationResource(any(), anyString(),any());
         AuthorizationResource authorizationResource =
                 consentCoreServiceImpl.getAuthorizationResource(ConsentMgtServiceTestData
-                        .getSampleStoredTestAuthorizationResource().getAuthorizationID());
+                        .getSampleStoredTestAuthorizationResource().getAuthorizationID(),any());
         Assert.assertNotNull(authorizationResource);
     }
 
@@ -1233,7 +1233,7 @@ public class ConsentMgtCoreServiceTests {
     public void testGetAuthorizationResourceWithoutAuthID() throws
             Exception {
 
-        consentCoreServiceImpl.getAuthorizationResource(null);
+        consentCoreServiceImpl.getAuthorizationResource(null,any());
     }
 
     @Test(expectedExceptions = ConsentMgtException.class)
@@ -1241,9 +1241,9 @@ public class ConsentMgtCoreServiceTests {
             Exception {
 
         doThrow(ConsentDataRetrievalException.class)
-                .when(mockedConsentCoreDAO).getAuthorizationResource(any(), anyString());
+                .when(mockedConsentCoreDAO).getAuthorizationResource(any(), anyString(),any());
         consentCoreServiceImpl.getAuthorizationResource(ConsentMgtServiceTestData
-                .getSampleStoredTestAuthorizationResource().getAuthorizationID());
+                .getSampleStoredTestAuthorizationResource().getAuthorizationID(), any());
     }
 
     @Test
@@ -1312,7 +1312,7 @@ public class ConsentMgtCoreServiceTests {
             Exception {
 
         consentCoreServiceImpl.updateAuthorizationStatus(null,
-                ConsentMgtServiceTestData.SAMPLE_CONSUMED_STATUS);
+                ConsentMgtServiceTestData.SAMPLE_CONSUMED_STATUS, ConsentMgtServiceTestData.ORG_INFO);
     }
 
     @Test(expectedExceptions = ConsentMgtException.class)
@@ -1320,7 +1320,7 @@ public class ConsentMgtCoreServiceTests {
             Exception {
 
         consentCoreServiceImpl.updateAuthorizationStatus(ConsentMgtServiceTestData.CONSENT_ID,
-                null);
+                null, ConsentMgtServiceTestData.ORG_INFO);
     }
 
     @Test
@@ -1330,10 +1330,10 @@ public class ConsentMgtCoreServiceTests {
         doNothing().when(mockedConsentCoreDAO).updateAuthorizationStatus(any(), anyString(),
                 anyString());
         doReturn(ConsentMgtServiceTestData.getSampleStoredTestAuthorizationResource())
-                .when(mockedConsentCoreDAO).getAuthorizationResource(any(), anyString());
+                .when(mockedConsentCoreDAO).getAuthorizationResource(any(), anyString(), any());
 
         consentCoreServiceImpl.updateAuthorizationStatus(ConsentMgtServiceTestData.CONSENT_ID,
-                ConsentMgtServiceTestData.SAMPLE_CONSUMED_STATUS);
+                ConsentMgtServiceTestData.SAMPLE_CONSUMED_STATUS,ConsentMgtServiceTestData.ORG_INFO);
     }
 
     @Test(expectedExceptions = ConsentMgtException.class)
@@ -1344,7 +1344,7 @@ public class ConsentMgtCoreServiceTests {
                 .updateAuthorizationStatus(any(), anyString(), anyString());
 
         consentCoreServiceImpl.updateAuthorizationStatus(ConsentMgtServiceTestData.CONSENT_ID,
-                ConsentMgtServiceTestData.SAMPLE_CONSUMED_STATUS);
+                ConsentMgtServiceTestData.SAMPLE_CONSUMED_STATUS, ConsentMgtServiceTestData.ORG_INFO);
     }
 
     @Test(expectedExceptions = ConsentMgtException.class)
@@ -1354,10 +1354,10 @@ public class ConsentMgtCoreServiceTests {
         doNothing().when(mockedConsentCoreDAO).updateAuthorizationStatus(any(), anyString(),
                 anyString());
         doThrow(ConsentDataRetrievalException.class).when(mockedConsentCoreDAO)
-                .getAuthorizationResource(any(), anyString());
+                .getAuthorizationResource(any(), anyString(), any());
 
         consentCoreServiceImpl.updateAuthorizationStatus(ConsentMgtServiceTestData.CONSENT_ID,
-                ConsentMgtServiceTestData.SAMPLE_CONSUMED_STATUS);
+                ConsentMgtServiceTestData.SAMPLE_CONSUMED_STATUS, ConsentMgtServiceTestData.ORG_INFO);
     }
 
     @Test(expectedExceptions = ConsentMgtException.class)
@@ -1365,7 +1365,7 @@ public class ConsentMgtCoreServiceTests {
             Exception {
 
         consentCoreServiceImpl.updateAuthorizationUser(null,
-                ConsentMgtServiceTestData.SAMPLE_USER_ID);
+                ConsentMgtServiceTestData.SAMPLE_USER_ID, ConsentMgtServiceTestData.ORG_INFO);
     }
 
     @Test(expectedExceptions = ConsentMgtException.class)
@@ -1373,7 +1373,7 @@ public class ConsentMgtCoreServiceTests {
             Exception {
 
         consentCoreServiceImpl.updateAuthorizationUser(ConsentMgtServiceTestData.SAMPLE_AUTHORIZATION_ID_1,
-                null);
+                null, ConsentMgtServiceTestData.ORG_INFO);
     }
 
     @Test(expectedExceptions = ConsentMgtException.class)
@@ -1384,7 +1384,7 @@ public class ConsentMgtCoreServiceTests {
                 .updateAuthorizationUser(any(), anyString(), anyString());
 
         consentCoreServiceImpl.updateAuthorizationUser(ConsentMgtServiceTestData.SAMPLE_AUTHORIZATION_ID_1,
-                ConsentMgtServiceTestData.SAMPLE_USER_ID);
+                ConsentMgtServiceTestData.SAMPLE_USER_ID, ConsentMgtServiceTestData.ORG_INFO);
     }
 
     @Test(expectedExceptions = ConsentMgtException.class)
@@ -1394,10 +1394,10 @@ public class ConsentMgtCoreServiceTests {
         doNothing().when(mockedConsentCoreDAO).updateAuthorizationUser(any(),
                 anyString(), anyString());
         doThrow(ConsentDataRetrievalException.class).when(mockedConsentCoreDAO)
-                .getAuthorizationResource(any(), anyString());
+                .getAuthorizationResource(any(), anyString(), any());
 
         consentCoreServiceImpl.updateAuthorizationUser(ConsentMgtServiceTestData.SAMPLE_AUTHORIZATION_ID_1,
-                ConsentMgtServiceTestData.SAMPLE_USER_ID);
+                ConsentMgtServiceTestData.SAMPLE_USER_ID, ConsentMgtServiceTestData.ORG_INFO);
     }
 
     @Test
@@ -1407,11 +1407,11 @@ public class ConsentMgtCoreServiceTests {
         doNothing().when(mockedConsentCoreDAO).updateAuthorizationUser(any(), anyString(),
                 anyString());
         doReturn(ConsentMgtServiceTestData.getSampleStoredTestAuthorizationResource())
-                .when(mockedConsentCoreDAO).getAuthorizationResource(any(), anyString());
+                .when(mockedConsentCoreDAO).getAuthorizationResource(any(), anyString(), any());
 
 
         consentCoreServiceImpl.updateAuthorizationUser(ConsentMgtServiceTestData.SAMPLE_AUTHORIZATION_ID_1,
-                ConsentMgtServiceTestData.SAMPLE_USER_ID);
+                ConsentMgtServiceTestData.SAMPLE_USER_ID, ConsentMgtServiceTestData.ORG_INFO);
     }
 
     // test for ConsentCoreServiceUtil

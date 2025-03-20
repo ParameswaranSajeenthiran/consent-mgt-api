@@ -181,10 +181,9 @@ public class ConsentUtils {
         ArrayList<ConsentMappingResource> consentMappingResources = new ArrayList<>();
         for (Resource resource : authorizationResourceDTO.getResources()) {
             ConsentMappingResource consentMappingResource = new ConsentMappingResource();
-            consentMappingResource.setAccountID(resource.getAccountID());
-            consentMappingResource.setPermission(resource.getPermission());
-            consentMappingResource.setMappingStatus(resource.getResourceMappingStatus());
+            consentMappingResource.setResource(resource.getResource());
             consentMappingResource.setMappingID(resource.getResourceMappingId());
+            consentMappingResource.setMappingStatus(resource.getConsentMappingStatus());
             consentMappingResources.add(consentMappingResource);
 
         }
@@ -203,6 +202,14 @@ public class ConsentUtils {
         authorizationResourceResponseResponse.setAuthorizationStatus(authorizationResource.getAuthorizationStatus());
         authorizationResourceResponseResponse.setAuthorizationType(authorizationResource.getAuthorizationType());
 
+//        ArrayList<Resource> resources = new ArrayList<>();
+//        for ( ConsentMappingResource consentMappingResource : authorizationResource.getConsentMappingResource()){
+//            Resource res = new Resource();
+//            copyPropertiesToConsentMappingResourceResponse(res,consentMappingResource);
+//            resources.add(res);
+//        }
+//        authorizationResourceResponseResponse.setResources(resources);
+
 
     }
 
@@ -212,9 +219,8 @@ public class ConsentUtils {
     public static void copyPropertiesToConsentMappingResourceResponse(Resource consentMappingResourceResponse,
                                                                       ConsentMappingResource consentMappingResource) {
         consentMappingResourceResponse.setResourceMappingId(consentMappingResource.getMappingID());
-        consentMappingResourceResponse.setAccountID(consentMappingResource.getAccountID());
-        consentMappingResourceResponse.setPermission(consentMappingResource.getPermission());
-        consentMappingResourceResponse.setResourceMappingStatus(consentMappingResource.getMappingStatus());
+        consentMappingResourceResponse.setResource(consentMappingResource.getResource());
+        consentMappingResourceResponse.setConsentMappingStatus(consentMappingResource.getMappingStatus());
 
     }
 
@@ -224,9 +230,7 @@ public class ConsentUtils {
     public static void copyPropertiesToConsentMappingResource(Resource orgConsentMappingResource,
                                                               ConsentMappingResource desConsentMappingResource) {
         desConsentMappingResource.setMappingID(orgConsentMappingResource.getResourceMappingId());
-        desConsentMappingResource.setAccountID(orgConsentMappingResource.getAccountID());
-        desConsentMappingResource.setPermission(orgConsentMappingResource.getPermission());
-        desConsentMappingResource.setMappingStatus(orgConsentMappingResource.getResourceMappingStatus());
+        desConsentMappingResource.setMappingStatus(orgConsentMappingResource.getResource());
 
     }
 
@@ -236,18 +240,22 @@ public class ConsentUtils {
     public static void copyPropertiesToConsentResourceResponse(ConsentResponse consentResourceResponse,
                                                                DetailedConsentResource consentResource,
                                                                boolean withAuthResources,
-                                                               boolean withConsentMappingResources) {
+                                                               boolean withConsentMappingResources,
+                                                               boolean withAttributes) {
         consentResourceResponse.setConsentID(consentResource.getConsentID());
         consentResourceResponse.setClientID(consentResource.getClientID());
         consentResourceResponse.setConsentType(consentResource.getConsentType());
         consentResourceResponse.setRecurringIndicator(consentResource.isRecurringIndicator());
-        consentResourceResponse.setConsentAttributes(consentResource.getConsentAttributes());
         consentResourceResponse.setCreatedTime((int) consentResource.getCreatedTime());
         consentResourceResponse.setValidityPeriod((int) consentResource.getValidityPeriod());
         consentResourceResponse.setCurrentStatus(consentResource.getCurrentStatus());
         consentResourceResponse.setUpdatedTime((int) consentResource.getUpdatedTime());
         consentResourceResponse.setReceipt(consentResource.getReceipt());
 
+        if (withAttributes){
+            consentResourceResponse.setConsentAttributes(consentResource.getConsentAttributes());
+
+        }
 
         if (withAuthResources) {
             ArrayList<AuthResponse> authResponses = new ArrayList<>();

@@ -51,6 +51,7 @@ public class ConsentMgtDAOConstants {
     public static final String ACCOUNT_ID = "ACCOUNT_ID";
     public static final String PERMISSION = "PERMISSION";
     public static final String MAPPING_STATUS = "MAPPING_STATUS";
+    public static final String RESOURCE = "resource";
     public static final String ATT_KEY = "ATT_KEY";
     public static final String ATT_VALUE = "ATT_VALUE";
     public static final String SESSION_DATA_KEY = "sessionDataKey";

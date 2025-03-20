@@ -40,6 +40,7 @@ public class ConsentMgtDAOTestData {
     public static final String SAMPLE_CONSENT_RECEIPT = "{\"validUntil\": \"2020-10-20\", \"frequencyPerDay\": 1," +
             " \"recurringIndicator\": false, \"combinedServiceIndicator\": true}";
     public static final String SAMPLE_CONSENT_TYPE = "accounts";
+    public static final String SAMPLE_ORG_ID = "asgradeo";
     public static final int SAMPLE_CONSENT_FREQUENCY = 1;
     public static final Long SAMPLE_CONSENT_VALIDITY_PERIOD = 1638337852L;
     public static final String SAMPLE_CONSENT_ID = "2222";
