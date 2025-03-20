@@ -20,8 +20,6 @@ package org.wso2.financial.services.accelerator.consent.mgt.dao.persistence;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.wso2.financial.services.accelerator.consent.mgt.dao.exceptions.ConsentMgtException;
 
 import java.sql.Connection;
@@ -42,7 +40,7 @@ public final class JDBCPersistenceManager {
 
     private static volatile JDBCPersistenceManager instance;
     private static volatile DataSource dataSource;
-    private static final Log log = LogFactory.getLog(JDBCPersistenceManager.class);
+//    private static final Log log = LogFactory.getLog(JDBCPersistenceManager.class);
 
     private JDBCPersistenceManager() throws
             ConsentMgtException {
@@ -112,7 +110,7 @@ public final class JDBCPersistenceManager {
         try {
             Connection dbConnection = dataSource.getConnection();
             dbConnection.setAutoCommit(false);
-            log.debug("Returning database connection for Consent Management data source");
+//            log.debug("Returning database connection for Consent Management data source");
             return dbConnection;
         } catch (SQLException e) {
             throw new ConsentMgtException("Error when getting a database connection object from the " +
@@ -142,7 +140,7 @@ public final class JDBCPersistenceManager {
                 dbConnection.rollback();
             }
         } catch (SQLException e) {
-            log.error("An error occurred while rolling back transactions. ", e);
+//            log.error("An error occurred while rolling back transactions. ", e);
         }
     }
 
@@ -158,7 +156,7 @@ public final class JDBCPersistenceManager {
                 dbConnection.commit();
             }
         } catch (SQLException e) {
-            log.error("An error occurred while commit transactions. ", e);
+//            log.error("An error occurred while commit transactions. ", e);
         }
     }
 }

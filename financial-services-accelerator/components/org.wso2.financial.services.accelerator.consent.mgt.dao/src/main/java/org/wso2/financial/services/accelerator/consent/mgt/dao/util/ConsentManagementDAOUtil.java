@@ -77,7 +77,7 @@ public class ConsentManagementDAOUtil {
     /**
      * Set data from the result set to ConsentResource object.
      *
-     * @param resultSet       result set
+     * @param resultSet result set
      * @return ConsentResource constructed using the result set
      */
     public static ConsentResource setDataToConsentResource(ResultSet resultSet) throws
@@ -101,7 +101,7 @@ public class ConsentManagementDAOUtil {
     /**
      * Set data from the result set to ConsentResource object with consent attributes.
      *
-     * @param resultSet       result set
+     * @param resultSet result set
      * @return ConsentResource with attributes constructed using the result set
      */
     public static ConsentResource setDataToConsentResourceWithAttributes(ResultSet resultSet)
@@ -123,7 +123,7 @@ public class ConsentManagementDAOUtil {
     /**
      * Set data from the result set to DetailedConsentResource object.
      *
-     * @param resultSet               result set
+     * @param resultSet result set
      * @return detailedConsentResource consent resource
      * @throws SQLException thrown if an error occurs when getting data from the result set
      */
@@ -153,7 +153,7 @@ public class ConsentManagementDAOUtil {
 
             // Set data related to authorization resources
             if (authIds.isEmpty()) {
-                if(resultSet.getString(ConsentMgtDAOConstants.AUTH_ID) != null){
+                if (resultSet.getString(ConsentMgtDAOConstants.AUTH_ID) != null) {
                     AuthorizationResource authorizationResource = setAuthorizationData(resultSet,
                             ConsentMgtDAOConstants.AUTH_UPDATED_TIME);
 
@@ -163,7 +163,7 @@ public class ConsentManagementDAOUtil {
 
             } else {
                 if (!authIds.contains(resultSet.getString(ConsentMgtDAOConstants.AUTH_ID))) {
-                    if(resultSet.getString(ConsentMgtDAOConstants.AUTH_ID) != null) {
+                    if (resultSet.getString(ConsentMgtDAOConstants.AUTH_ID) != null) {
 
                         AuthorizationResource authorizationResource = setAuthorizationData(resultSet,
                                 ConsentMgtDAOConstants.AUTH_UPDATED_TIME);
@@ -206,7 +206,7 @@ public class ConsentManagementDAOUtil {
     /**
      * Set data from the result set to DetailedConsentResource object.
      *
-     * @param resultSet               result set
+     * @param resultSet result set
      * @return detailedConsentResource consent resource
      * @throws SQLException thrown if an error occurs when getting data from the result set
      */
@@ -281,7 +281,8 @@ public class ConsentManagementDAOUtil {
 
     /**
      * Set consent data from the result set to DetailedConsentResource object.
-     * @param resultSet           result set
+     *
+     * @param resultSet result set
      * @return detailedConsentResource consent resource
      * @throws SQLException thrown if an error occurs when getting data from the result set
      */
@@ -310,8 +311,8 @@ public class ConsentManagementDAOUtil {
     /**
      * Set data from the result set to AuthorizationResource object.
      *
-     * @param resultSet               result set
-     * @param updateTimeParamName     update time parameter name
+     * @param resultSet           result set
+     * @param updateTimeParamName update time parameter name
      * @return authorizationResource authorization resource
      * @throws SQLException thrown if an error occurs when getting data from the result set
      */
@@ -337,7 +338,7 @@ public class ConsentManagementDAOUtil {
         consentMappingResource.setResource(resultSet.getString(ConsentMgtDAOConstants.RESOURCE));
         consentMappingResources.add(consentMappingResource);
 
-        while (resultSet.next()){
+        while (resultSet.next()) {
             consentMappingResource.setMappingStatus(resultSet.getString(ConsentMgtDAOConstants.MAPPING_STATUS));
             consentMappingResource.setMappingID(resultSet.getString(ConsentMgtDAOConstants.MAPPING_ID));
             consentMappingResource.setResource(resultSet.getString(ConsentMgtDAOConstants.RESOURCE));
@@ -352,13 +353,13 @@ public class ConsentManagementDAOUtil {
     /**
      * Set data from the result set to AuthorizationResource object.
      *
-     * @param resultSet               result set
-     * @param updateTimeParamName     update time parameter name
+     * @param resultSet           result set
+     * @param updateTimeParamName update time parameter name
      * @return authorizationResource authorization resource
      * @throws SQLException thrown if an error occurs when getting data from the result set
      */
     public static AuthorizationResource setAuthorizationData(ResultSet resultSet,
-                                                                         String updateTimeParamName)
+                                                             String updateTimeParamName)
             throws
             SQLException {
 
@@ -398,7 +399,7 @@ public class ConsentManagementDAOUtil {
     /**
      * Construct the where clause of thr prepared statement for consent search.
      *
-     * @param applicableConditions   map of applicable conditions
+     * @param applicableConditions map of applicable conditions
      * @return where clause of the prepared statement
      */
     public static String constructConsentSearchPreparedStatement(Map<String, ArrayList<String>> applicableConditions) {
@@ -460,7 +461,8 @@ public class ConsentManagementDAOUtil {
 
     /**
      * Construct the filter condition of the prepared statement for consent search.
-     * @param userIds  map of user IDs
+     *
+     * @param userIds map of user IDs
      * @return filter condition of the prepared statement
      */
     public static String constructUserIdListFilterCondition(Map<String, ArrayList<String>> userIds) {
@@ -492,9 +494,10 @@ public class ConsentManagementDAOUtil {
 
     /**
      * Determine the order of parameters to set in the prepared statement.
-     * @param preparedStatement         dynamically constructed prepared statement
-     * @param applicableConditionsMap   map of applicable conditions
-     * @param columnsMap                map of columns
+     *
+     * @param preparedStatement       dynamically constructed prepared statement
+     * @param applicableConditionsMap map of applicable conditions
+     * @param columnsMap              map of columns
      * @return ordered parameters map
      */
     public static TreeMap<Integer, ArrayList<String>> determineOrderOfParamsToSet(String preparedStatement,
@@ -575,7 +578,7 @@ public class ConsentManagementDAOUtil {
     /**
      * Get the size of the result set.
      *
-     * @param resultSet  result set
+     * @param resultSet result set
      * @return size of the result set
      * @throws SQLException thrown if an error occurs when getting data from the result set
      */
@@ -593,7 +596,7 @@ public class ConsentManagementDAOUtil {
     /**
      * Construct the where clause of the prepared statement for consent auth search.
      *
-     * @param applicableConditions   map of applicable conditions
+     * @param applicableConditions map of applicable conditions
      * @return where clause of the prepared statement
      */
     public static String constructAuthSearchPreparedStatement(Map<String, String> applicableConditions) {
@@ -655,7 +658,8 @@ public class ConsentManagementDAOUtil {
 
     /**
      * Method to construct where clause for consent status audit search condition.
-     * @param consentIDs   List of consent IDs
+     *
+     * @param consentIDs List of consent IDs
      * @return Filter condition for consent status audit
      */
     public static String constructConsentAuditRecordSearchPreparedStatement(ArrayList<String> consentIDs) {
@@ -685,7 +689,7 @@ public class ConsentManagementDAOUtil {
     /**
      * Construct the where clause of the prepared statement for consent history search.
      *
-     * @param recordIdCount  count of record IDs
+     * @param recordIdCount count of record IDs
      * @return where clause of the prepared statement
      */
     public static String constructConsentHistoryPreparedStatement(int recordIdCount) {
@@ -795,7 +799,7 @@ public class ConsentManagementDAOUtil {
     /**
      * Method to construct excluded statuses search condition.
      *
-     * @param statusesEligibleForExpiration  List of statuses eligible for expiration
+     * @param statusesEligibleForExpiration List of statuses eligible for expiration
      * @return Filter condition for excluded statuses
      */
     public static String constructStatusesEligibleForExpirationCondition(List<String> statusesEligibleForExpiration) {

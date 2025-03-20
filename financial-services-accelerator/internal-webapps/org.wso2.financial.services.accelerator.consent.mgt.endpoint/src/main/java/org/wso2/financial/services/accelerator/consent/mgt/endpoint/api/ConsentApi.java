@@ -92,7 +92,7 @@ public class ConsentApi {
                                        ) {
         try {
             return consentAPIImpl.consentConsentIdGet(consentId, orgInfo, withAuthorizationResources, userId,
-                            withAttributes);
+                    withAttributes);
         } catch (Exception e) {
             // Handle other errors
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
@@ -116,8 +116,8 @@ public class ConsentApi {
             @DefaultValue("DEFAULT_ORG") String orgInfo
 
 
-                                       ) {
-            return consentAPIImpl.consentAuthorizationAuthorizationIdGet(authorizationId, orgInfo    );
+                                             ) {
+        return consentAPIImpl.consentAuthorizationAuthorizationIdGet(authorizationId, orgInfo);
 
     }
 

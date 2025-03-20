@@ -1993,7 +1993,7 @@ public class ConsentCoreServiceImplTest {
         // return authResource
         doReturn(ConsentMgtServiceTestData.getSampleTestAuthorizationResource(sampleID, null))
                 .when(mockedConsentCoreDAO).getAuthorizationResource(any(),
-                       any(),any());
+                        any(), any());
         doNothing().when(mockedConsentCoreDAO).updateConsentReceipt(any(),
                 anyString(), anyString());
         doNothing().when(mockedConsentCoreDAO).updateConsentValidityTime(any(),
@@ -2194,11 +2194,6 @@ public class ConsentCoreServiceImplTest {
                 ConsentMgtServiceTestData.SAMPLE_USER_IDS_LIST,
                 12345L, 23456L, 1, 0);
     }
-
-
-
-
-
 
 
 }

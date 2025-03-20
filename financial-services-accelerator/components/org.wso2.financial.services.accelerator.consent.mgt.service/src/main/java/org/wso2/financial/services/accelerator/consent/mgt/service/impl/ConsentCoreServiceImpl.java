@@ -578,7 +578,7 @@ public class ConsentCoreServiceImpl implements ConsentCoreService {
                 log.debug(ConsentCoreServiceConstants.TRANSACTION_COMMITTED_LOG_MSG);
                 return retrievedAuthorizationResource;
             } catch (ConsentDataRetrievalException e) {
-                if ( e.getMessage().equals(ConsentMgtDAOConstants.NO_RECORDS_FOUND_ERROR_MSG)){
+                if (e.getMessage().equals(ConsentMgtDAOConstants.NO_RECORDS_FOUND_ERROR_MSG)) {
                     throw new ConsentMgtException(Response.Status.NOT_FOUND, e.getMessage());
                 }
 
@@ -2310,7 +2310,7 @@ public class ConsentCoreServiceImpl implements ConsentCoreService {
             // Update consent status and record the updated time
             consentCoreDAO.updateConsentStatus(connection, consentID, newConsentStatus);
 
-            ArrayList<ConsentMappingResource> updatedConsentMappingResources =  new ArrayList<>();
+            ArrayList<ConsentMappingResource> updatedConsentMappingResources = new ArrayList<>();
 
             // iterate through the authresources and get the persomins for each account and call updateAccounts
             for (AuthorizationResource authorizationResource : reAuthorizationResources) {
@@ -2341,7 +2341,7 @@ public class ConsentCoreServiceImpl implements ConsentCoreService {
                 ArrayList<ConsentMappingResource> exitingConsentMappingResources = consentCoreDAO
                         .getConsentMappingResources(connection, authorizationResource.getAuthorizationID());
                 ArrayList<String> newConsentResourceIds = new ArrayList<>();
-                 for (ConsentMappingResource consentMappingResource :
+                for (ConsentMappingResource consentMappingResource :
                         authorizationResource.getConsentMappingResource()) {
                     consentMappingResource.setMappingStatus("active");
                     consentMappingResource.setAuthorizationID(authorizationResource.getAuthorizationID());
@@ -2358,24 +2358,24 @@ public class ConsentCoreServiceImpl implements ConsentCoreService {
 
                         }
 
-                    } else{
-                        consentCoreDAO.storeConsentMappingResource(connection,consentMappingResource);
+                    } else {
+                        consentCoreDAO.storeConsentMappingResource(connection, consentMappingResource);
 
                     }
-                     updatedConsentMappingResources.add(consentMappingResource);
+                    updatedConsentMappingResources.add(consentMappingResource);
                     newConsentResourceIds.add(consentMappingResource.getMappingID());
-                 }
+                }
 
-                 // deactivating removed resources
+                // deactivating removed resources
                 ArrayList<String> inactiveMappings = new ArrayList<>();
-                for (ConsentMappingResource consentMappingResource :exitingConsentMappingResources){
-                    if( !newConsentResourceIds.contains(consentMappingResource.getMappingID())){
+                for (ConsentMappingResource consentMappingResource : exitingConsentMappingResources) {
+                    if (!newConsentResourceIds.contains(consentMappingResource.getMappingID())) {
                         consentMappingResource.setMappingStatus("inactive");
                         inactiveMappings.add(consentMappingResource.getMappingID());
                         updatedConsentMappingResources.add(consentMappingResource);
                     }
                 }
-                if(!inactiveMappings.isEmpty()){
+                if (!inactiveMappings.isEmpty()) {
                     consentCoreDAO.updateConsentMappingStatus(connection, inactiveMappings, "inactive");
 
                 }

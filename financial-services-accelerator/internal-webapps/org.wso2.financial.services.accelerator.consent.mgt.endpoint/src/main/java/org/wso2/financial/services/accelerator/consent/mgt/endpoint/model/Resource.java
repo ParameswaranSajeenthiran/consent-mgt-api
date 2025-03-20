@@ -18,7 +18,6 @@ public class Resource implements Serializable {
     private String consentMappingStatus;
 
 
-
     public Resource() {
     }
 
@@ -67,12 +66,12 @@ public class Resource implements Serializable {
         Resource resource = (Resource) o;
         return
                 Objects.equals(this.resourceMappingId, resource.resourceMappingId) &&
-                Objects.equals(this.resource, resource.resource);
+                        Objects.equals(this.resource, resource.resource);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash( resourceMappingId, resource);
+        return Objects.hash(resourceMappingId, resource);
     }
 
     @Override

@@ -137,7 +137,7 @@ public class ConsentUtils {
             }
             return map.entrySet().stream()
                     .collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().toString()));
-        } catch (IllegalArgumentException e){
+        } catch (IllegalArgumentException e) {
             throw new ConsentMgtException(Response.Status.BAD_REQUEST, "Invalid consent attributes");
         }
     }
@@ -252,7 +252,7 @@ public class ConsentUtils {
         consentResourceResponse.setUpdatedTime((int) consentResource.getUpdatedTime());
         consentResourceResponse.setReceipt(consentResource.getReceipt());
 
-        if (withAttributes){
+        if (withAttributes) {
             consentResourceResponse.setConsentAttributes(consentResource.getConsentAttributes());
 
         }

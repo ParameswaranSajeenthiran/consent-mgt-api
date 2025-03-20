@@ -1,7 +1,5 @@
 package org.wso2.financial.services.accelerator.consent.mgt.endpoint.utils;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.wso2.financial.services.accelerator.consent.mgt.dao.util.DatabaseUtils;
 
 import java.io.BufferedReader;
@@ -20,7 +18,6 @@ import javax.servlet.ServletContextListener;
 @SuppressFBWarnings("SQL_INJECTION_JDBC")
 public class DatabaseInitializer implements ServletContextListener {
 
-    private static final Log log = LogFactory.getLog(DatabaseInitializer.class);
 
     private static final String SQL_FILE_PATH = "/WEB-INF/schema.sql"; // Place schema.sql inside WEB-INF
 
@@ -30,7 +27,6 @@ public class DatabaseInitializer implements ServletContextListener {
         try (Connection conn = DatabaseUtils.getDBConnection();
              Statement stmt = conn.createStatement()) {
 
-            log.info("Initializing database schema...");
 
             // Read the SQL file from resources
             InputStream inputStream = sce.getServletContext().getResourceAsStream(SQL_FILE_PATH);

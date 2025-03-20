@@ -401,7 +401,6 @@ public class ConsentMgtCoreServiceTests {
     }
 
 
-
     // unit tests for createAuthorizableConsentWithBulkAuth with exceptions
     @Test(expectedExceptions = ConsentMgtException.class)
     public void testCreateAuthorizableConsentWithBulkAuthRollback() throws
@@ -416,7 +415,6 @@ public class ConsentMgtCoreServiceTests {
                 ConsentMgtServiceTestData.getSampleTestAuthorizationResourcesList(null, null),
                 true);
     }
-
 
 
     // unit tests for createAuthorizableConsentWithBulkAuth with exceptions
@@ -1222,10 +1220,10 @@ public class ConsentMgtCoreServiceTests {
             Exception {
 
         doReturn(ConsentMgtServiceTestData.getSampleStoredTestAuthorizationResource())
-                .when(mockedConsentCoreDAO).getAuthorizationResource(any(), anyString(),any());
+                .when(mockedConsentCoreDAO).getAuthorizationResource(any(), anyString(), any());
         AuthorizationResource authorizationResource =
                 consentCoreServiceImpl.getAuthorizationResource(ConsentMgtServiceTestData
-                        .getSampleStoredTestAuthorizationResource().getAuthorizationID(),any());
+                        .getSampleStoredTestAuthorizationResource().getAuthorizationID(), any());
         Assert.assertNotNull(authorizationResource);
     }
 
@@ -1233,7 +1231,7 @@ public class ConsentMgtCoreServiceTests {
     public void testGetAuthorizationResourceWithoutAuthID() throws
             Exception {
 
-        consentCoreServiceImpl.getAuthorizationResource(null,any());
+        consentCoreServiceImpl.getAuthorizationResource(null, any());
     }
 
     @Test(expectedExceptions = ConsentMgtException.class)
@@ -1241,7 +1239,7 @@ public class ConsentMgtCoreServiceTests {
             Exception {
 
         doThrow(ConsentDataRetrievalException.class)
-                .when(mockedConsentCoreDAO).getAuthorizationResource(any(), anyString(),any());
+                .when(mockedConsentCoreDAO).getAuthorizationResource(any(), anyString(), any());
         consentCoreServiceImpl.getAuthorizationResource(ConsentMgtServiceTestData
                 .getSampleStoredTestAuthorizationResource().getAuthorizationID(), any());
     }
@@ -1333,7 +1331,7 @@ public class ConsentMgtCoreServiceTests {
                 .when(mockedConsentCoreDAO).getAuthorizationResource(any(), anyString(), any());
 
         consentCoreServiceImpl.updateAuthorizationStatus(ConsentMgtServiceTestData.CONSENT_ID,
-                ConsentMgtServiceTestData.SAMPLE_CONSUMED_STATUS,ConsentMgtServiceTestData.ORG_INFO);
+                ConsentMgtServiceTestData.SAMPLE_CONSUMED_STATUS, ConsentMgtServiceTestData.ORG_INFO);
     }
 
     @Test(expectedExceptions = ConsentMgtException.class)

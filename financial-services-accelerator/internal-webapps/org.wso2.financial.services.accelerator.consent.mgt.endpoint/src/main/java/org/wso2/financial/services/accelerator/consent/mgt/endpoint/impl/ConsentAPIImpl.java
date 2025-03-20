@@ -24,7 +24,6 @@ import org.wso2.financial.services.accelerator.consent.mgt.endpoint.model.Consen
 import org.wso2.financial.services.accelerator.consent.mgt.endpoint.model.ConsentStatusUpdateResource;
 import org.wso2.financial.services.accelerator.consent.mgt.endpoint.model.ReauthorizeResource;
 import org.wso2.financial.services.accelerator.consent.mgt.endpoint.model.Resource;
-import org.wso2.financial.services.accelerator.consent.mgt.endpoint.model.ResourcePermission;
 import org.wso2.financial.services.accelerator.consent.mgt.endpoint.utils.ConsentUtils;
 import org.wso2.financial.services.accelerator.consent.mgt.service.impl.ConsentCoreServiceImpl;
 
@@ -121,7 +120,7 @@ public class ConsentAPIImpl {
             for (DetailedConsentResource result : results) {
                 ConsentResponse consentResponse = new ConsentResponse();
                 ConsentUtils.copyPropertiesToConsentResourceResponse(consentResponse, result,
-                        false, false ,true);
+                        false, false, true);
 
                 // build AuthorizationResource objects
                 ArrayList<AuthResponse> authResponses = new ArrayList<>();
@@ -455,9 +454,7 @@ public class ConsentAPIImpl {
                         return Response.ok().entity(consentResponse).build();
 
 
-                    }else if (withAuthorizationResources & !isWithAttributes)
-
-                    {
+                    } else if (withAuthorizationResources & !isWithAttributes) {
 
                         ////////////// Service call //////////////
                         DetailedConsentResource consentResourceWithAuthorizationResources =
@@ -471,8 +468,9 @@ public class ConsentAPIImpl {
 
                         //////////////  build Response  //////////////
                         ConsentResponse consentResponse = new ConsentResponse();
-                        ConsentUtils.copyPropertiesToConsentResourceResponse(consentResponse, consentResourceWithAuthorizationResources,
-                                false, false , false);
+                        ConsentUtils.copyPropertiesToConsentResourceResponse(consentResponse,
+                                consentResourceWithAuthorizationResources,
+                                false, false, false);
                         ArrayList<AuthResponse> authResponses = new ArrayList<>();
 
                         // response should contain resources within each AuthorizationResource object
@@ -514,9 +512,7 @@ public class ConsentAPIImpl {
                         return Response.ok().entity(consentResponse).build();
 
 
-                    }
-
-                    else {
+                    } else {
 
                         ConsentResource consent;
                         //////////////  Service Call  //////////////
@@ -561,16 +557,16 @@ public class ConsentAPIImpl {
         }
     }
 
-    public Response consentAuthorizationAuthorizationIdGet(String authorizationId, String orgInfo){
+    public Response consentAuthorizationAuthorizationIdGet(String authorizationId, String orgInfo) {
         AuthResponse authResponse = new AuthResponse();
 
-        try{
+        try {
             AuthorizationResource authorizationResource = consentCoreService.getAuthorizationResource(authorizationId,
                     orgInfo);
 
-            ConsentUtils.copyPropertiesToAuthorizationResourceResponse(authResponse, authorizationResource );
+            ConsentUtils.copyPropertiesToAuthorizationResourceResponse(authResponse, authorizationResource);
             ArrayList<Resource> resources = new ArrayList<>();
-            for (ConsentMappingResource consentMappingResource : authorizationResource.getConsentMappingResource()){
+            for (ConsentMappingResource consentMappingResource : authorizationResource.getConsentMappingResource()) {
                 Resource resource = new Resource();
                 resource.setConsentMappingStatus(consentMappingResource.getMappingStatus());
                 resource.setResourceMappingId(consentMappingResource.getMappingID());
@@ -579,9 +575,9 @@ public class ConsentAPIImpl {
             }
 
             authResponse.setResources(resources);
-            return  Response.ok().entity(authResponse).build();
+            return Response.ok().entity(authResponse).build();
 
-        } catch (ConsentMgtException e){
+        } catch (ConsentMgtException e) {
 
             return handleConsentMgtException(e);
         }
@@ -762,7 +758,6 @@ public class ConsentAPIImpl {
         error.put("errorMessage", e.getMessage());
         return Response.status(e.getErrorCode()).entity(error).build();
     }
-
 
 
 }

@@ -18,8 +18,8 @@
 
 package org.wso2.financial.services.accelerator.consent.mgt.dao.util;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+//import org.apache.commons.logging.Log;
+//import org.apache.commons.logging.LogFactory;
 import org.wso2.financial.services.accelerator.consent.mgt.dao.exceptions.ConsentMgtException;
 import org.wso2.financial.services.accelerator.consent.mgt.dao.persistence.JDBCPersistenceManager;
 
@@ -31,7 +31,7 @@ import java.sql.SQLException;
  */
 public class DatabaseUtils {
 
-    private static final Log log = LogFactory.getLog(DatabaseUtils.class);
+//    private static final Log log = LogFactory.getLog(DatabaseUtils.class);
 
     /**
      * Get a database connection instance from the Consent Management Persistence Manager.
@@ -50,8 +50,9 @@ public class DatabaseUtils {
             try {
                 dbConnection.close();
             } catch (SQLException e) {
-                log.error("Database error. Could not close statement. Continuing with others. - "
-                        + e.getMessage().replaceAll("[\r\n]", ""), e);
+//                log.error("Database error. Could not close statement. Continuing with others. - "
+//
+//                        + e.getMessage().replaceAll("[\r\n]", ""), e);
             }
         }
     }

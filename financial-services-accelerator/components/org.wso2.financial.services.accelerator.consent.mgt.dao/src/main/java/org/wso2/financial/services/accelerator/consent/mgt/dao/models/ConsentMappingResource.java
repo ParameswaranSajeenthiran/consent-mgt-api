@@ -6,7 +6,7 @@
  * in compliance with the License.
  * You may obtain a copy of the License at
  * <p>
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  * <p>
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -34,13 +34,13 @@ public class ConsentMappingResource {
 
     }
 
-    public ConsentMappingResource(String authorizationID,  String resource, String mappingStatus) {
+    public ConsentMappingResource(String authorizationID, String resource, String mappingStatus) {
         this.authorizationID = authorizationID;
         this.resource = resource;
         this.mappingStatus = mappingStatus;
     }
 
-    public ConsentMappingResource( String authorizationID, String accountID, String permission,
+    public ConsentMappingResource(String authorizationID, String accountID, String permission,
                                   String mappingStatus) {
         this.authorizationID = authorizationID;
         this.accountID = accountID;

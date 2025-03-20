@@ -164,10 +164,14 @@
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
+            <version>${org.slf4j.version}</version>
+
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-simple</artifactId>
+            <version>${org.slf4j.version}</version>
+
         </dependency>
         <dependency>
             <groupId>org.testng</groupId>
@@ -267,7 +271,7 @@
                         </resource>
                     </webResources>
                     <warName>consent</warName>
-                    <packagingExcludes>WEB-INF/lib/slf4j-api-*.jar</packagingExcludes>
+<!--                    <packagingExcludes>WEB-INF/lib/slf4j-api-*.jar</packagingExcludes>-->
                 </configuration>
             </plugin>
 
