@@ -1,5 +1,6 @@
 #!/bin/bash
 set -e
+export TRIVY_DISABLE_VEX_NOTICE=true
 
 # Ensure /usr/local/tomcat/webapps exists
 mkdir -p /usr/local/tomcat/webapps
