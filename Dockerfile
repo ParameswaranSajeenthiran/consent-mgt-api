@@ -14,7 +14,7 @@ RUN mvn clean package -DskipTests
 # RUN addgroup -g 10014 choreo && \
 #     adduser  --disabled-password  --no-create-home --uid 10014 --ingroup choreo choreouser
 
-# USER 10014
+USER 10014
 FROM tomcat:9.0-jdk11
 
 # RUN cp -r $CATALINA_HOME/webapps.dist/* $CATALINA_HOME/webapps
