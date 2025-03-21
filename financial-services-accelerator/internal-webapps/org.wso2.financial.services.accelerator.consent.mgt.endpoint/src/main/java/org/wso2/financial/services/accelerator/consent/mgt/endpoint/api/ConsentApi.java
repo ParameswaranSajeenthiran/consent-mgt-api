@@ -57,7 +57,8 @@ public class ConsentApi {
 
             @PathParam("consentId") @ApiParam("consent id") String consentId,
 
-            @HeaderParam("OrgInfo") @ApiParam("jwt header containing tenant related information") String orgInfo,
+            @HeaderParam("OrgInfo") @ApiParam("jwt header containing tenant related information")
+            @DefaultValue("DEFAULT_ORG") String orgInfo,
             @QueryParam("userId") String userId
 
                                           ) {
@@ -162,7 +163,8 @@ public class ConsentApi {
 
             @PathParam("consentId") @ApiParam("consent id") String consentId,
             @Valid @NotNull AmendmentResource amendmentResource,
-            @HeaderParam("OrgInfo") @ApiParam("jwt header containing tenant related information") String orgInfo) {
+            @HeaderParam("OrgInfo") @ApiParam("jwt header containing tenant related information")
+            @DefaultValue("DEFAULT_ORG") String orgInfo) {
 
         return consentAPIImpl.consentConsentIdPut(consentId, amendmentResource, orgInfo);
 
@@ -181,7 +183,8 @@ public class ConsentApi {
 
             @PathParam("consentId") @ApiParam("consent id") String consentId,
             @Valid @NotNull ConsentStatusUpdateResource consentStatusUpdateResource,
-            @HeaderParam("OrgInfo") @ApiParam("jwt header containing tenant related information") String orgInfo) {
+            @HeaderParam("OrgInfo") @ApiParam("jwt header containing tenant related information")
+            @DefaultValue("DEFAULT_ORG") String orgInfo) {
 
         return consentAPIImpl.consentConsentIdStatusPut(consentId, consentStatusUpdateResource,
                 orgInfo);
@@ -199,7 +202,8 @@ public class ConsentApi {
     })
     public Response consentGet(
 
-            @HeaderParam("OrgInfo") @ApiParam("jwt header containing tenant related information") String orgInfo,
+            @HeaderParam("OrgInfo") @ApiParam("jwt header containing tenant related information")
+            @DefaultValue("DEFAULT_ORG") String orgInfo,
             @QueryParam("consentTypes") String consentTypes,
             @QueryParam("consentStatuses") String consentStatuses,
             @QueryParam("userIds") String userIds,
@@ -225,7 +229,8 @@ public class ConsentApi {
     public Response consentPost(
 
             @Valid @NotNull ConsentResourceDTO consentResource,
-            @HeaderParam("OrgInfo") @ApiParam("jwt header containing tenant related information") String orgInfo,
+            @HeaderParam("OrgInfo") @ApiParam("jwt header containing tenant related information")
+            @DefaultValue("DEFAULT_ORG") String orgInfo,
             @HeaderParam("IsImplicitAuth") @ApiParam("Flag to determine whether authorization is implicit or not")
             boolean isImplicitAuth,
             @HeaderParam("ExclusiveConsent") @ApiParam("Flag to determine whether this is an exclusive consent")
@@ -248,7 +253,8 @@ public class ConsentApi {
     public Response consentStatusPut(
 
             @Valid @NotNull BulkConsentStatusUpdateResource bulkConsentStatusUpdateResource,
-            @HeaderParam("OrgInfo") @ApiParam("jwt header containing tenant related information") String orgInfo) {
+            @HeaderParam("OrgInfo") @ApiParam("jwt header containing tenant related information")
+            @DefaultValue("DEFAULT_ORG") String orgInfo) {
 
         return consentAPIImpl.consentStatusPut(bulkConsentStatusUpdateResource, orgInfo);
 

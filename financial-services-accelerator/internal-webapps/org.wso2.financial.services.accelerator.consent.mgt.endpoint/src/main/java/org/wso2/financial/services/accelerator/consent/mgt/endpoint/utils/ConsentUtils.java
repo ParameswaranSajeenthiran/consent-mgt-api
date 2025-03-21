@@ -195,20 +195,25 @@ public class ConsentUtils {
     /**
      * copy properties from consentResource to consentResponse
      */
-    public static void copyPropertiesToAuthorizationResourceResponse(AuthResponse authorizationResourceResponseResponse,
-                                                                     AuthorizationResource authorizationResource) {
+    public static void buildAuthorizationResourceResponse(AuthResponse authorizationResourceResponseResponse,
+                                                                     AuthorizationResource authorizationResource,
+                                                          ArrayList<ConsentMappingResource> consentMappingResources) {
         authorizationResourceResponseResponse.setAuthId(authorizationResource.getAuthorizationID());
         authorizationResourceResponseResponse.setUserId(authorizationResource.getUserID());
         authorizationResourceResponseResponse.setAuthorizationStatus(authorizationResource.getAuthorizationStatus());
         authorizationResourceResponseResponse.setAuthorizationType(authorizationResource.getAuthorizationType());
 
-//        ArrayList<Resource> resources = new ArrayList<>();
-//        for ( ConsentMappingResource consentMappingResource : authorizationResource.getConsentMappingResource()){
-//            Resource res = new Resource();
-//            copyPropertiesToConsentMappingResourceResponse(res,consentMappingResource);
-//            resources.add(res);
-//        }
-//        authorizationResourceResponseResponse.setResources(resources);
+        ArrayList<Resource> resources = new ArrayList<>();
+
+        if(consentMappingResources != null){
+            for ( ConsentMappingResource consentMappingResource : consentMappingResources){
+                Resource res = new Resource();
+                buildConsentMappingResourceResponse(res,consentMappingResource);
+                resources.add(res);
+            }
+        }
+
+        authorizationResourceResponseResponse.setResources(resources);
 
 
     }
@@ -216,7 +221,7 @@ public class ConsentUtils {
     /**
      * copy properties from consentResourceMapping  to consentResourceMappingResponse
      */
-    public static void copyPropertiesToConsentMappingResourceResponse(Resource consentMappingResourceResponse,
+    public static void buildConsentMappingResourceResponse(Resource consentMappingResourceResponse,
                                                                       ConsentMappingResource consentMappingResource) {
         consentMappingResourceResponse.setResourceMappingId(consentMappingResource.getMappingID());
         consentMappingResourceResponse.setResource(consentMappingResource.getResource());
@@ -237,10 +242,10 @@ public class ConsentUtils {
     /**
      * copy properties to consentResourceResponse
      */
-    public static void copyPropertiesToConsentResourceResponse(ConsentResponse consentResourceResponse,
+    public static void buildConsentResourceResponse(ConsentResponse consentResourceResponse,
                                                                DetailedConsentResource consentResource,
-                                                               boolean withAuthResources,
-                                                               boolean withConsentMappingResources,
+                                                               ArrayList<AuthorizationResource> authorizationResources,
+                                                               ArrayList<ConsentMappingResource> consentMappingResources,
                                                                boolean withAttributes) {
         consentResourceResponse.setConsentID(consentResource.getConsentID());
         consentResourceResponse.setClientID(consentResource.getClientID());
@@ -257,26 +262,26 @@ public class ConsentUtils {
 
         }
 
-        if (withAuthResources) {
+        // get consent mapping resources for each AuthorizationResource
+        Map<String, ArrayList<ConsentMappingResource>> consentMappingResourcesMap = new HashMap<>();
+        for (ConsentMappingResource consentMappingResource : consentMappingResources) {
+            if (!consentMappingResourcesMap.containsKey(consentMappingResource.getAuthorizationID())) {
+                consentMappingResourcesMap.put(consentMappingResource.getAuthorizationID(),
+                        new ArrayList<>());
+            }
+            consentMappingResourcesMap.get(consentMappingResource.getAuthorizationID()).add(consentMappingResource);
+        }
+
+        if (authorizationResources != null) {
             ArrayList<AuthResponse> authResponses = new ArrayList<>();
-            for (AuthorizationResource authorizationResource : consentResource.getAuthorizationResources()) {
+            for (AuthorizationResource authorizationResource : authorizationResources) {
+
                 AuthResponse authResponse = new AuthResponse();
-                ConsentUtils.copyPropertiesToAuthorizationResourceResponse(authResponse, authorizationResource);
-                ArrayList<Resource> resources = new ArrayList<>();
-                if (withConsentMappingResources) {
-                    for (ConsentMappingResource consentMappingResource :
-                            authorizationResource.getConsentMappingResource()) {
-                        Resource resource = new Resource();
-                        ConsentUtils.copyPropertiesToConsentMappingResourceResponse(resource, consentMappingResource);
-                        resources.add(resource);
-                    }
-                }
-                authResponse.setResources(resources);
+                buildAuthorizationResourceResponse(authResponse, authorizationResource,
+                        consentMappingResourcesMap.get(authorizationResource.getAuthorizationID()));
                 authResponses.add(authResponse);
             }
             consentResourceResponse.setAuthorizationResources(authResponses);
-        } else {
-            consentResourceResponse.setAuthorizationResources(new ArrayList<>());
         }
     }
 

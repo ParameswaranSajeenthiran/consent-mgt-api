@@ -119,6 +119,8 @@ public class ConsentCoreServiceUtil {
 
 
         ArrayList<AuthorizationResource> storedAuthorizationResources = new ArrayList<>();
+        ArrayList<ConsentMappingResource> storedConsentMappingResources = new ArrayList<>();
+
         // Create an authorization resource if isImplicitAuth parameter is true
         if (isImplicitAuthorization) {
             /* Setting userID as null since at this point, there is no userID in this flow. User ID can be
@@ -126,6 +128,7 @@ public class ConsentCoreServiceUtil {
 
             // loop through authorizationResources
             assert authorizationResources != null;
+
             for (AuthorizationResource authorizationResource : authorizationResources) {
                 authorizationResource.setUpdatedTime(System.currentTimeMillis());
                 authorizationResource.setConsentID(consentID);
@@ -138,7 +141,6 @@ public class ConsentCoreServiceUtil {
 
                 storedAuthorizationResource = consentCoreDAO.storeAuthorizationResource(connection,
                         authorizationResource);
-                ArrayList<ConsentMappingResource> storedConsentMappingResources = new ArrayList<>();
                 for (ConsentMappingResource consentMappingResource :
                         authorizationResource.getConsentMappingResource()) {
                     consentMappingResource.setAuthorizationID(storedAuthorizationResource.getAuthorizationID());
@@ -170,6 +172,7 @@ public class ConsentCoreServiceUtil {
         }
         if (isImplicitAuthorization) {
             detailedConsentResource.setAuthorizationResources(storedAuthorizationResources);
+            detailedConsentResource.setConsentMappingResources(storedConsentMappingResources);
         }
                 /* Create audit record, setting previous consent status as null since this is the first time the
            consent is created and execute state change listener */

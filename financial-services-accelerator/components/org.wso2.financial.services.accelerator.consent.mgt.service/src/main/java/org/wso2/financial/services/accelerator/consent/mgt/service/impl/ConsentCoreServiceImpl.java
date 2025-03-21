@@ -2039,7 +2039,7 @@ public class ConsentCoreServiceImpl implements ConsentCoreService {
                             detailedHistoryConsent.getConsentMappingResources());
             for (Map.Entry<String, JSONObject> changedConsentMapping : changedConsentMappingsJsonDataMap.entrySet()) {
                 consentCoreDAO.storeConsentAmendmentHistory(connection, historyID, amendedTimestamp,
-                        statusAuditRecordId, ConsentCoreServiceConstants.TYPE_CONSENT_MAPPING_DATA,
+                        changedConsentMapping.getKey(), ConsentCoreServiceConstants.TYPE_CONSENT_MAPPING_DATA,
                         String.valueOf(changedConsentMapping.getValue()), amendmentReason);
             }
 
@@ -2294,6 +2294,9 @@ public class ConsentCoreServiceImpl implements ConsentCoreService {
             DetailedConsentResource detailedConsentResource =
                     consentCoreDAO.getDetailedConsentResource(connection, consentID);
 
+            if  (orgId == null){
+                orgId = ConsentMgtDAOConstants.DEFAULT_ORG;
+            }
             if (!detailedConsentResource.getOrgID().equals(orgId)) {
                 throw new ConsentMgtException(Response.Status.BAD_REQUEST,
                         ConsentCoreServiceConstants.ORGANIZATION_MISMATCH_ERROR_MSG);

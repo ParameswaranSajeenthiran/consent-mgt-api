@@ -7,6 +7,7 @@ import net.minidev.json.JSONObject;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.json.JSONException;
+import org.wso2.financial.services.accelerator.consent.mgt.dao.constants.ConsentMgtDAOConstants;
 import org.wso2.financial.services.accelerator.consent.mgt.dao.exceptions.ConsentMgtException;
 import org.wso2.financial.services.accelerator.consent.mgt.dao.models.AuthorizationResource;
 import org.wso2.financial.services.accelerator.consent.mgt.dao.models.ConsentHistoryResource;
@@ -25,6 +26,7 @@ import org.wso2.financial.services.accelerator.consent.mgt.endpoint.model.Consen
 import org.wso2.financial.services.accelerator.consent.mgt.endpoint.model.ReauthorizeResource;
 import org.wso2.financial.services.accelerator.consent.mgt.endpoint.model.Resource;
 import org.wso2.financial.services.accelerator.consent.mgt.endpoint.utils.ConsentUtils;
+import org.wso2.financial.services.accelerator.consent.mgt.service.constants.ConsentCoreServiceConstants;
 import org.wso2.financial.services.accelerator.consent.mgt.service.impl.ConsentCoreServiceImpl;
 
 import java.util.ArrayList;
@@ -117,52 +119,13 @@ public class ConsentAPIImpl {
             ////////////// build response //////////////
             ArrayList<ConsentResponse> consentResponses = new ArrayList<>();
 
-            for (DetailedConsentResource result : results) {
+            for (DetailedConsentResource detailedConsentResource : results) {
+
                 ConsentResponse consentResponse = new ConsentResponse();
-                ConsentUtils.copyPropertiesToConsentResourceResponse(consentResponse, result,
-                        false, false, true);
-
-                // build AuthorizationResource objects
-                ArrayList<AuthResponse> authResponses = new ArrayList<>();
-
-                // response should contain resources within each AuthorizationResource object
-
-                // get consent mapping resources for each AuthorizationResource
-                Map<String, ArrayList<ConsentMappingResource>> consentMappingResources = new HashMap<>();
-                for (ConsentMappingResource consentMappingResource : result.getConsentMappingResources()) {
-                    if (!consentMappingResources.containsKey(consentMappingResource.getAuthorizationID())) {
-                        consentMappingResources.put(consentMappingResource.getAuthorizationID(),
-                                new ArrayList<>());
-                    }
-                    consentMappingResources.get(consentMappingResource.getAuthorizationID())
-                            .add(consentMappingResource);
-                }
-
-
-                for (AuthorizationResource authorizationResource : result.getAuthorizationResources()) {
-                    AuthResponse authorizationResourceResponse = new AuthResponse();
-                    ConsentUtils.copyPropertiesToAuthorizationResourceResponse(authorizationResourceResponse,
-                            authorizationResource);
-
-                    ArrayList<Resource> resources = new ArrayList<>();
-
-                    //add the consent mapping resources to the resources
-                    if (consentMappingResources.containsKey(authorizationResource.getAuthorizationID())) {
-                        for (ConsentMappingResource consentMappingResource : consentMappingResources.get(
-                                authorizationResource.getAuthorizationID())) {
-                            Resource resource = new Resource();
-                            ConsentUtils.copyPropertiesToConsentMappingResourceResponse(resource,
-                                    consentMappingResource);
-                            resources.add(resource);
-                        }
-                    }
-                    authorizationResourceResponse.setResources(resources);
-                    authResponses.add(authorizationResourceResponse);
-                }
-                consentResponse.setAuthorizationResources(authResponses);
+                ConsentUtils.buildConsentResourceResponse(consentResponse, detailedConsentResource,
+                        detailedConsentResource.getAuthorizationResources(),
+                        detailedConsentResource.getConsentMappingResources(), true);
                 consentResponses.add(consentResponse);
-
-
             }
 
             return Response.ok().entity(consentResponses).build();
@@ -236,8 +199,9 @@ public class ConsentAPIImpl {
 
             //////////////  build response //////////////
             ConsentResponse consentResponse = new ConsentResponse();
-            ConsentUtils.copyPropertiesToConsentResourceResponse(consentResponse, result, isImplicitAuth,
-                    isImplicitAuth, true);
+            ConsentUtils.buildConsentResourceResponse(consentResponse, result, result.getAuthorizationResources(),
+                    result.getConsentMappingResources(),
+                     true);
 
             return Response.status(Response.Status.CREATED).entity(consentResponse).build();
         } catch (ConsentMgtException e) {
@@ -335,45 +299,9 @@ public class ConsentAPIImpl {
 
             ////////////// build response //////////////
             ConsentResponse consentResponse = new ConsentResponse();
-            ConsentUtils.copyPropertiesToConsentResourceResponse(consentResponse, amendmentResponse,
-                    false, false, true);
-
-            // build authorization resources
-            ArrayList<AuthResponse> authResponses = new ArrayList<>();
-
-            // response should contain resources within each AuthorizationResource object
-
-            // get consent mapping resources for each AuthorizationResource
-            Map<String, ArrayList<ConsentMappingResource>> consentMappingResources = new HashMap<>();
-            for (ConsentMappingResource consentMappingResource : amendmentResponse.getConsentMappingResources()) {
-                if (!consentMappingResources.containsKey(consentMappingResource.getAuthorizationID())) {
-                    consentMappingResources.put(consentMappingResource.getAuthorizationID(),
-                            new ArrayList<>());
-                }
-                consentMappingResources.get(consentMappingResource.getAuthorizationID()).add(consentMappingResource);
-            }
-
-
-            for (AuthorizationResource authorizationResource : amendmentResponse.getAuthorizationResources()) {
-                AuthResponse authorizationResourceResponse = new AuthResponse();
-                ConsentUtils.copyPropertiesToAuthorizationResourceResponse(authorizationResourceResponse,
-                        authorizationResource);
-                ArrayList<Resource> resources = new ArrayList<>();
-
-                //add the consent mapping resources to the resources
-                if (consentMappingResources.containsKey(authorizationResource.getAuthorizationID())) {
-                    for (ConsentMappingResource consentMappingResource : consentMappingResources.get(
-                            authorizationResource.getAuthorizationID())) {
-                        Resource resource = new Resource();
-                        ConsentUtils.copyPropertiesToConsentMappingResourceResponse(resource, consentMappingResource);
-                        resources.add(resource);
-                    }
-                }
-                authorizationResourceResponse.setResources(resources);
-                authResponses.add(authorizationResourceResponse);
-            }
-
-            consentResponse.setAuthorizationResources(authResponses);
+            ConsentUtils.buildConsentResourceResponse(consentResponse, amendmentResponse,
+                    amendmentResponse.getAuthorizationResources(),amendmentResponse.getConsentMappingResources(),
+                     true);
 
             return Response.ok().entity(consentResponse).build();
 
@@ -402,6 +330,9 @@ public class ConsentAPIImpl {
                         DetailedConsentResource detailedConsentResource =
                                 consentCoreService.getDetailedConsent(consentID);
 
+                        if  (orgInfo == null){
+                            orgInfo = ConsentMgtDAOConstants.DEFAULT_ORG;
+                        }
                         if (!detailedConsentResource.getOrgID().equals(orgInfo)) {
                             log.error("OrgInfo does not match");
                             throw new ConsentMgtException(Response.Status.BAD_REQUEST,
@@ -410,46 +341,10 @@ public class ConsentAPIImpl {
 
                         //////////////  build Response  //////////////
                         ConsentResponse consentResponse = new ConsentResponse();
-                        ConsentUtils.copyPropertiesToConsentResourceResponse(consentResponse,
+                        ConsentUtils.buildConsentResourceResponse(consentResponse,
                                 detailedConsentResource,
-                                false, false, true);
+                                detailedConsentResource.getAuthorizationResources(), detailedConsentResource.getConsentMappingResources(), true);
                         ArrayList<AuthResponse> authResponses = new ArrayList<>();
-
-                        // response should contain resources within each AuthorizationResource object
-
-                        // get consent mapping resources for each AuthorizationResource in a Map
-                        Map<String, ArrayList<ConsentMappingResource>> consentMappingResources = new HashMap<>();
-                        for (ConsentMappingResource consentMappingResource :
-                                detailedConsentResource.getConsentMappingResources()) {
-                            if (!consentMappingResources.containsKey(consentMappingResource.getAuthorizationID())) {
-                                consentMappingResources.put(consentMappingResource.getAuthorizationID(),
-                                        new ArrayList<>());
-                            }
-                            consentMappingResources.get(consentMappingResource.getAuthorizationID())
-                                    .add(consentMappingResource);
-                        }
-
-                        for (AuthorizationResource authorizationResource :
-                                detailedConsentResource.getAuthorizationResources()) {
-                            AuthResponse authorizationResourceResponse = new AuthResponse();
-                            ConsentUtils.copyPropertiesToAuthorizationResourceResponse(authorizationResourceResponse,
-                                    authorizationResource);
-                            ArrayList<Resource> resources = new ArrayList<>();
-                            //add the consent mapping resources to the resources
-                            if (consentMappingResources.containsKey(authorizationResource.getAuthorizationID())) {
-                                for (ConsentMappingResource consentMappingResource : consentMappingResources.get(
-                                        authorizationResource.getAuthorizationID())) {
-                                    Resource resource = new Resource();
-                                    ConsentUtils.copyPropertiesToConsentMappingResourceResponse(resource,
-                                            consentMappingResource);
-                                    resources.add(resource);
-                                }
-                            }
-                            authorizationResourceResponse.setResources(resources);
-                            authResponses.add(authorizationResourceResponse);
-                        }
-                        consentResponse.setAuthorizationResources(authResponses);
-
 
                         return Response.ok().entity(consentResponse).build();
 
@@ -468,45 +363,13 @@ public class ConsentAPIImpl {
 
                         //////////////  build Response  //////////////
                         ConsentResponse consentResponse = new ConsentResponse();
-                        ConsentUtils.copyPropertiesToConsentResourceResponse(consentResponse,
+                        ConsentUtils.buildConsentResourceResponse(consentResponse,
                                 consentResourceWithAuthorizationResources,
-                                false, false, false);
+                                consentResourceWithAuthorizationResources.getAuthorizationResources(),
+                                consentResourceWithAuthorizationResources.getConsentMappingResources(), false);
                         ArrayList<AuthResponse> authResponses = new ArrayList<>();
 
                         // response should contain resources within each AuthorizationResource object
-
-                        // get consent mapping resources for each AuthorizationResource in a Map
-                        Map<String, ArrayList<ConsentMappingResource>> consentMappingResources = new HashMap<>();
-                        for (ConsentMappingResource consentMappingResource :
-                                consentResourceWithAuthorizationResources.getConsentMappingResources()) {
-                            if (!consentMappingResources.containsKey(consentMappingResource.getAuthorizationID())) {
-                                consentMappingResources.put(consentMappingResource.getAuthorizationID(),
-                                        new ArrayList<>());
-                            }
-                            consentMappingResources.get(consentMappingResource.getAuthorizationID())
-                                    .add(consentMappingResource);
-                        }
-
-                        for (AuthorizationResource authorizationResource :
-                                consentResourceWithAuthorizationResources.getAuthorizationResources()) {
-                            AuthResponse authorizationResourceResponse = new AuthResponse();
-                            ConsentUtils.copyPropertiesToAuthorizationResourceResponse(authorizationResourceResponse,
-                                    authorizationResource);
-                            ArrayList<Resource> resources = new ArrayList<>();
-                            //add the consent mapping resources to the resources
-                            if (consentMappingResources.containsKey(authorizationResource.getAuthorizationID())) {
-                                for (ConsentMappingResource consentMappingResource : consentMappingResources.get(
-                                        authorizationResource.getAuthorizationID())) {
-                                    Resource resource = new Resource();
-                                    ConsentUtils.copyPropertiesToConsentMappingResourceResponse(resource,
-                                            consentMappingResource);
-                                    resources.add(resource);
-                                }
-                            }
-                            authorizationResourceResponse.setResources(resources);
-                            authResponses.add(authorizationResourceResponse);
-                        }
-                        consentResponse.setAuthorizationResources(authResponses);
 
 
                         return Response.ok().entity(consentResponse).build();
@@ -564,17 +427,9 @@ public class ConsentAPIImpl {
             AuthorizationResource authorizationResource = consentCoreService.getAuthorizationResource(authorizationId,
                     orgInfo);
 
-            ConsentUtils.copyPropertiesToAuthorizationResourceResponse(authResponse, authorizationResource);
-            ArrayList<Resource> resources = new ArrayList<>();
-            for (ConsentMappingResource consentMappingResource : authorizationResource.getConsentMappingResource()) {
-                Resource resource = new Resource();
-                resource.setConsentMappingStatus(consentMappingResource.getMappingStatus());
-                resource.setResourceMappingId(consentMappingResource.getMappingID());
-                resource.setResource(consentMappingResource.getResource());
-                resources.add(resource);
-            }
+            ConsentUtils.buildAuthorizationResourceResponse(authResponse, authorizationResource,
+                    authorizationResource.getConsentMappingResource());
 
-            authResponse.setResources(resources);
             return Response.ok().entity(authResponse).build();
 
         } catch (ConsentMgtException e) {

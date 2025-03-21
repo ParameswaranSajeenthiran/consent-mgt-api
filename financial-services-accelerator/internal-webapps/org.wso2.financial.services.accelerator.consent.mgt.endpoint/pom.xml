@@ -127,19 +127,19 @@
             <groupId>org.wso2.financial.services.accelerator</groupId>
             <artifactId>org.wso2.financial.services.accelerator.consent.mgt.service</artifactId>
             <version>4.0.0-SNAPSHOT</version>
-            <scope>system</scope>
-            <systemPath>
-                ${project.basedir}/lib/org.wso2.financial.services.accelerator.consent.mgt.service-4.0.0-SNAPSHOT.jar
-            </systemPath>
+<!--            <scope>system</scope>-->
+<!--            <systemPath>-->
+<!--                ${project.basedir}/lib/org.wso2.financial.services.accelerator.consent.mgt.service-4.0.0-SNAPSHOT.jar-->
+<!--            </systemPath>-->
         </dependency>
         <dependency>
             <groupId>org.wso2.financial.services.accelerator</groupId>
             <artifactId>org.wso2.financial.services.accelerator.consent.mgt.dao</artifactId>
             <version>4.0.0-SNAPSHOT</version>
-            <scope>system</scope>
-            <systemPath>
-                ${project.basedir}/lib/org.wso2.financial.services.accelerator.consent.mgt.dao-4.0.0-SNAPSHOT.jar
-            </systemPath>
+<!--            <scope>system</scope>-->
+<!--            <systemPath>-->
+<!--                ${project.basedir}/lib/org.wso2.financial.services.accelerator.consent.mgt.dao-4.0.0-SNAPSHOT.jar-->
+<!--            </systemPath>-->
         </dependency>
 
         <dependency>
