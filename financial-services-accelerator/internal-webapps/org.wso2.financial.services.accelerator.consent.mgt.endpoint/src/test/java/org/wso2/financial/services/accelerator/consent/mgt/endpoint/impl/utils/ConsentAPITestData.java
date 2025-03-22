@@ -25,7 +25,7 @@ public class ConsentAPITestData {
     public static String testMappingId = "testMappingId";
     public static String testMappingStatus = "testMappingStatus";
     public static String testMappingAccountId = "testMappingAccountId";
-    public static String testMappingPermission = "testMappingPermision";
+    public static String testMappingResource = "\"{\"accountID\": \"111\",\"permission\": \"read\"}\"";
 
 
     public static AuthorizationResource testStoredAuthorizationResource = getStoredAuthorizationResource();
@@ -42,6 +42,9 @@ public class ConsentAPITestData {
         ArrayList<AuthorizationResource> authorizationResources = new ArrayList<>();
         authorizationResources.add(getStoredAuthorizationResource());
         detailedConsentResource.setAuthorizationResources(authorizationResources);
+        ArrayList<ConsentMappingResource> consentMappingResources = new ArrayList<>();
+        consentMappingResources.add(getStoredConsentMappingResource());
+        detailedConsentResource.setConsentMappingResources(consentMappingResources);
         return detailedConsentResource;
     }
 
@@ -64,8 +67,7 @@ public class ConsentAPITestData {
     public static ConsentMappingResource getStoredConsentMappingResource() {
         ConsentMappingResource consentMappingResource = new ConsentMappingResource();
         consentMappingResource.setMappingID(testMappingId);
-        consentMappingResource.setAccountID(testMappingAccountId);
-        consentMappingResource.setPermission(testMappingPermission);
+        consentMappingResource.setResource(testMappingResource);
 
         return consentMappingResource;
     }

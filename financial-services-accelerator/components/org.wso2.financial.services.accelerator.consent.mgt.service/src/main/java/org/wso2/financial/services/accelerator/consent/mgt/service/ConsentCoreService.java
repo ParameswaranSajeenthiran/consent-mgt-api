@@ -318,7 +318,7 @@ public interface ConsentCoreService {
      */
     void updateConsentStatusWithImplicitReasonAndUserId(String consentId,
                                                                            String newConsentStatus, String userId,
-                                                                           String reason)
+                                                                           String reason, String orgID)
             throws
             ConsentMgtException;
 

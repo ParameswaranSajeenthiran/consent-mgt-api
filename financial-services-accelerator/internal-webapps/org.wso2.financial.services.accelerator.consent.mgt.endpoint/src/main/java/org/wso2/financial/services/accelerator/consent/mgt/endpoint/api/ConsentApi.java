@@ -86,13 +86,12 @@ public class ConsentApi {
             @PathParam("consentId") @ApiParam("consent id") String consentId,
             @HeaderParam("OrgInfo") @ApiParam("jwt header containing tenant related information")
             @DefaultValue("DEFAULT_ORG") String orgInfo,
-            @QueryParam("withAuthorizationResources") @DefaultValue("true") boolean withAuthorizationResources,
-            @QueryParam("UserId") String userId,
-            @QueryParam("WithAttributes") boolean withAttributes
+            @QueryParam("withAuthorizationResources")  boolean withAuthorizationResources,
+            @QueryParam("withAttributes") boolean withAttributes
 
                                        ) {
         try {
-            return consentAPIImpl.consentConsentIdGet(consentId, orgInfo, withAuthorizationResources, userId,
+            return consentAPIImpl.consentConsentIdGet(consentId, orgInfo, withAuthorizationResources,
                     withAttributes);
         } catch (Exception e) {
             // Handle other errors
@@ -103,7 +102,7 @@ public class ConsentApi {
     }
 
     @GET
-    @Path("/authorizationResource/{authorizationId}")
+    @Path("/{consentId}/authorizationResource/{authorizationId}")
     @Produces({"application/json"})
     @ApiOperation(value = "Consent retrieval", notes = "", response = DetailedConsentResource.class, tags = {"consent"})
     @ApiResponses(value = {
@@ -113,12 +112,13 @@ public class ConsentApi {
     public Response consentAuthorizationIdGet(
 
             @PathParam("authorizationId") @ApiParam("authorization Id") String authorizationId,
+            @PathParam("consentId") @ApiParam("consent Id") String consentId,
             @HeaderParam("OrgInfo") @ApiParam("jwt header containing tenant related information")
             @DefaultValue("DEFAULT_ORG") String orgInfo
 
 
                                              ) {
-        return consentAPIImpl.consentAuthorizationAuthorizationIdGet(authorizationId, orgInfo);
+        return consentAPIImpl.consentAuthorizationAuthorizationIdGet(authorizationId, orgInfo, consentId);
 
     }
 
@@ -206,6 +206,7 @@ public class ConsentApi {
             @DefaultValue("DEFAULT_ORG") String orgInfo,
             @QueryParam("consentTypes") String consentTypes,
             @QueryParam("consentStatuses") String consentStatuses,
+            @QueryParam("clientIds") String clientIds,
             @QueryParam("userIds") String userIds,
             @QueryParam("fromTime") int fromTime,
             @QueryParam("toTime") int toTime,
@@ -231,9 +232,9 @@ public class ConsentApi {
             @Valid @NotNull ConsentResourceDTO consentResource,
             @HeaderParam("OrgInfo") @ApiParam("jwt header containing tenant related information")
             @DefaultValue("DEFAULT_ORG") String orgInfo,
-            @HeaderParam("IsImplicitAuth") @ApiParam("Flag to determine whether authorization is implicit or not")
+            @HeaderParam("isImplicitAuth") @ApiParam("Flag to determine whether authorization is implicit or not")
             boolean isImplicitAuth,
-            @HeaderParam("ExclusiveConsent") @ApiParam("Flag to determine whether this is an exclusive consent")
+            @HeaderParam("isExclusiveConsent") @ApiParam("Flag to determine whether this is an exclusive consent")
             boolean exclusiveConsent) {
 
         return consentAPIImpl.consentPost(consentResource, orgInfo, isImplicitAuth,

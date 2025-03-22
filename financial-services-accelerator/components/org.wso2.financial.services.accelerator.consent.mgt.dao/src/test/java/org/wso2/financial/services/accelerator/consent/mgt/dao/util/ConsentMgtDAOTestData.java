@@ -6,7 +6,7 @@
  * in compliance with the License.
  * You may obtain a copy of the License at
  * <p>
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  * <p>
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -19,6 +19,7 @@
 package org.wso2.financial.services.accelerator.consent.mgt.dao.util;
 
 import net.minidev.json.JSONObject;
+import org.wso2.financial.services.accelerator.consent.mgt.dao.constants.ConsentMgtDAOConstants;
 import org.wso2.financial.services.accelerator.consent.mgt.dao.models.AuthorizationResource;
 import org.wso2.financial.services.accelerator.consent.mgt.dao.models.ConsentAttributes;
 import org.wso2.financial.services.accelerator.consent.mgt.dao.models.ConsentFile;
@@ -47,19 +48,21 @@ public class ConsentMgtDAOTestData {
     public static final String SAMPLE_AUTHORIZATION_ID = "3333";
     public static final boolean SAMPLE_RECURRING_INDICATOR = true;
     public static final String SAMPLE_CURRENT_STATUS = "authorised";
-    public static final String  SAMPLE_PREVIOUS_STATUS = "Received";
+    public static final String SAMPLE_PREVIOUS_STATUS = "Received";
     public static final String SAMPLE_AUTHORIZATION_TYPE = "authorizationType";
     public static final String SAMPLE_USER_ID = "admin@wso2.com";
     public static final String SAMPLE_AUDIT_ID = "4321234";
     public static final String SAMPLE_NEW_USER_ID = "ann@gold.com";
     public static final String SAMPLE_AUTHORIZATION_STATUS = "awaitingAuthorization";
-    public static final String  SAMPLE_EXPIRED_STATUS = "Expired";
+    public static final String SAMPLE_EXPIRED_STATUS = "Expired";
     public static final String SAMPLE_ACCOUNT_ID = "123456789";
     public static final String SAMPLE_MAPPING_ID = "12345";
     public static final String SAMPLE_MAPPING_ID_2 = "67890";
     public static final String SAMPLE_MAPPING_STATUS = "active";
     public static final String SAMPLE_NEW_MAPPING_STATUS = "inactive";
     public static final String SAMPLE_PERMISSION = "samplePermission";
+    public static final String SAMPLE_RESOURCE = "sample resource";
+
     public static final String SAMPLE_REASON = "sample reason";
     public static final String SAMPLE_ACTION_BY = "admin@wso2.com";
     public static final String SAMPLE_HISTORY_ID = "1234";
@@ -153,8 +156,9 @@ public class ConsentMgtDAOTestData {
             put("MAPPING_STATUS", SAMPLE_MAPPING_STATUS);
         }
     };
+
     public static List<String> getRecordIDListOfSampleConsentHistory() {
-       return new ArrayList<String>() {
+        return new ArrayList<String>() {
             {
                 add(ConsentMgtDAOTestData.SAMPLE_CONSENT_ID);
                 add(ConsentMgtDAOTestData.SAMPLE_MAPPING_ID);
@@ -167,6 +171,7 @@ public class ConsentMgtDAOTestData {
     public static ConsentResource getSampleTestConsentResource() {
 
         ConsentResource consentResource = new ConsentResource();
+        consentResource.setOrgID(ConsentMgtDAOConstants.DEFAULT_ORG);
         consentResource.setReceipt(ConsentMgtDAOTestData.SAMPLE_CONSENT_RECEIPT);
         consentResource.setClientID(UUID.randomUUID().toString());
         consentResource.setConsentType(ConsentMgtDAOTestData.SAMPLE_CONSENT_TYPE);
@@ -242,7 +247,7 @@ public class ConsentMgtDAOTestData {
                 ConsentMappingResource consentMappingResource = new ConsentMappingResource();
                 consentMappingResource.setAuthorizationID(authIDs.get(i));
                 consentMappingResource.setAccountID(SAMPLE_ACCOUNT_ID);
-                consentMappingResource.setPermission(SAMPLE_PERMISSION);
+                consentMappingResource.setResource(SAMPLE_RESOURCE);
                 consentMappingResource.setMappingStatus(SAMPLE_MAPPING_STATUS);
                 consentMappingResources.add(consentMappingResource);
             }
@@ -278,20 +283,18 @@ public class ConsentMgtDAOTestData {
 
         ConsentMappingResource consentMappingResource = new ConsentMappingResource();
         consentMappingResource.setAuthorizationID(authorizationID);
-        consentMappingResource.setAccountID(ConsentMgtDAOTestData.SAMPLE_ACCOUNT_ID);
-        consentMappingResource.setPermission(ConsentMgtDAOTestData.SAMPLE_PERMISSION);
+        consentMappingResource.setResource(ConsentMgtDAOTestData.SAMPLE_RESOURCE);
         consentMappingResource.setMappingStatus(ConsentMgtDAOTestData.SAMPLE_MAPPING_STATUS);
 
         return consentMappingResource;
     }
 
-    public static ConsentMappingResource getSampleTestConsentMappingResourceWithAccountId(String authorizationID,
-                                                                                          String accountID) {
+    public static ConsentMappingResource getSampleTestConsentMappingResourceWithResource(String authorizationID,
+                                                                                         String accountID) {
 
         ConsentMappingResource consentMappingResource = new ConsentMappingResource();
         consentMappingResource.setAuthorizationID(authorizationID);
-        consentMappingResource.setAccountID(accountID);
-        consentMappingResource.setPermission(ConsentMgtDAOTestData.SAMPLE_PERMISSION);
+        consentMappingResource.setResource(ConsentMgtDAOTestData.SAMPLE_RESOURCE);
         consentMappingResource.setMappingStatus(ConsentMgtDAOTestData.SAMPLE_MAPPING_STATUS);
 
         return consentMappingResource;

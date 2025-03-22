@@ -43,6 +43,7 @@ public class ConsentMgtServiceTestData {
     public static final String SAMPLE_CONSENT_TYPE = "accounts";
     public static final String SAMPLE_CLIENT_ID = "sampleClientID";
     public static final String ORG_INFO = "orgA";
+    public static final String DEFAULT_ORG = "DEFAULT_ORG";
     public static final int SAMPLE_CONSENT_FREQUENCY = 1;
     public static final Long SAMPLE_CONSENT_VALIDITY_PERIOD = 1638337852L;
     public static final String SAMPLE_CURRENT_STATUS = "Authorised";
@@ -55,6 +56,7 @@ public class ConsentMgtServiceTestData {
     public static final String SAMPLE_ACCOUNT_ID = "123456789";
     public static final String SAMPLE_MAPPING_STATUS = "active";
     public static final String SAMPLE_NEW_MAPPING_STATUS = "inactive";
+    public static final String SAMPLE_RESOURCE = "{\"accountID\": \"111\",\"permission\": \"read\"}";
     public static final String SAMPLE_PERMISSION = "samplePermission";
     public static final String SAMPLE_REASON = "sample reason";
     public static final String SAMPLE_ACTION_BY = "admin@wso2.com";
@@ -293,7 +295,7 @@ public class ConsentMgtServiceTestData {
     public static ConsentMappingResource getSampleTestConsentMappingResource(String authorizationID) {
 
         ConsentMappingResource consentMappingResource = new ConsentMappingResource(authorizationID,
-                ConsentMgtServiceTestData.SAMPLE_ACCOUNT_ID, ConsentMgtServiceTestData.SAMPLE_PERMISSION,
+                ConsentMgtServiceTestData.SAMPLE_RESOURCE,
                 ConsentMgtServiceTestData.SAMPLE_MAPPING_STATUS);
         consentMappingResource.setMappingID(ConsentMgtServiceTestData.SAMPLE_MAPPING_ID);
 
@@ -306,7 +308,7 @@ public class ConsentMgtServiceTestData {
         ArrayList<ConsentMappingResource> consentMappingResources = new ArrayList<>();
         ConsentMappingResource consentMappingResource = new ConsentMappingResource();
         consentMappingResource.setAccountID(ConsentMgtServiceTestData.SAMPLE_ACCOUNT_ID);
-        consentMappingResource.setPermission(ConsentMgtServiceTestData.SAMPLE_PERMISSION);
+        consentMappingResource.setResource(ConsentMgtServiceTestData.SAMPLE_RESOURCE);
         consentMappingResource.setMappingStatus(ConsentMgtServiceTestData.SAMPLE_MAPPING_STATUS);
         consentMappingResource.setMappingID(ConsentMgtServiceTestData.SAMPLE_MAPPING_ID);
 
@@ -320,8 +322,7 @@ public class ConsentMgtServiceTestData {
 
         ArrayList<ConsentMappingResource> consentMappingResources = new ArrayList<>();
         ConsentMappingResource consentMappingResource = new ConsentMappingResource();
-        consentMappingResource.setAccountID(ConsentMgtServiceTestData.SAMPLE_ACCOUNT_ID);
-        consentMappingResource.setPermission(ConsentMgtServiceTestData.SAMPLE_PERMISSION);
+        consentMappingResource.setResource(ConsentMgtServiceTestData.SAMPLE_RESOURCE);
         consentMappingResource.setMappingStatus(ConsentMgtServiceTestData.SAMPLE_MAPPING_STATUS);
 
         consentMappingResources.add(consentMappingResource);
@@ -333,6 +334,7 @@ public class ConsentMgtServiceTestData {
 
         ConsentMappingResource consentMappingResource = getSampleTestConsentMappingResource(authorizationID);
         consentMappingResource.setMappingID(ConsentMgtServiceTestData.SAMPLE_MAPPING_ID_2);
+        consentMappingResource.setResource(ConsentMgtServiceTestData.SAMPLE_RESOURCE);
         consentMappingResource.setMappingStatus(ConsentMgtServiceTestData.SAMPLE_NEW_MAPPING_STATUS);
 
         return consentMappingResource;
@@ -637,6 +639,7 @@ public class ConsentMgtServiceTestData {
                 .put(ConsentCoreServiceConstants.ADDITIONAL_MAPPING_RESOURCES, newUserAccountMappings);
         return additionalAmendmentData;
     }
+
     // sample statusAudit record Ids
     public static ArrayList<String> getSampleConsentStatusAuditRecordIds() {
 

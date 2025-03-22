@@ -63,7 +63,7 @@ public class ConsentCoreServiceConstants {
     public static final String CANNOT_PROCEED_WITH_CONSENT_CREATION = "Cannot proceed since client ID, receipt, " +
             "consent type or consent status is missing.";
     public static final String CANNOT_PROCEED_WITH_IMPLICIT_AUTH = "Cannot proceed with implicit authorization" +
-            " creation without authorizationStatus or authorizationType provided";
+            " creation without authorizationStatus or authorizationType or userId provided";
     public static final String CREATE_EXCLUSIVE_CONSENT_MANDATORY_PARAMETER_MISSING_ERROR = "One or more of following" +
             " data are missing (Client ID, receipt, consent type, consent status, auth status, auth type, applicable " +
             "existing consent status, new existing consent status, new current consent status), cannot proceed";

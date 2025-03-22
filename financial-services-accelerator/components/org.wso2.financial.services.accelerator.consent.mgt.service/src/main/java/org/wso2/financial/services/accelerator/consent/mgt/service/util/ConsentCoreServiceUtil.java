@@ -128,6 +128,7 @@ public class ConsentCoreServiceUtil {
 
             // loop through authorizationResources
             assert authorizationResources != null;
+            assert !authorizationResources.isEmpty();
 
             for (AuthorizationResource authorizationResource : authorizationResources) {
                 authorizationResource.setUpdatedTime(System.currentTimeMillis());
