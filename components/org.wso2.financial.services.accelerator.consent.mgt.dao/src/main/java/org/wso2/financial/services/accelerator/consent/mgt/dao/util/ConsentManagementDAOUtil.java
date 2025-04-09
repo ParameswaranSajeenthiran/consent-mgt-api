@@ -362,7 +362,6 @@ public class ConsentManagementDAOUtil {
         while (resultSet.next()) {
             consentMappingResource.setMappingStatus(resultSet.getString(ConsentMgtDAOConstants.MAPPING_STATUS));
             consentMappingResource.setMappingID(resultSet.getString(ConsentMgtDAOConstants.MAPPING_ID));
-            ;
 
             consentMappingResource.setResource(new JSONObject(objectMapper.readValue(resultSet.
                     getString(ConsentMgtDAOConstants.RESOURCE), new TypeReference<Map<String, Object>>() {
