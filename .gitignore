@@ -67,8 +67,7 @@ node_modules/
 **/dist/
 **/package-lock.json
 
-*.context.xml
-
+**/context.xml
 
 
 

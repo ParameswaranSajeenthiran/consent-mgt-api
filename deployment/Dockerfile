@@ -7,7 +7,7 @@ WORKDIR /app
 # Copy project files
 COPY . .
 
-#COPY deployment/context.xml app/financial-services-accelerator/internal-webapps/org.wso2.financial.services.accelerator.consent.mgt.endpoint/src/main/webapp/META-INF/context.xml
+COPY deployment/context.xml /app/financial-services-accelerator/internal-webapps/org.wso2.financial.services.accelerator.consent.mgt.endpoint/src/main/webapp/META-INF/context.xml
 # Build the WAR file
 RUN mvn clean package -DskipTests
 

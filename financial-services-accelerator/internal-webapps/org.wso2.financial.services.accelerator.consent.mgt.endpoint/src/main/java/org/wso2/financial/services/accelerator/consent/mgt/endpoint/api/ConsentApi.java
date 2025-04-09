@@ -38,7 +38,7 @@ import javax.ws.rs.core.Response;
 // Suppressed content - Endpoints
 // Suppression reason - False Positive : These endpoints are secured with access
 // control
-@Path("/consent")
+@Path("/")
 @Api(description = "the consent API")
 @javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaJAXRSSpecServerCodegen",
         date = "2025-03-03T09:27:49.560668411+05:30[Asia/Colombo]", comments = "Generator version: 7.12.0")

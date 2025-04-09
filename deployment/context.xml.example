@@ -4,6 +4,6 @@
           maxActive="50" maxIdle="30" maxWait="10000"
           username="<USER_NAME>" password="<PASSWORD>"
           driverClassName="com.mysql.cj.jdbc.Driver"
-          url="jdbc:mysql://exam-reg-db.cd0iw8m2eq1n.ap-southeast-1.rds.amazonaws.com:3306/fs_consentdb_test"/>
+          url="jdbc:mysql://<DATABASE_HOST>:3306/fs_consentdb_test"/>
 <!--    <Resources cacheMaxSize="20250" />-->
 </Context>
