@@ -29,6 +29,15 @@
         <artifactId>wso2</artifactId>
         <version>1.4</version>
     </parent>
+    <modules>
+        <!--        <module>components/org.wso2.financial.services.accelerator.common</module>-->
+        <module>components/org.wso2.financial.services.accelerator.consent.mgt.dao</module>
+        <module>components/org.wso2.financial.services.accelerator.consent.mgt.service</module>
+        <!--        <module>components/org.wso2.financial.services.accelerator.consent.mgt.extensions</module>-->
+
+        <module>webapp/org.wso2.financial.services.accelerator.consent.mgt.endpoint</module>
+
+    </modules>
 
     <profiles>
         <profile>
@@ -86,9 +95,9 @@
     <name>WSO2 Open Banking - Parent</name>
     <description>WSO2 Open Banking Solution</description>
 
-    <modules>
-        <module>financial-services-accelerator</module>
-    </modules>
+<!--    <modules>-->
+<!--        <module>financial-services-accelerator</module>-->
+<!--    </modules>-->
 
     <repositories>
         <repository>

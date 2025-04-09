@@ -41,7 +41,7 @@
         <module>components/org.wso2.financial.services.accelerator.consent.mgt.service</module>
 <!--        <module>components/org.wso2.financial.services.accelerator.consent.mgt.extensions</module>-->
 
-        <module>internal-webapps/org.wso2.financial.services.accelerator.consent.mgt.endpoint</module>
+        <module>webapp/org.wso2.financial.services.accelerator.consent.mgt.endpoint</module>
 
     </modules>
 </project>

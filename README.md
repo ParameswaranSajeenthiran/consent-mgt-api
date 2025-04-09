@@ -4,7 +4,7 @@ A lightweight RESTful API for managing user consent records, built using JAX-RS 
 
 ## 🧰 Features
 
-- Create, retrieve, update, and delete consent records
+- Create, retrieve, update, and revoke and track consent records
 - Clean and minimal implementation for quick integration or extension
 - Dockerized for easy deployment
 
@@ -34,10 +34,21 @@ cd consent-mgt-api
 ### 2. Configure Database 
 
 Copy the context.xml to same folder and configure the database credentials
+
+| Placeholder       | Description                          | Example                 |
+|-------------------|--------------------------------------|-------------------------|
+| `<USER_NAME>`     | Your MySQL database username         | `wso2_user`             |
+| `<PASSWORD>`      | Your MySQL database password         | `your_secure_password` |
+| `<DATABASE_HOST>` | Hostname or IP address of the DB     | `localhost` or `db`     |
+| `<DATABASE_NAME>` | Name of your MySQL database          | `wso2_consent_db`       |
+
+
+
 ```bash
 
 cp deployment/context.xml.example deployment/context.xml
 ```
+
 
 ### 3. Build the Docker Image
 
@@ -55,7 +66,8 @@ docker run -p 8080:8080 consent-rest-api
 
 ```
 
-Explore the APIs available in the Swagger UI at http://localhost:8080/swagger-ui/index.html
+Explore the APIs available in the Swagger UI at http://localhost:8080/swagger-ui/index.html?url=http://localhost:8080/api/openapi.json
+
 
 
 
