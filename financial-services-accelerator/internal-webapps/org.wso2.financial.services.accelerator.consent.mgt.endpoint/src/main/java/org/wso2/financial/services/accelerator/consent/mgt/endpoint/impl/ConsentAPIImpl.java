@@ -8,7 +8,6 @@ import net.minidev.json.JSONObject;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.json.JSONException;
-import org.wso2.financial.services.accelerator.consent.mgt.dao.constants.ConsentMgtDAOConstants;
 import org.wso2.financial.services.accelerator.consent.mgt.dao.exceptions.ConsentMgtException;
 import org.wso2.financial.services.accelerator.consent.mgt.dao.models.AuthorizationResource;
 import org.wso2.financial.services.accelerator.consent.mgt.dao.models.ConsentHistoryResource;
@@ -16,7 +15,6 @@ import org.wso2.financial.services.accelerator.consent.mgt.dao.models.ConsentMap
 import org.wso2.financial.services.accelerator.consent.mgt.dao.models.ConsentResource;
 import org.wso2.financial.services.accelerator.consent.mgt.dao.models.ConsentStatusAuditRecord;
 import org.wso2.financial.services.accelerator.consent.mgt.dao.models.DetailedConsentResource;
-import org.wso2.financial.services.accelerator.consent.mgt.endpoint.constants.ConsentConstant;
 import org.wso2.financial.services.accelerator.consent.mgt.endpoint.model.AmendmentResource;
 import org.wso2.financial.services.accelerator.consent.mgt.endpoint.model.AuthResponse;
 import org.wso2.financial.services.accelerator.consent.mgt.endpoint.model.AuthorizationResourceDTO;
@@ -28,6 +26,7 @@ import org.wso2.financial.services.accelerator.consent.mgt.endpoint.model.Reauth
 import org.wso2.financial.services.accelerator.consent.mgt.endpoint.utils.ConsentUtils;
 import org.wso2.financial.services.accelerator.consent.mgt.service.constants.ConsentCoreServiceConstants;
 import org.wso2.financial.services.accelerator.consent.mgt.service.impl.ConsentCoreServiceImpl;
+import org.wso2.financial.services.accelerator.consent.mgt.service.util.ConsentCoreServiceUtil;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -175,9 +174,16 @@ public class ConsentAPIImpl {
                     AuthorizationResource authorizationResource = new AuthorizationResource();
                     ConsentUtils.copyPropertiesToAuthorizationResource(authorizationResource, authorizationResourceDTO);
                     ArrayList<ConsentMappingResource> consentMappingResources = new ArrayList<>();
-                    for (String resource : authorizationResourceDTO.getResources()) {
+                    for (Object resource : authorizationResourceDTO.getResources()) {
                         ConsentMappingResource res = new ConsentMappingResource();
-                        res.setResource(resource);
+
+                        // convert resource to JSON string
+                        ObjectMapper objectMapper = new ObjectMapper();
+                        String jsonString = objectMapper.writeValueAsString(resource);
+                        JSONObject jsonObject =
+                                new JSONObject(objectMapper.convertValue(resource, java.util.Map.class));
+
+                        res.setResource(jsonObject);
                         res.setMappingStatus("active");
                         consentMappingResources.add(res);
                     }
@@ -208,6 +214,10 @@ public class ConsentAPIImpl {
                     true);
 
             return Response.status(Response.Status.CREATED).entity(consentResponse).build();
+        } catch (JsonProcessingException e) {
+
+            return handleConsentMgtException(new ConsentMgtException(Response.Status.INTERNAL_SERVER_ERROR,
+                    e.getMessage()));
         } catch (ConsentMgtException e) {
             return handleConsentMgtException(e);
         }
@@ -320,9 +330,8 @@ public class ConsentAPIImpl {
     //
 //
     public Response consentConsentIdGet(
-            String consentID, String orgInfo, boolean withAuthorizationResources,
-            boolean isWithAttributes) throws
-            ConsentMgtException {
+            String consentID, String orgInfo, boolean isDetailedConsentResource,
+            boolean isWithAttributes) {
 
         try {
 
@@ -330,29 +339,13 @@ public class ConsentAPIImpl {
             if (ConsentUtils.isConsentIdValid(consentID)) {
 
                 try {
-                    if (withAuthorizationResources & isWithAttributes) {
+                    if (isDetailedConsentResource) {
                         ////////////// Service call //////////////
                         DetailedConsentResource detailedConsentResource =
                                 consentCoreService.getDetailedConsent(consentID);
 
-
-                        //////////////  build Response  //////////////
-                        ConsentResponse consentResponse = new ConsentResponse();
-                        ConsentUtils.buildConsentResourceResponse(consentResponse,
-                                detailedConsentResource,
-                                detailedConsentResource.getAuthorizationResources(),
-                                detailedConsentResource.getConsentMappingResources(), true);
-
-                        return Response.ok().entity(consentResponse).build();
-
-
-                    } else if (withAuthorizationResources & !isWithAttributes) {
-
-                        ////////////// Service call //////////////
-                        DetailedConsentResource consentResourceWithAuthorizationResources =
-                                consentCoreService.getConsentWithAuthorizationResources(consentID);
-
-                        if (!consentResourceWithAuthorizationResources.getOrgID().equals(orgInfo)) {
+                        if (!ConsentCoreServiceUtil.validateOrgInfo(orgInfo,
+                                detailedConsentResource.getOrgID())) {
                             log.error("OrgInfo does not match");
                             throw new ConsentMgtException(Response.Status.BAD_REQUEST,
                                     "OrgInfo does not match, please provide the correct OrgInfo");
@@ -361,18 +354,20 @@ public class ConsentAPIImpl {
                         //////////////  build Response  //////////////
                         ConsentResponse consentResponse = new ConsentResponse();
                         ConsentUtils.buildConsentResourceResponse(consentResponse,
-                                consentResourceWithAuthorizationResources,
-                                consentResourceWithAuthorizationResources.getAuthorizationResources(),
-                                consentResourceWithAuthorizationResources.getConsentMappingResources(), false);
+                                detailedConsentResource,
+                                detailedConsentResource.getAuthorizationResources(),
+                                detailedConsentResource.getConsentMappingResources(), true);
+//                        if( isWithAttributes == null){
+                        if (!isWithAttributes) {
+                            consentResponse.setConsentAttributes(null);
+                            // remove null values from the consent
+                            ObjectMapper objectMapper = new ObjectMapper();
+                            objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+                        }
 
-                        // response should contain resources within each AuthorizationResource object
-                        // remove null values from the consent
-                        ObjectMapper objectMapper = new ObjectMapper();
-                        objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+//                        }
 
-
-                        return Response.ok().entity(objectMapper.writeValueAsString(consentResponse)).build();
-
+                        return Response.ok().entity(consentResponse).build();
 
                     } else {
 
@@ -387,21 +382,22 @@ public class ConsentAPIImpl {
                                     false);
                         }
 
-                        if (!consent.getOrgID().equals(orgInfo)) {
+                        if (!ConsentCoreServiceUtil.validateOrgInfo(orgInfo,
+                                consent.getOrgID())) {
                             log.error("OrgInfo does not match");
                             throw new ConsentMgtException(Response.Status.BAD_REQUEST,
-                                    ConsentConstant.ORG_MISMATCH);
-                        } else {
-                            //////////////  build Response  //////////////
-                            // remove null values from the consent
-                            consent.setOrgID(null);
-                            ObjectMapper objectMapper = new ObjectMapper();
-                            objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
-
-                            return Response.ok().entity(objectMapper.writeValueAsString(consent)).build();
-
-
+                                    "OrgInfo does not match, please provide the correct OrgInfo");
                         }
+                        //////////////  build Response  //////////////
+                        // remove null values from the consent
+                        consent.setOrgID(null);
+                        ObjectMapper objectMapper = new ObjectMapper();
+                        objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+
+
+                        return Response.ok().entity(objectMapper.writeValueAsString(consent)).build();
+
+
                     }
                 } catch (JSONException e) {
                     log.error("Error Occurred while handling the request", e);
@@ -426,15 +422,13 @@ public class ConsentAPIImpl {
 
             ConsentResource consentResource = consentCoreService.getConsent(consentId, false);
 
-            if (orgInfo == null) {
-                orgInfo = ConsentMgtDAOConstants.DEFAULT_ORG;
-            }
-            if (!consentResource.getOrgID().equals(orgInfo)) {
+            if (!ConsentCoreServiceUtil.validateOrgInfo(orgInfo,
+                    consentResource.getOrgID())) {
                 log.error("OrgInfo does not match");
-
-                throw new ConsentMgtException(Response.Status.NOT_FOUND,
+                throw new ConsentMgtException(Response.Status.BAD_REQUEST,
                         "OrgInfo does not match, please provide the correct OrgInfo");
             }
+
             AuthorizationResource authorizationResource = consentCoreService.getAuthorizationResource(authorizationId,
                     orgInfo);
 
@@ -457,10 +451,10 @@ public class ConsentAPIImpl {
             ConsentResource consentResource = consentCoreService.getConsent(consentID,
                     false);
 
-            if (!consentResource.getOrgID().equals(orgInfo)) {
+            if (!ConsentCoreServiceUtil.validateOrgInfo(orgInfo,
+                    consentResource.getOrgID())) {
                 log.error("OrgInfo does not match");
-
-                throw new ConsentMgtException(Response.Status.NOT_FOUND,
+                throw new ConsentMgtException(Response.Status.BAD_REQUEST,
                         "OrgInfo does not match, please provide the correct OrgInfo");
             }
 

@@ -18,6 +18,9 @@
 
 package org.wso2.financial.services.accelerator.consent.mgt.dao.util;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import net.minidev.json.JSONObject;
 import org.wso2.financial.services.accelerator.consent.mgt.dao.constants.ConsentMgtDAOConstants;
 import org.wso2.financial.services.accelerator.consent.mgt.dao.models.AuthorizationResource;
@@ -61,7 +64,20 @@ public class ConsentMgtDAOTestData {
     public static final String SAMPLE_MAPPING_STATUS = "active";
     public static final String SAMPLE_NEW_MAPPING_STATUS = "inactive";
     public static final String SAMPLE_PERMISSION = "samplePermission";
-    public static final String SAMPLE_RESOURCE = "sample resource";
+
+    private static final ObjectMapper objectMapper = new ObjectMapper();
+    public static final JSONObject SAMPLE_RESOURCE;
+
+    static {
+        try {
+            SAMPLE_RESOURCE = new JSONObject(new JSONObject(objectMapper.readValue(
+                    "{\"resourceId\": \"1234\", \"resourceType\": \"account\"}"
+                    , new TypeReference<Map<String, Object>>() {
+                    })));
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     public static final String SAMPLE_REASON = "sample reason";
     public static final String SAMPLE_ACTION_BY = "admin@wso2.com";
@@ -262,6 +278,15 @@ public class ConsentMgtDAOTestData {
         authorizationResource.setAuthorizationType(ConsentMgtDAOTestData.SAMPLE_AUTHORIZATION_TYPE);
         authorizationResource.setUserID(ConsentMgtDAOTestData.SAMPLE_USER_ID);
         authorizationResource.setAuthorizationStatus(ConsentMgtDAOTestData.SAMPLE_AUTHORIZATION_STATUS);
+
+        ArrayList<ConsentMappingResource> consentMappingResources = new ArrayList<ConsentMappingResource>();
+        ConsentMappingResource consentMappingResource = new ConsentMappingResource();
+        consentMappingResource.setAuthorizationID(consentID);
+        consentMappingResource.setResource(ConsentMgtDAOTestData.SAMPLE_RESOURCE);
+        consentMappingResource.setMappingStatus(ConsentMgtDAOTestData.SAMPLE_MAPPING_STATUS);
+        consentMappingResources.add(consentMappingResource);
+
+        authorizationResource.setConsentMappingResource(consentMappingResources);
 
         return authorizationResource;
     }

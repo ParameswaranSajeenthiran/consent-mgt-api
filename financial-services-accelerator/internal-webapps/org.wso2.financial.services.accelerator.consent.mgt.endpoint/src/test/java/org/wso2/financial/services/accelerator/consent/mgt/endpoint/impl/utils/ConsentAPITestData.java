@@ -1,5 +1,6 @@
 package org.wso2.financial.services.accelerator.consent.mgt.endpoint.impl.utils;
 
+import net.minidev.json.JSONObject;
 import org.wso2.financial.services.accelerator.consent.mgt.dao.models.AuthorizationResource;
 import org.wso2.financial.services.accelerator.consent.mgt.dao.models.ConsentMappingResource;
 import org.wso2.financial.services.accelerator.consent.mgt.dao.models.DetailedConsentResource;
@@ -25,7 +26,8 @@ public class ConsentAPITestData {
     public static String testMappingId = "testMappingId";
     public static String testMappingStatus = "testMappingStatus";
     public static String testMappingAccountId = "testMappingAccountId";
-    public static String testMappingResource = "\"{\"accountID\": \"111\",\"permission\": \"read\"}\"";
+    public static JSONObject testMappingResource = new JSONObject();
+
 
 
     public static AuthorizationResource testStoredAuthorizationResource = getStoredAuthorizationResource();

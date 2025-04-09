@@ -86,12 +86,12 @@ public class ConsentApi {
             @PathParam("consentId") @ApiParam("consent id") String consentId,
             @HeaderParam("OrgInfo") @ApiParam("jwt header containing tenant related information")
             @DefaultValue("DEFAULT_ORG") String orgInfo,
-            @QueryParam("withAuthorizationResources")  boolean withAuthorizationResources,
-            @QueryParam("withAttributes") boolean withAttributes
+            @QueryParam("isDetailedConsentResource")  boolean isDetailedConsentResource,
+            @QueryParam("withAttributes") @DefaultValue("true") boolean withAttributes
 
                                        ) {
         try {
-            return consentAPIImpl.consentConsentIdGet(consentId, orgInfo, withAuthorizationResources,
+            return consentAPIImpl.consentConsentIdGet(consentId, orgInfo, isDetailedConsentResource,
                     withAttributes);
         } catch (Exception e) {
             // Handle other errors

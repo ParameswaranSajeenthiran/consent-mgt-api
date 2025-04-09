@@ -2024,6 +2024,12 @@ public class ConsentCoreServiceImplTest {
         doReturn(ConsentMgtServiceTestData.getSampleTestAuthorizationResource(sampleID, null))
                 .when(mockedConsentCoreDAO).storeAuthorizationResource(any(),
                         any(AuthorizationResource.class));
+        // mocked DetailedConsentResource
+        DetailedConsentResource detailedConsentResource = Mockito.mock(DetailedConsentResource.class);
+        doReturn(ConsentMgtServiceTestData.getSampleDetailedStoredTestConsentResource())
+                .when(mockedConsentCoreDAO).getDetailedConsentResource(any(), anyString());
+        // getOrgId
+        doReturn(ConsentMgtServiceTestData.ORG_INFO).when(detailedConsentResource).getOrgID();
 
     }
 

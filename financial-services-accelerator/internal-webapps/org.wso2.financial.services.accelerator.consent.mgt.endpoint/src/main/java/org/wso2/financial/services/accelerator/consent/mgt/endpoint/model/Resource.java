@@ -4,6 +4,7 @@ package org.wso2.financial.services.accelerator.consent.mgt.endpoint.model;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import io.swagger.annotations.ApiModelProperty;
+import net.minidev.json.JSONObject;
 
 import java.io.Serializable;
 import java.util.Objects;
@@ -13,7 +14,7 @@ import java.util.Objects;
 @javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaJAXRSSpecServerCodegen",
         date = "2025-03-03T09:27:49.560668411+05:30[Asia/Colombo]", comments = "Generator version: 7.12.0")
 public class Resource implements Serializable {
-    private String resource;
+    private JSONObject resource;
     private String resourceMappingId;
     private String consentMappingStatus;
 
@@ -47,11 +48,11 @@ public class Resource implements Serializable {
     }
 
 
-    public String getResource() {
+    public JSONObject getResource() {
         return resource;
     }
 
-    public void setResource(String resource) {
+    public void setResource(JSONObject resource) {
         this.resource = resource;
     }
 

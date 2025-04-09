@@ -18,6 +18,10 @@
 
 package org.wso2.financial.services.accelerator.consent.mgt.dao.util;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import net.minidev.json.JSONObject;
 import net.minidev.json.JSONValue;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
@@ -128,7 +132,8 @@ public class ConsentManagementDAOUtil {
      * @throws SQLException thrown if an error occurs when getting data from the result set
      */
     public static DetailedConsentResource setDataToDetailedConsentResource(ResultSet resultSet) throws
-            SQLException {
+            SQLException,
+            JsonProcessingException {
 
         Map<String, String> consentAttributesMap = new HashMap<>();
         ArrayList<AuthorizationResource> authorizationResources = new ArrayList<>();
@@ -211,7 +216,8 @@ public class ConsentManagementDAOUtil {
      * @throws SQLException thrown if an error occurs when getting data from the result set
      */
     public static DetailedConsentResource setDataToConsentResourceWithAuthorizationResource(ResultSet resultSet) throws
-            SQLException {
+            SQLException,
+            JsonProcessingException {
 
         Map<String, String> consentAttributesMap = new HashMap<>();
         ArrayList<AuthorizationResource> authorizationResources = new ArrayList<>();
@@ -319,7 +325,8 @@ public class ConsentManagementDAOUtil {
     public static AuthorizationResource setAuthorizationDataWithConsentMapping(ResultSet resultSet,
                                                                                String updateTimeParamName)
             throws
-            SQLException {
+            SQLException,
+            JsonProcessingException {
 
 
         AuthorizationResource authorizationResource = new AuthorizationResource(
@@ -335,13 +342,31 @@ public class ConsentManagementDAOUtil {
         ConsentMappingResource consentMappingResource = new ConsentMappingResource();
         consentMappingResource.setMappingStatus(resultSet.getString(ConsentMgtDAOConstants.MAPPING_STATUS));
         consentMappingResource.setMappingID(resultSet.getString(ConsentMgtDAOConstants.MAPPING_ID));
-        consentMappingResource.setResource(resultSet.getString(ConsentMgtDAOConstants.RESOURCE));
+        ObjectMapper objectMapper = new ObjectMapper();
+
+
+
+        String resource = resultSet.getString(ConsentMgtDAOConstants.RESOURCE);
+        if (resource != null) {
+            // Convert JSON string to a Map
+            Map<String, Object> map = objectMapper.readValue(resource, new TypeReference<Map<String, Object>>() {
+            });
+            // Convert Map to net.minidev.json.JSONObject
+            JSONObject jsonObject = new JSONObject(map);
+
+            consentMappingResource.setResource(jsonObject);
+        }
+
         consentMappingResources.add(consentMappingResource);
 
         while (resultSet.next()) {
             consentMappingResource.setMappingStatus(resultSet.getString(ConsentMgtDAOConstants.MAPPING_STATUS));
             consentMappingResource.setMappingID(resultSet.getString(ConsentMgtDAOConstants.MAPPING_ID));
-            consentMappingResource.setResource(resultSet.getString(ConsentMgtDAOConstants.RESOURCE));
+            ;
+
+            consentMappingResource.setResource(new JSONObject(objectMapper.readValue(resultSet.
+                    getString(ConsentMgtDAOConstants.RESOURCE), new TypeReference<Map<String, Object>>() {
+            })));
             consentMappingResources.add(consentMappingResource);
 
 
@@ -384,11 +409,18 @@ public class ConsentManagementDAOUtil {
      * @throws SQLException thrown if an error occurs when getting data from the result set
      */
     public static ConsentMappingResource getConsentMappingResourceWithData(ResultSet resultSet) throws
-            SQLException {
+            SQLException,
+            JsonProcessingException {
+
+        ObjectMapper objectMapper = new ObjectMapper();
 
         ConsentMappingResource consentMappingResource = new ConsentMappingResource(
                 resultSet.getString(ConsentMgtDAOConstants.AUTH_ID),
-                resultSet.getString(ConsentMgtDAOConstants.RESOURCE),
+
+
+                new JSONObject(objectMapper.readValue(resultSet.
+                        getString(ConsentMgtDAOConstants.RESOURCE), new TypeReference<Map<String, Object>>() {
+                })),
                 resultSet.getString(ConsentMgtDAOConstants.MAPPING_STATUS)
         );
         consentMappingResource.setMappingID(resultSet.getString(ConsentMgtDAOConstants.MAPPING_ID));

@@ -28,6 +28,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.financial.services.accelerator.consent.mgt.dao.ConsentCoreDAO;
+import org.wso2.financial.services.accelerator.consent.mgt.dao.constants.ConsentMgtDAOConstants;
 import org.wso2.financial.services.accelerator.consent.mgt.dao.exceptions.ConsentDataDeletionException;
 import org.wso2.financial.services.accelerator.consent.mgt.dao.exceptions.ConsentDataInsertionException;
 import org.wso2.financial.services.accelerator.consent.mgt.dao.exceptions.ConsentDataRetrievalException;
@@ -916,4 +917,11 @@ public class ConsentCoreServiceUtil {
         }
     }
 
+    public static boolean validateOrgInfo(String headerOrg, String orgId) throws ConsentMgtException {
+
+        if (headerOrg == null) {
+            headerOrg = ConsentMgtDAOConstants.DEFAULT_ORG;
+        }
+        return headerOrg.equals(orgId);
+    }
 }

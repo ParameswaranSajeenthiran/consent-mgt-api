@@ -1,7 +1,6 @@
 package org.wso2.financial.services.accelerator.consent.mgt.endpoint.utils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.cxf.helpers.IOUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.wso2.financial.services.accelerator.consent.mgt.dao.exceptions.ConsentMgtException;
@@ -17,15 +16,12 @@ import org.wso2.financial.services.accelerator.consent.mgt.endpoint.model.Consen
 import org.wso2.financial.services.accelerator.consent.mgt.endpoint.model.ReauthorizeResource;
 import org.wso2.financial.services.accelerator.consent.mgt.endpoint.model.Resource;
 
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.Response;
 
 
@@ -34,22 +30,7 @@ import javax.ws.rs.core.Response;
  */
 public class ConsentUtils {
 
-    /**
-     * Extract string payload from request object.
-     *
-     * @param request The request object
-     * @return String payload
-     */
-    public static String getStringPayload(HttpServletRequest request) throws
-            ConsentMgtException {
-        try {
-            return IOUtils.toString(request.getInputStream());
-        } catch (IOException e) {
-//            log.error(ConsentConstant.ERROR_PAYLOAD_READ, e);
-            throw new ConsentMgtException(e.getMessage());
-        }
 
-    }
 
     /**
      * Validate the consent ID.
@@ -62,69 +43,7 @@ public class ConsentUtils {
                 consentId));
     }
 
-    /**
-     * Get array list from query param.
-     *
-     * @param queryParam query param values
-     * @return array list constructed from the query param value
-     */
-    public static ArrayList<String> getArrayListFromQueryParam(String queryParam) {
-        return queryParam != null ? new ArrayList<>(Arrays.asList(queryParam.split(","))) : null;
-    }
 
-    /**
-     * Validate and retrieve query param.
-     * 1. Check whether the key exists as a query param.
-     * 2. Validate whether the value is a string.
-     * 3. Retrieve query param.
-     *
-     * @param queryParams query params
-     * @param key         key to be retrieved
-     * @return query param value
-     */
-    public static String validateAndGetQueryParam(Map queryParams, String key) {
-        if (queryParams.containsKey(key) && (((ArrayList<?>) queryParams.get(key)).get(0) instanceof String)) {
-            return (String) ((ArrayList<?>) queryParams.get(key)).get(0);
-        }
-        return null;
-    }
-
-    /**
-     * Validate and retrieve query param.
-     * 1. Check whether the key exists as a query param.
-     * 2. Validate whether the value is a string.
-     * 3. Retrieve query param.
-     *
-     * @param pathParams query params
-     * @param key        key to be retrieved
-     * @return query param value
-     */
-    public static String validateAndGetPathParam(Map pathParams, String key) {
-        if (pathParams.containsKey(key) && (((ArrayList<?>) pathParams.get(key)).get(0) instanceof String)) {
-            return (String) ((ArrayList<?>) pathParams.get(key)).get(0);
-        }
-        return null;
-    }
-
-    /**
-     * Get long values from query param.
-     *
-     * @param queryParam query param values
-     * @return long value constructed from the query param value
-     */
-    public static long getLongFromQueryParam(String queryParam) {
-        return queryParam != null ? Long.parseLong(queryParam) : 0;
-    }
-
-    /**
-     * Get int values from query param.
-     *
-     * @param queryParam query param values
-     * @return int value constructed from the query param value
-     */
-    public static int getIntFromQueryParam(String queryParam) {
-        return queryParam != null ? Integer.parseInt(queryParam) : 0;
-    }
 
     public static Map<String, String> convertToMap(Object obj) throws
             ConsentMgtException {
@@ -245,16 +164,6 @@ public class ConsentUtils {
         consentMappingResourceResponse.setResourceMappingId(consentMappingResource.getMappingID());
         consentMappingResourceResponse.setResource(consentMappingResource.getResource());
         consentMappingResourceResponse.setConsentMappingStatus(consentMappingResource.getMappingStatus());
-
-    }
-
-    /**
-     * copy properties from consentResourceMapping  to consentResourceMappingResponse
-     */
-    public static void copyPropertiesToConsentMappingResource(Resource orgConsentMappingResource,
-                                                              ConsentMappingResource desConsentMappingResource) {
-        desConsentMappingResource.setMappingID(orgConsentMappingResource.getResourceMappingId());
-        desConsentMappingResource.setMappingStatus(orgConsentMappingResource.getResource());
 
     }
 

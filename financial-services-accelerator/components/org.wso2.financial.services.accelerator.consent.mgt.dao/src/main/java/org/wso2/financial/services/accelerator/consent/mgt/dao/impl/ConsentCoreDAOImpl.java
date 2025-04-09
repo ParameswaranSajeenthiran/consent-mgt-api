@@ -18,6 +18,7 @@
 
 package org.wso2.financial.services.accelerator.consent.mgt.dao.impl;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -234,7 +235,7 @@ public class ConsentCoreDAOImpl implements ConsentCoreDAO {
                 throw new ConsentDataRetrievalException(String.format("Error occurred while retrieving " +
                         "detailed consent resource for consent ID : %s", consentID), e);
             }
-        } catch (SQLException e) {
+        } catch (SQLException | JsonProcessingException e) {
             log.error(ConsentMgtDAOConstants.DETAILED_CONSENT_RESOURCE_RETRIEVE_ERROR_MSG, e);
             throw new ConsentDataRetrievalException(ConsentMgtDAOConstants
                     .DETAILED_CONSENT_RESOURCE_RETRIEVE_ERROR_MSG, e);
@@ -273,7 +274,7 @@ public class ConsentCoreDAOImpl implements ConsentCoreDAO {
                 throw new ConsentDataRetrievalException(String.format("Error occurred while retrieving " +
                         "detailed consent resource for consent ID : %s", consentID), e);
             }
-        } catch (SQLException e) {
+        } catch (SQLException  | JsonProcessingException e) {
             log.error(ConsentMgtDAOConstants.DETAILED_CONSENT_RESOURCE_RETRIEVE_ERROR_MSG, e);
             throw new ConsentDataRetrievalException(ConsentMgtDAOConstants
                     .DETAILED_CONSENT_RESOURCE_RETRIEVE_ERROR_MSG, e);
@@ -457,7 +458,7 @@ public class ConsentCoreDAOImpl implements ConsentCoreDAO {
                 log.error(errorMessage, e);
                 throw new ConsentDataRetrievalException(errorMessage, e);
             }
-        } catch (SQLException e) {
+        } catch (SQLException | JsonProcessingException e) {
             log.error(ConsentMgtDAOConstants.CONSENT_AUTHORIZATION_RESOURCE_RETRIEVE_ERROR_MSG, e);
             throw new ConsentDataRetrievalException(ConsentMgtDAOConstants.
                     CONSENT_AUTHORIZATION_RESOURCE_RETRIEVE_ERROR_MSG, e);
@@ -549,7 +550,7 @@ public class ConsentCoreDAOImpl implements ConsentCoreDAO {
 
             storeConsentMappingPreparedStmt.setString(1, consentMappingID);
             storeConsentMappingPreparedStmt.setString(2, consentMappingResource.getAuthorizationID());
-            storeConsentMappingPreparedStmt.setString(3, consentMappingResource.getResource());
+            storeConsentMappingPreparedStmt.setString(3, consentMappingResource.getResource().toString());
             storeConsentMappingPreparedStmt.setString(4, consentMappingResource.getMappingStatus());
 
 
@@ -606,7 +607,7 @@ public class ConsentCoreDAOImpl implements ConsentCoreDAO {
                 log.debug(String.format("Retrieved the consent mapping resources for authorization ID : %s",
                         authorizationID.replaceAll("[\r\n]", "")));
             }
-        } catch (SQLException e) {
+        } catch (SQLException | JsonProcessingException e) {
             log.error(ConsentMgtDAOConstants.CONSENT_MAPPING_RETRIEVE_ERROR_MSG, e);
             throw new ConsentDataRetrievalException(ConsentMgtDAOConstants.CONSENT_MAPPING_RETRIEVE_ERROR_MSG, e);
         }

@@ -18,6 +18,8 @@
 
 package org.wso2.financial.services.accelerator.consent.mgt.dao.models;
 
+import net.minidev.json.JSONObject;
+
 /**
  * Model for consent mapping resource.
  */
@@ -28,13 +30,13 @@ public class ConsentMappingResource {
     private String accountID;
     private String permission;
     private String mappingStatus;
-    private String resource;
+    private JSONObject resource;
 
     public ConsentMappingResource() {
 
     }
 
-    public ConsentMappingResource(String authorizationID, String resource, String mappingStatus) {
+    public ConsentMappingResource(String authorizationID, JSONObject resource, String mappingStatus) {
         this.authorizationID = authorizationID;
         this.resource = resource;
         this.mappingStatus = mappingStatus;
@@ -98,11 +100,11 @@ public class ConsentMappingResource {
         this.mappingStatus = mappingStatus;
     }
 
-    public String getResource() {
+    public JSONObject getResource() {
         return resource;
     }
 
-    public void setResource(String resource) {
+    public void setResource(JSONObject resource) {
         this.resource = resource;
     }
 }

@@ -93,8 +93,8 @@ public class ConsentCoreServiceImpl implements ConsentCoreService {
 
             for (AuthorizationResource authorizationResource : authorizationResources) {
                 if (StringUtils.isBlank(authorizationResource.getAuthorizationStatus()) ||
-                        StringUtils.isBlank(authorizationResource.getAuthorizationType())||
-                StringUtils.isBlank(authorizationResource.getUserID())) {
+                        StringUtils.isBlank(authorizationResource.getAuthorizationType()) ||
+                        StringUtils.isBlank(authorizationResource.getUserID())) {
                     log.error(ConsentCoreServiceConstants.CANNOT_PROCEED_WITH_IMPLICIT_AUTH);
                     throw new ConsentMgtException(Response.Status.BAD_REQUEST,
                             ConsentCoreServiceConstants.CANNOT_PROCEED_WITH_IMPLICIT_AUTH);
@@ -318,6 +318,7 @@ public class ConsentCoreServiceImpl implements ConsentCoreService {
                 }
                 DetailedConsentResource retrievedDetailedConsentResource = consentCoreDAO
                         .getDetailedConsentResource(connection, consentID);
+
 
                 // Commit transactions
                 DatabaseUtils.commitTransaction(connection);
@@ -945,10 +946,10 @@ public class ConsentCoreServiceImpl implements ConsentCoreService {
                 DetailedConsentResource existingConsentResource = consentCoreDAO
                         .getDetailedConsentResource(connection, consentId);
 
-                if (orgID == null) {
-                    orgID = ConsentMgtDAOConstants.DEFAULT_ORG;
-                }
-                if (!existingConsentResource.getOrgID().equals(orgID)) {
+
+
+
+                if (!ConsentCoreServiceUtil.validateOrgInfo(orgID, existingConsentResource.getOrgID())) {
                     log.error("OrgInfo does not match");
                     throw new ConsentMgtException(Response.Status.BAD_REQUEST,
                             "OrgInfo does not match, please provide the correct OrgInfo");
@@ -2268,7 +2269,7 @@ public class ConsentCoreServiceImpl implements ConsentCoreService {
                                                                             Long consentValidityTime,
                                                                             ArrayList<AuthorizationResource>
                                                                                     reAuthorizationResources,
-//
+
                                                                             String newConsentStatus,
                                                                             Map<String, String> consentAttributes,
                                                                             String userID,
@@ -2304,12 +2305,10 @@ public class ConsentCoreServiceImpl implements ConsentCoreService {
             DetailedConsentResource detailedConsentResource =
                     consentCoreDAO.getDetailedConsentResource(connection, consentID);
 
-            if (orgId == null) {
-                orgId = ConsentMgtDAOConstants.DEFAULT_ORG;
-            }
-            if (!detailedConsentResource.getOrgID().equals(orgId)) {
+            if (!ConsentCoreServiceUtil.validateOrgInfo(orgId, detailedConsentResource.getOrgID())) {
+                log.error("OrgInfo does not match");
                 throw new ConsentMgtException(Response.Status.BAD_REQUEST,
-                        ConsentCoreServiceConstants.ORGANIZATION_MISMATCH_ERROR_MSG);
+                        "OrgInfo does not match, please provide the correct OrgInfo");
             }
 
             // Update receipt and validity time

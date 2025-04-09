@@ -21,7 +21,7 @@ public class AuthorizationResourceDTO implements Serializable {
     private String authorizationStatus;
     private String authorizationType;
     private String userID;
-    private @Valid List<String> resources = new ArrayList<>();
+    private @Valid List<Object> resources = new ArrayList<>();
 
     public AuthorizationResourceDTO() {
     }
@@ -100,7 +100,7 @@ public class AuthorizationResourceDTO implements Serializable {
     /**
      *
      **/
-    public AuthorizationResourceDTO resources(List<String> resources) {
+    public AuthorizationResourceDTO resources(List<Object> resources) {
         this.resources = resources;
         return this;
     }
@@ -108,12 +108,12 @@ public class AuthorizationResourceDTO implements Serializable {
 
     @ApiModelProperty(value = "")
     @JsonProperty("resources")
-    @Valid public List<String> getResources() {
+    @Valid public List<Object> getResources() {
         return resources;
     }
 
     @JsonProperty("resources")
-    public void setResources(List<String> resources) {
+    public void setResources(List<Object> resources) {
         this.resources = resources;
     }
 

@@ -56,7 +56,7 @@ public class ConsentMgtServiceTestData {
     public static final String SAMPLE_ACCOUNT_ID = "123456789";
     public static final String SAMPLE_MAPPING_STATUS = "active";
     public static final String SAMPLE_NEW_MAPPING_STATUS = "inactive";
-    public static final String SAMPLE_RESOURCE = "{\"accountID\": \"111\",\"permission\": \"read\"}";
+    public static final JSONObject SAMPLE_RESOURCE = new JSONObject();
     public static final String SAMPLE_PERMISSION = "samplePermission";
     public static final String SAMPLE_REASON = "sample reason";
     public static final String SAMPLE_ACTION_BY = "admin@wso2.com";

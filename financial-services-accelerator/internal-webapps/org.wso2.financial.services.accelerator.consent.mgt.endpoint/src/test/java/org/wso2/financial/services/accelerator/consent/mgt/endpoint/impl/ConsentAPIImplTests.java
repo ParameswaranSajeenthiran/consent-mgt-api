@@ -7,6 +7,7 @@ import org.wso2.financial.services.accelerator.consent.mgt.dao.constants.Consent
 import org.wso2.financial.services.accelerator.consent.mgt.dao.exceptions.ConsentMgtException;
 import org.wso2.financial.services.accelerator.consent.mgt.dao.models.AuthorizationResource;
 import org.wso2.financial.services.accelerator.consent.mgt.dao.models.ConsentHistoryResource;
+import org.wso2.financial.services.accelerator.consent.mgt.dao.models.ConsentMappingResource;
 import org.wso2.financial.services.accelerator.consent.mgt.dao.models.ConsentResource;
 import org.wso2.financial.services.accelerator.consent.mgt.dao.models.ConsentStatusAuditRecord;
 import org.wso2.financial.services.accelerator.consent.mgt.dao.models.DetailedConsentResource;
@@ -1414,8 +1415,12 @@ public class ConsentAPIImplTests {
 
         when(consentResource.getOrgID()).thenReturn(ConsentMgtDAOConstants.DEFAULT_ORG);
         when(mockedConsentCoreServiceImpl.getConsent(any(), anyBoolean())).thenReturn(consentResource);
-        when(mockedConsentCoreServiceImpl.getAuthorizationResource(authorizationId, ConsentMgtDAOConstants.DEFAULT_ORG))
+        when(mockedConsentCoreServiceImpl.getAuthorizationResource(any(), any()))
                 .thenReturn(authorizationResource);
+
+        ConsentMappingResource consentMappingResource = mock(ConsentMappingResource.class);
+//        when(authorizationResource.getConsentMappingResource()).thenReturn();
+
 
         // Act
         Response response = consentAPIImpl.consentAuthorizationAuthorizationIdGet(authorizationId, orgInfo, consentId);
@@ -1443,7 +1448,7 @@ public class ConsentAPIImplTests {
 
         // Assert
         assertNotNull(response);
-        assertEquals(response.getStatus(), Response.Status.NOT_FOUND.getStatusCode());
+        assertEquals(response.getStatus(), Response.Status.BAD_REQUEST.getStatusCode());
     }
 
     @Test
