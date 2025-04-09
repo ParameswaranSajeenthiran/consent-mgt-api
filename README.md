@@ -33,8 +33,7 @@ cd consent-mgt-api
 
 ### 2. Configure Database 
 
-Copy the context.xml to same folder and configur ethe 
-
+Copy the context.xml to same folder and configure the database credentials
 ```bash
 
 cp deployment/context.xml.example deployment/context.xml
@@ -56,7 +55,7 @@ docker run -p 8080:8080 consent-rest-api
 
 ```
 
-Swagger UI will be available at http://localhost:8080/swagger-ui/index.html
+Explore the APIs available in the Swagger UI at http://localhost:8080/swagger-ui/index.html
 
 
 
