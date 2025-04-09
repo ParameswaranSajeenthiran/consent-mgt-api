@@ -21,7 +21,7 @@ FROM tomcat:9.0-jdk11
 # RUN cp -r $CATALINA_HOME/webapps.dist/* $CATALINA_HOME/webapps
 COPY --from=builder /app/financial-services-accelerator/internal-webapps/org.wso2.financial.services.accelerator.consent.mgt.endpoint/target/consent.war /usr/local/tomcat/consent.war
 # Copy the startup script
-COPY entrypoint.sh /entrypoint.sh
+COPY deployment/entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 EXPOSE 8080
 # USER 10014
