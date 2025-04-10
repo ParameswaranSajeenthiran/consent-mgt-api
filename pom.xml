@@ -82,9 +82,9 @@
                     <value>solution</value>
                 </property>
             </activation>
-            <modules>
-                <module>financial-services-accelerator</module>
-            </modules>
+<!--            <modules>-->
+<!--                <module>financial-services-accelerator</module>-->
+<!--            </modules>-->
             <properties>
                 <npm.executable>npm</npm.executable>
             </properties>
